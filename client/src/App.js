@@ -1,6 +1,11 @@
 import './App.css';
 import io from 'socket.io-client'
 import { useEffect, useState } from 'react';
+import {Button, Input, Box, Typography, Card} from '@material-ui/core'
+import Layout from './components/Layout';
+import { withStyles } from '@material-ui/styles';
+import HostInterFace from './components/HostInterface/HostInterface';
+import PlayerInterface from './components/PlayerInterface/PlayerInterface'
 
 const socket = io.connect("http://localhost:3001");
 
@@ -39,30 +44,67 @@ function App() {
     socket.emit("roll", lobbyId);
   }
 
-  return (
-    <div className="App">
-      {!isInLobby
-        ?
-        <div>
-          <button onClick={() => createLobby()}>Create a Lobby</button>
-          <h4>or</h4>
+  const boxStyling ={
+    p:6,
+    border: '1px solid black',
+    borderRadius:'10px',
+    minWidth:'85%'
+  }
+  const TitleText = withStyles({
+    root: {
+      fontWeight:600,
+      color: '#088F8F',
+      
+    }
+  })(Typography);
 
-          <input type="text" placeholder="Enter Lobby ID" onChange={(event) => setLobbyId(event.target.value)} />
-          <button onClick={() => joinLobby()}>Join a Lobby</button>
-        </div>
-        :
-        isHost
+
+
+  return (
+    <Layout minHeight='100vh'>
+      <div className="App" >
+      <Box align='center' pl='40px' >
+        <TitleText variant='h4' > CYBERBLOCK</ TitleText>
+      </Box>
+      <br></br>
+      <br></br>
+        {!isInLobby
           ?
-          <div>
-            <button onClick={() => roll(lobbyId)}>Roll an Attack</button>
-            <div>{`Lobby created, use code ${lobbyId} to join.`}</div>
-            {rolledAttack !== "" && <div>
-              {`You rolled ${rolledAttack}`}
-            </div>}
-          </div>
+          <Box sx={boxStyling}>
+            <Button variant="contained" onClick={() => createLobby()}>Create a Lobby</Button>
+            <h4>or</h4>
+
+            <Input type="text" placeholder="Enter Lobby ID" onChange={(event) => setLobbyId(event.target.value)} />
+            <br></br>
+            <br></br>
+            <Button  variant="contained" onClick={() => joinLobby()}>Join a Lobby</Button>
+          </Box>
           :
-          rolledAttack !== "" && <div>{`Host rolled ${rolledAttack}`}</div>}
-    </div>
+          isHost
+            ?
+            <Box sx={boxStyling}>
+              <Button  variant="contained"onClick={() => roll(lobbyId)}>Roll an Attack</Button>
+              <br></br>
+              <br></br>
+            <Typography>{`Lobby created, use code ${lobbyId} to join.`}</Typography>
+              <br></br>
+              <br></br>
+              {rolledAttack !== "" && <Typography>
+                {`You rolled ${rolledAttack}`}
+                <br></br>
+                <br></br>
+                <HostInterFace/>
+              </Typography>}
+            </Box>
+            :
+            <Box>
+           {rolledAttack !== "" && <Typography>{`Host rolled ${rolledAttack}`} <PlayerInterface /></Typography>}
+           </Box>
+            }
+            
+        
+      </div>
+    </Layout>
   );
 }
 
