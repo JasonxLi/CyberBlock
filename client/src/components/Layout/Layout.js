@@ -9,7 +9,9 @@ const Layout = ({ children}) => {
     }
     const layoutStyling ={
         overflow:'auto',
-        positon:'relative'
+        positon:'relative',
+        minHeight:'100vh',
+       
     }
  
   
@@ -23,10 +25,10 @@ const Layout = ({ children}) => {
             </Box>
 
             {children}
-            <Box position ='absolute' bottom='0px'  height='20px' p='2rem'>
+            {/* <Box >
                 <Typography>CopyRights Reserved 2021</Typography>
             
-            </Box>
+            </Box> */}
         </Box>
        
     )

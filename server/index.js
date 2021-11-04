@@ -50,22 +50,44 @@ io.on("connection", (socket) => {
             attack = "Attack 5: Malware Attack";
         }
         else if (rolledNum === 6) {
-            attack = "Attack 6: Cat Attack ლ(=ↀωↀ=)ლ";
+            attack = "Attack 6: Cat Attack";
         }
         console.log(`${attack}, ${lobbyId}`);
         io.in(lobbyId).emit("receive_roll", attack);
     })
 
     socket.on("start_buy_phase", (lobbyId) => {
-        var defenses = {
-            "Traceable Supply Chain" : 6, 
-            "Certified Suppliers" : 5,
-            "Data Encryption" : 8,
-            "Read-Only Software" : 8,
-            "Updatable Device" : 7,
-            "Two factor Authentication": 8,
-            "Connectivity Checker" : 6
-        }
+        var defenses = [
+            {
+                label:"Traceable Supply Chain",
+                cost:6
+            },
+            {
+                label:"Certified Suppliers",
+                cost:5
+            },
+            {
+                label:"Data Encryption",
+                cost:8
+            },
+            {
+                label:"Read-Only Software",
+                cost:8
+            },
+            {
+                label:"Updatable Device",
+                cost:7
+            },
+            {
+                label:"Two factor Authentication",
+                cost:8
+            },
+            {
+                label:"Connectivity Checker",
+                cost:6
+            },
+        ]
+        
         io.in(lobbyId).emit("receive_defense_cards", defenses);
     })
 

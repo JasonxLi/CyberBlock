@@ -13,7 +13,9 @@ function App() {
   const [isInLobby, setIsInLobby] = useState(false);
   const [lobbyId, setLobbyId] = useState("");
   const [isHost, setIsHost] = useState(false);
+  const [inBuyingPhase, setBuyingPhase] = useState(false);
   const [rolledAttack, setRolledAttack] = useState("");
+  const [userDefenses, setUserDefenses] = useState([]);
 
   useEffect(() => {
     socket.on("create_lobby", (lobbyId) => {
@@ -26,6 +28,11 @@ function App() {
       setRolledAttack(attack);
       console.log(attack);
     })
+    socket.on("receive_defense_cards", (defenses) => {
+      setUserDefenses(defenses);
+      console.log(defenses);
+    })
+
   }, [socket])
 
   const createLobby = () => {
@@ -44,11 +51,21 @@ function App() {
     socket.emit("roll", lobbyId);
   }
 
+  const start_buy_phase =() =>{
+    socket.emit("start_buy_phase", lobbyId)
+    setBuyingPhase(true)
+  }
+
   const boxStyling ={
     p:6,
     border: '1px solid black',
     borderRadius:'10px',
-    minWidth:'85%'
+    width:'25%',
+    position:'absolute',
+    top:'20%',
+    left:'38%', 
+    justifyContent:'center'
+
   }
   const TitleText = withStyles({
     root: {
@@ -57,12 +74,10 @@ function App() {
       
     }
   })(Typography);
-
-
+  
 
   return (
     <Layout minHeight='100vh'>
-      <div className="App" >
       <Box align='center' pl='40px' >
         <TitleText variant='h4' > CYBERBLOCK</ TitleText>
       </Box>
@@ -83,27 +98,38 @@ function App() {
           isHost
             ?
             <Box sx={boxStyling}>
-              <Button  variant="contained"onClick={() => roll(lobbyId)}>Roll an Attack</Button>
+            <Button  variant="contained"onClick={() => roll(lobbyId)}>Roll an Attack</Button>
               <br></br>
               <br></br>
             <Typography>{`Lobby created, use code ${lobbyId} to join.`}</Typography>
               <br></br>
               <br></br>
+              <Button  variant="contained"onClick={() => start_buy_phase(lobbyId)}>Start the Game</Button>
               {rolledAttack !== "" && <Typography>
                 {`You rolled ${rolledAttack}`}
+
                 <br></br>
                 <br></br>
-                <HostInterFace/>
+                <HostInterFace
+                  roll={()=>roll}
+                  lobbyId={lobbyId}
+                />
               </Typography>}
             </Box>
             :
             <Box>
-           {rolledAttack !== "" && <Typography>{`Host rolled ${rolledAttack}`} <PlayerInterface /></Typography>}
+              
+           {inBuyingPhase === true && 
+           
+           <Typography >
+             {/* {`Host rolled ${rolledAttack}`} */}
+           <PlayerInterface userDefenses={userDefenses} /> </Typography> }
+           
            </Box>
-            }
+          }
             
         
-      </div>
+     
     </Layout>
   );
 }

@@ -1,29 +1,19 @@
 import * as React from 'react';
 import { Box, Typography, TableContainer, Table, TableBody, TableRow, TableCell, Button, TableHead, FormGroup, FormControl, FormControlLabel,Checkbox} from '@material-ui/core'
 
-const HostInterFace = ({ children}) => {
+const PlayerInterface = ({userDefenses}) => {
     const boxStyling ={
         p:6,
         minWidth:'85%'
     }
-    const createData=(Defense, Points) => {
-        return { Defense,Points};
-    }
-    
-    const rows = [
-  
-    createData('Uniquely Identify Devices (Serial Numbers)', 305),
-    createData('Traceable Supply Chain', 452),
-  
-
-    ]
-
+   
     return (
         <Box sx={boxStyling}>
+           
             <Box >
                 
-                <Typography variant='h7'm> Round No: 4</Typography><br></br>
-               <Typography variant='h7'> Points Accquired: 458</Typography><br></br>
+                {/* <Typography variant='h7'm> Round No: 4</Typography><br></br>
+               <Typography variant='h7'> Points Accquired: 458</Typography><br></br> */}
                <Typography variant='h7'> Earnings:$30 </Typography>
             </Box>
             <br></br>
@@ -39,13 +29,14 @@ const HostInterFace = ({ children}) => {
                     </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows.map((row) => (
-                            <TableRow key={row.name}>
+                      
+                        {userDefenses.map((row) => (
+                            <TableRow key={row.label}>
                             <TableCell component="th" scope="row">
-                                {row.Defense}
+                                {row.label}
                             </TableCell>
                             <TableCell style={{ width: 160 }} align="right">
-                                {row.Points}
+                                {row.cost}
                             </TableCell>
                            
                                     <TableCell style={{ width: 160 }} align="right">
@@ -76,4 +67,4 @@ const HostInterFace = ({ children}) => {
     );
 
 }
-export default HostInterFace;
+export default PlayerInterface;

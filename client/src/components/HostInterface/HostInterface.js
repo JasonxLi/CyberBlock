@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Box, TableContainer, Table, TableBody, TableRow, TableCell} from '@material-ui/core'
 
-const HostInterFace = ({ children, }) => {
+const HostInterFace = ({ children}) => {
 
 
    const createData=(teamName, totalPoints, roundNumber) => {
@@ -14,10 +14,14 @@ const HostInterFace = ({ children, }) => {
         createData('Team 2', 452, 4),
 
       ].sort((a, b) => (a.totalPoints > b.totalPoints ? -1 : 1));
+
+      
   
     return (
-    
+
         <Box >
+        
+
             <TableContainer >
                 <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
                     <TableBody>
