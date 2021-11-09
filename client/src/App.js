@@ -16,6 +16,7 @@ function App() {
   const [inBuyingPhase, setBuyingPhase] = useState(false);
   const [rolledAttack, setRolledAttack] = useState("");
   const [userDefenses, setUserDefenses] = useState([]);
+  const [endBuyPhase, setEndBuyPhase] = useState(false);
 
   useEffect(() => {
     socket.on("create_lobby", (lobbyId) => {
@@ -30,6 +31,7 @@ function App() {
     })
     socket.on("receive_defense_cards", (defenses) => {
       setUserDefenses(defenses);
+      setBuyingPhase(true)
       console.log(defenses);
     })
 
@@ -53,7 +55,7 @@ function App() {
 
   const start_buy_phase =() =>{
     socket.emit("start_buy_phase", lobbyId)
-    setBuyingPhase(true)
+    
   }
 
   const boxStyling ={
@@ -119,14 +121,21 @@ function App() {
             :
             <Box>
               
-           {inBuyingPhase === true && 
+           {(inBuyingPhase && !endBuyPhase) ?
            
            <Typography >
-             {/* {`Host rolled ${rolledAttack}`} */}
-           <PlayerInterface userDefenses={userDefenses} /> </Typography> }
-           
+           <PlayerInterface userDefenses={userDefenses} setEndBuyPhase={setEndBuyPhase}  /> </Typography>
+           : 
+           rolledAttack !== "" &&
+           <Typography>
+            {`Host rolled ${rolledAttack}`}</Typography>
+            
+            }
            </Box>
-          }
+
+           } 
+           
+          
             
         
      
