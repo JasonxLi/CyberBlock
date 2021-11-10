@@ -7,6 +7,44 @@ const { Server } = require('socket.io');
 
 const PORT = process.env.PORT || 3001;
 
+
+
+const mysql = require('mysql')
+
+
+// Connection Details
+// mysql://b8bb0e6f75a584:9d7d360a@us-cdbr-east-04.cleardb.com/heroku_6409ef74c48b643?reconnect=true
+const connection = mysql.createConnection({
+    host: 'us-cdbr-east-04.cleardb.com',
+    user: 'b8bb0e6f75a584',
+    password: '9d7d360a',
+    database: 'heroku_6409ef74c48b643'
+})
+
+// View Engine
+// app.set('view engine', 'ejs')
+
+
+
+// Render Home Page
+// app.get('/', function(req, res) {
+
+    connection.query('SELECT * FROM attack WHERE AttackID = "1001"', (error, rows) => {
+
+        if(error) throw error;
+
+        if(!error) {
+            console.log(rows)
+            // res.render('pages/index', { rows })
+        }
+    })
+
+// })
+
+
+
+
+
 app.use(cors());
 const server = http.createServer(app);
 const io = new Server(server, {
