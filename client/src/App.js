@@ -1,11 +1,13 @@
 import './App.css';
 import io from 'socket.io-client'
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import {Button, Input, Box, Typography, Card} from '@material-ui/core'
 import Layout from './components/Layout';
 import { withStyles } from '@material-ui/styles';
 import HostInterFace from './components/HostInterface/HostInterface';
 import PlayerInterface from './components/PlayerInterface/PlayerInterface'
+import { Context } from './context/ContextProvider';
+import GameInterFace from './components/GameInterFace/GameInterFace';
 
 const socket = io.connect("http://localhost:3001");
 
@@ -16,7 +18,8 @@ function App() {
   const [inBuyingPhase, setBuyingPhase] = useState(false);
   const [rolledAttack, setRolledAttack] = useState("");
   const [userDefenses, setUserDefenses] = useState([]);
-  const [endBuyPhase, setEndBuyPhase] = useState(false);
+  
+  const {endBuyPhase}=useContext(Context)
 
   useEffect(() => {
     socket.on("create_lobby", (lobbyId) => {
@@ -119,17 +122,15 @@ function App() {
               </Typography>}
             </Box>
             :
-            <Box>
+            <Box>{
+              (inBuyingPhase && !endBuyPhase) ?
               
-           {(inBuyingPhase && !endBuyPhase) ?
-           
-           <Typography >
-           <PlayerInterface userDefenses={userDefenses} setEndBuyPhase={setEndBuyPhase}  /> </Typography>
-           : 
-           rolledAttack !== "" &&
-           <Typography>
-            {`Host rolled ${rolledAttack}`}</Typography>
-            
+              <Typography >
+              <PlayerInterface userDefenses={userDefenses}   /> </Typography>
+              : 
+              rolledAttack !== "" &&
+              <GameInterFace rolledAttack={rolledAttack} />
+                
             }
            </Box>
 
