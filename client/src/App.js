@@ -65,11 +65,12 @@ function App() {
     p:6,
     border: '1px solid black',
     borderRadius:'10px',
-    width:'25%',
+    width:250,
+    align:'center',
     position:'absolute',
-    top:'20%',
-    left:'38%', 
-    justifyContent:'center'
+    top:'30%',
+    left:'33%', 
+    
 
   }
   const TitleText = withStyles({
@@ -82,44 +83,48 @@ function App() {
   
 
   return (
-    <Layout minHeight='100vh'>
-      <Box align='center' pl='40px' >
+    <Layout >
+      <Box align='center' >
         <TitleText variant='h4' > CYBERBLOCK</ TitleText>
       </Box>
+
       <br></br>
       <br></br>
         {!isInLobby
           ?
           <Box sx={boxStyling}>
-            <Button variant="contained" onClick={() => createLobby()}>Create a Lobby</Button>
+            <Button variant="contained" onClick={() => createLobby()}>Create Lobby</Button>
             <h4>or</h4>
 
             <Input type="text" placeholder="Enter Lobby ID" onChange={(event) => setLobbyId(event.target.value)} />
             <br></br>
             <br></br>
-            <Button  variant="contained" onClick={() => joinLobby()}>Join a Lobby</Button>
+            <Button  variant="contained" onClick={() => joinLobby()}>Join Lobby</Button>
           </Box>
           :
           isHost
             ?
             <Box sx={boxStyling}>
-            <Button  variant="contained"onClick={() => roll(lobbyId)}>Roll an Attack</Button>
-              <br></br>
-              <br></br>
-            <Typography>{`Lobby created, use code ${lobbyId} to join.`}</Typography>
-              <br></br>
-              <br></br>
-              <Button  variant="contained"onClick={() => start_buy_phase(lobbyId)}>Start the Game</Button>
-              {rolledAttack !== "" && <Typography>
-                {`You rolled ${rolledAttack}`}
+              <Box>
+              <Button  variant="contained"onClick={() => roll(lobbyId)}>Roll Attack</Button>
+                <br></br>
+                <br></br>
+              <Typography>{`Lobby created, use code ${lobbyId} to join.`}</Typography>
+                <br></br>
+                <br></br>
+              <Button  variant="contained"onClick={() => start_buy_phase(lobbyId)}>Start Game</Button>
+              </Box>  
+                {rolledAttack !== "" && 
+                <Typography>
+                  {`You rolled ${rolledAttack}`}
 
-                <br></br>
-                <br></br>
-                <HostInterFace
-                  roll={()=>roll}
-                  lobbyId={lobbyId}
-                />
-              </Typography>}
+                  <br></br>
+                  <br></br>
+                  <HostInterFace
+                    roll={()=>roll}
+                    lobbyId={lobbyId}
+                  />
+                </Typography>}
             </Box>
             :
             <Box>{
@@ -129,17 +134,11 @@ function App() {
               <PlayerInterface userDefenses={userDefenses}   /> </Typography>
               : 
               rolledAttack !== "" &&
-              <GameInterFace rolledAttack={rolledAttack} />
-                
+              <GameInterFace rolledAttack={rolledAttack} /> 
             }
            </Box>
+        } 
 
-           } 
-           
-          
-            
-        
-     
     </Layout>
   );
 }

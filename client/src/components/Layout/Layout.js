@@ -5,7 +5,7 @@ import {MedtronicsIcon} from '../Icons/Icons'
 const Layout = ({ children}) => {
 
     const base = {
-        p:'1rem',
+        p:'2rem',
     }
     const layoutStyling ={
         overflow:'auto',
@@ -25,10 +25,12 @@ const Layout = ({ children}) => {
             </Box>
 
             {children}
-            {/* <Box >
-                <Typography>CopyRights Reserved 2021</Typography>
             
-            </Box> */}
+            <Box sx={base} sx={{position:'fixed', bottom : 0}} >
+            
+                <Typography >CopyRights Reserved 2021</Typography>
+            
+            </Box>
         </Box>
        
     )

@@ -1,43 +1,63 @@
 import * as React from 'react';
-import { Box, Typography, Card, FormGroup, FormControl, FormControlLabel, Radio, } from '@material-ui/core';
+import { Box, Typography, Card, FormGroup, FormControl, FormControlLabel, Radio, CardContent, CardActions, Grid} from '@material-ui/core';
 import { Context } from '../../context/ContextProvider';
 import { useContext } from 'react';
 
 const GameInterFace = ({ children, rolledAttack }) => {
 
-    const {selectedDefenses, userEarnings} =useContext(Context);
+    const {selectedDefenses} =useContext(Context);
 
-    const cardStyling = {
-        display: 'inline-block', mx: '2px', transform: 'scale(0.8)',
-        minWidth: 275, minHeight: 150
+    const boxStyling={
+        m:'20px',
+        p:'10px'
+    }
+    const cardStyling={
+        ...boxStyling,
+        width:'200%'
+
     }
     
-    console.log(selectedDefenses)
     return(
-        <Box sx={cardStyling}>
-            <Card variant="outlined" >
-                <Typography>{`Host rolled ${rolledAttack}`} </Typography>
-            </Card>
-
-            <Box >
+        <Box  >
+            <Box sx={boxStyling}>
+                <Card >
+                    <CardContent>
+                        <Typography  align ='center' variant='h6' color="text.secondary" gutterBottom>
+                        {`Host rolled ${rolledAttack}`}
+                        </Typography>
+                    </CardContent>
+                </Card>
+            </Box>
+        
+            <Grid container spacing={1}>
+                <Grid item xs="auto">
                 <FormControl  component="fieldset" variant="standard">
                     <FormGroup>
                     {selectedDefenses.map(item =>{
                         return(
-                        <Card sx={cardStyling}>
-                            {item.defenseName}
-                                <FormControlLabel
-                                    control={
-                                    <Radio
-                                        key={item.defenseName}
-                                    />
-                                    }
-                                />
-                        </Card>);
+                            <Box sx={cardStyling} >
+                                <Card>
+                                    <CardContent >
+                                        <Typography variant='h7' align ='center' color="text.secondary" gutterBottom>
+                                            {item.defenseName}
+                                            </Typography>
+                                    </CardContent>
+                                    <CardActions>
+                                        <FormControlLabel
+                                            control={
+                                            <Radio
+                                                key={item.defenseName}
+                                            />
+                                            }
+                                        />
+                                    </CardActions>
+                                </Card>
+                            </Box>);
                     })}
                     </FormGroup>
                 </FormControl>
-            </Box>
+                </Grid>
+            </Grid>
 
 
         </Box>
@@ -45,4 +65,4 @@ const GameInterFace = ({ children, rolledAttack }) => {
 
 
 }
-export default GameInterFace
+export default GameInterFace;

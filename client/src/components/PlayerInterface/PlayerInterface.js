@@ -11,22 +11,30 @@ const PlayerInterface = ({userDefenses}) => {
         minWidth:'85%'
     }
     
-    const[isDisable, setisDisable] = useState(false);
-    
-    const getUserDefense = ( value, name,cost)=>{
-        
-        const removeDefense = (index, cost) =>{
+
+    const [isChecked, setIsChecked] =useState([]);
+
+    const removeDefense = (index, cost) =>{
            
-            const tempDefenseList = [
-                ...selectedDefenses.slice(0,index),
-                ...selectedDefenses.slice(index+1,selectedDefenses.length)
-            ]
-            setSelectedDefenses(tempDefenseList);
-            setUserEarnings(userEarnings+cost);
-        }
+        const tempDefenseList = [
+            ...selectedDefenses.slice(0,index),
+            ...selectedDefenses.slice(index+1,selectedDefenses.length)
+        ]
+        setSelectedDefenses(tempDefenseList);
+        setUserEarnings(userEarnings+cost);
+    }
+    const getUserDefense = ( value, name,cost,index)=>{
+
+        
+        const currentIndex = [...isChecked];
+        let tempIndex ={...currentIndex[index]}
+        tempIndex =value;
+        currentIndex[index] = tempIndex
+        setIsChecked(currentIndex)
+        
+
         if( !value && selectedDefenses.length > 0 && userEarnings > 0){
             selectedDefenses.map((item, index) => {
-                
                 if(item.defenseName === name  ){
                     removeDefense(index, item.defenseCost)
                 }
@@ -44,23 +52,12 @@ const PlayerInterface = ({userDefenses}) => {
             }
             else {
                 setUserEarnings(userEarnings-cost)
-                setisDisable(true)
+                
             }
         }
 
     }
-    console.log(selectedDefenses)
-
-    // const getcheckedvalue = (name) => {
-    //    selectedDefenses.filter(item=> {
-    //     if(item.defenseName.includes(name)){
-    //         console.log('yay')
-    //         return false
-    //     }
-    //      })
-    //    return false
-    // }
-   
+ 
     return (
         <Box sx={boxStyling}>
            
@@ -69,7 +66,7 @@ const PlayerInterface = ({userDefenses}) => {
                 {/* <Typography variant='h7'm> Round No: 4</Typography><br></br>
                <Typography variant='h7'> Points Accquired: 458</Typography><br></br> */}
                <Typography variant='h7'> Earnings:${userEarnings}</Typography>
-               {/* <Button variant="contained" onClick={() => triggerUndo()}>Enable</Button> */}
+
             </Box>
             <br></br>
             <br></br>
@@ -85,7 +82,7 @@ const PlayerInterface = ({userDefenses}) => {
                     </TableHead>
                     <TableBody>
                       
-                        {userDefenses.map((row) => (
+                        {userDefenses.map((row, index) => (
                             <TableRow key={row.label}>
                                 <TableCell component="th" scope="row">
                                     {row.label}
@@ -101,8 +98,9 @@ const PlayerInterface = ({userDefenses}) => {
                                                 control={
                                                 <Checkbox 
                                                     key={row.label}
-                                                    onChange={(event)=> getUserDefense( event.target.checked, row.label, row.cost )}
-                                                    disabled={isDisable}                                 
+                                                    onChange={(event)=> getUserDefense( event.target.checked, row.label, row.cost, index )}
+                                                    disabled={row.cost > userEarnings && !isChecked[index] ? true : false }
+                                                    checked={isChecked[index]}
                                                 />
                                                 }
                                             />
