@@ -60,7 +60,7 @@ function App() {
     socket.emit("start_buy_phase", lobbyId)
     
   }
-
+  console.log(userDefenses)
   const boxStyling ={
     p:6,
     border: '1px solid black',
@@ -68,10 +68,10 @@ function App() {
     width:250,
     align:'center',
     position:'absolute',
-    top:'30%',
-    left:'33%', 
-    
-
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)'
+   
   }
   const TitleText = withStyles({
     root: {
@@ -104,27 +104,28 @@ function App() {
           :
           isHost
             ?
-            <Box sx={boxStyling}>
+            <Box >
               <Box>
-              <Button  variant="contained"onClick={() => roll(lobbyId)}>Roll Attack</Button>
-                <br></br>
-                <br></br>
-              <Typography>{`Lobby created, use code ${lobbyId} to join.`}</Typography>
-                <br></br>
-                <br></br>
-              <Button  variant="contained"onClick={() => start_buy_phase(lobbyId)}>Start Game</Button>
+                <Button  variant="contained"onClick={() => roll(lobbyId)}>Roll Attack</Button>
+                  <br></br>
+                  <br></br>
+                <Button  variant="contained"onClick={() => start_buy_phase(lobbyId)}>Start Game</Button>
+                  <br></br>
+                  <br></br>
               </Box>  
-                {rolledAttack !== "" && 
-                <Typography>
-                  {`You rolled ${rolledAttack}`}
+              <Typography>{`Lobby created, use code ${lobbyId} to join.`}</Typography>
+             
+              {rolledAttack !== "" && 
+              <Typography>
+                {`You rolled ${rolledAttack}`}
 
-                  <br></br>
-                  <br></br>
-                  <HostInterFace
-                    roll={()=>roll}
-                    lobbyId={lobbyId}
-                  />
-                </Typography>}
+                <br></br>
+                <br></br>
+                <HostInterFace
+                  roll={()=>roll}
+                  lobbyId={lobbyId}
+                />
+              </Typography>}
             </Box>
             :
             <Box>{

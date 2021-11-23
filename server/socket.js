@@ -29,38 +29,13 @@ module.exports = {
 
 
         socket.on("start_buy_phase", (lobbyId) => {
-            var defenses = [
-                {
-                    label: "Traceable Supply Chain",
-                    cost: 6
-                },
-                {
-                    label: "Certified Suppliers",
-                    cost: 5
-                },
-                {
-                    label: "Data Encryption",
-                    cost: 8
-                },
-                {
-                    label: "Read-Only Software",
-                    cost: 8
-                },
-                {
-                    label: "Updatable Device",
-                    cost: 7
-                },
-                {
-                    label: "Two factor Authentication",
-                    cost: 8
-                },
-                {
-                    label: "Connectivity Checker",
-                    cost: 6
-                },
-            ]
-
-            io.in(lobbyId).emit("receive_defense_cards", defenses);
+            connection.query(`SELECT * FROM defense`,  async (error, defense) => {
+                if (error) throw error;
+                if (!error) {
+                    io.in(lobbyId).emit("receive_defense_cards", defense);
+                }
+            })
+           
         })
     }
 };

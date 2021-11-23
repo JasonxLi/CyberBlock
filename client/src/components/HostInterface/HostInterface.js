@@ -15,12 +15,10 @@ const HostInterFace = ({ children}) => {
 
       ].sort((a, b) => (a.totalPoints > b.totalPoints ? -1 : 1));
 
-      
-  
     return (
 
         <Box >
-        
+            
 
             <TableContainer >
                 <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">

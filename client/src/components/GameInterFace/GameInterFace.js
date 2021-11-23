@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { Box, Typography, Card, FormGroup, FormControl, FormControlLabel, Radio, CardContent, CardActions, Grid} from '@material-ui/core';
+import { Box, Typography, Card, FormGroup, FormControl, FormControlLabel, Radio, CardContent, CardActions  } from '@material-ui/core';
 import { Context } from '../../context/ContextProvider';
 import { useContext } from 'react';
+import  {styled}  from '@material-ui/styles';
 
 const GameInterFace = ({ children, rolledAttack }) => {
 
@@ -9,16 +10,21 @@ const GameInterFace = ({ children, rolledAttack }) => {
 
     const boxStyling={
         m:'20px',
-        p:'10px'
+        p:'10px',
+       
     }
     const cardStyling={
-        ...boxStyling,
-        width:'200%'
-
+        m:'20px',
+        p:'10px',
+        width:'150%'
     }
+    const handleChange=(id)=>{
+        console.log(id)
+    }
+ 
     
     return(
-        <Box  >
+        <Box sx={{alignItems:'center', justifyContent:'center', p:'5%'}} >
             <Box sx={boxStyling}>
                 <Card >
                     <CardContent>
@@ -29,38 +35,35 @@ const GameInterFace = ({ children, rolledAttack }) => {
                 </Card>
             </Box>
         
-            <Grid container spacing={1}>
-                <Grid item xs="auto">
-                <FormControl  component="fieldset" variant="standard">
-                    <FormGroup>
-                    {selectedDefenses.map(item =>{
-                        return(
-                            <Box sx={cardStyling} >
-                                <Card>
-                                    <CardContent >
-                                        <Typography variant='h7' align ='center' color="text.secondary" gutterBottom>
-                                            {item.defenseName}
-                                            </Typography>
-                                    </CardContent>
-                                    <CardActions>
-                                        <FormControlLabel
-                                            control={
-                                            <Radio
-                                                key={item.defenseName}
-                                            />
-                                            }
+           
+            <FormControl  component="fieldset" variant="standard">
+                <FormGroup>
+                {selectedDefenses.map(item =>{
+                    return(
+                        <Box sx={cardStyling}>
+                            <Card >
+                                <CardContent>
+                                    <FormControlLabel
+                                        control={
+                                        <Radio
+                                            key={item.defenseName}
+                                            onChange={handleChange(item.defenseID)}
                                         />
-                                    </CardActions>
-                                </Card>
-                            </Box>);
-                    })}
-                    </FormGroup>
-                </FormControl>
-                </Grid>
-            </Grid>
-
-
+                                        }
+                                    />
+                                
+                                    <Typography variant='h7' align ='center' color="text.secondary" gutterBottom>
+                                        {item.defenseName}
+                                    </Typography>
+                                </CardContent>
+                            </Card>
+                        </Box>
+                        );
+                })}
+                </FormGroup>
+            </FormControl>
         </Box>
+    
     )
 
 

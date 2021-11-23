@@ -11,7 +11,6 @@ const Layout = ({ children}) => {
         overflow:'auto',
         positon:'relative',
         minHeight:'100vh',
-       
     }
  
   

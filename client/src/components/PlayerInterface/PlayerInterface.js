@@ -10,7 +10,6 @@ const PlayerInterface = ({userDefenses}) => {
         p:6,
         minWidth:'85%'
     }
-    
 
     const [isChecked, setIsChecked] =useState([]);
 
@@ -23,9 +22,8 @@ const PlayerInterface = ({userDefenses}) => {
         setSelectedDefenses(tempDefenseList);
         setUserEarnings(userEarnings+cost);
     }
-    const getUserDefense = ( value, name,cost,index)=>{
-
-        
+    const getUserDefense = ( value, name,cost,index, id)=>{
+       
         const currentIndex = [...isChecked];
         let tempIndex ={...currentIndex[index]}
         tempIndex =value;
@@ -44,6 +42,7 @@ const PlayerInterface = ({userDefenses}) => {
             const tempDefense= {
                 defenseName : name,
                 defenseCost : cost,
+                defenseID: id,
                 done: value 
             }
             setSelectedDefenses([...selectedDefenses, tempDefense])
@@ -57,6 +56,7 @@ const PlayerInterface = ({userDefenses}) => {
         }
 
     }
+    
  
     return (
         <Box sx={boxStyling}>
@@ -83,14 +83,15 @@ const PlayerInterface = ({userDefenses}) => {
                     <TableBody>
                       
                         {userDefenses.map((row, index) => (
-                            <TableRow key={row.label}>
+                            
+                            <TableRow key={row.Name}>
                                 <TableCell component="th" scope="row">
-                                    {row.label}
+                                    {row.Name}
                                 </TableCell>
                                 <TableCell style={{ width: 160 }} align="right">
-                                    {row.cost}
+                                    {row.Cost}
                                 </TableCell>
-                            
+                                
                                 <TableCell style={{ width: 160 }} align="right">
                                     <FormControl  component="fieldset" variant="standard">
                                         <FormGroup>
@@ -98,18 +99,21 @@ const PlayerInterface = ({userDefenses}) => {
                                                 control={
                                                 <Checkbox 
                                                     key={row.label}
-                                                    onChange={(event)=> getUserDefense( event.target.checked, row.label, row.cost, index )}
-                                                    disabled={row.cost > userEarnings && !isChecked[index] ? true : false }
+                                                    onChange={(event)=> getUserDefense( event.target.checked, row.Name,row.Cost, index, row.DefenseID )}
+                                                    disabled={row.Cost > userEarnings && !isChecked[index] ? true : false }
                                                     checked={isChecked[index]}
                                                 />
                                                 }
                                             />
                                         </FormGroup>
                                     </FormControl>
+                                    
                                 </TableCell>
                                    
                             </TableRow>
+                          
                         ))}
+                        
                     </TableBody>
                 </Table>
             </TableContainer><br></br>
