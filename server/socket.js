@@ -22,11 +22,10 @@ module.exports = {
             connection.query(`SELECT attack.AttackID, attack.Name, attack.Description FROM attack WHERE RollValue = ${rolledNum} AND Difficulty = 1`, async (error, rows) => {
                 if (error) throw error;
                 if (!error) {
-                    io.in(lobbyId).emit("receive_roll", rows[0].Name);
+                    io.in(lobbyId).emit("receive_roll", rows[0]);
                 }
             })
         })
-
 
         socket.on("start_buy_phase", (lobbyId) => {
             connection.query(`SELECT * FROM defense`,  async (error, defense) => {
@@ -35,8 +34,15 @@ module.exports = {
                     io.in(lobbyId).emit("receive_defense_cards", defense);
                 }
             })
+            connection.query(`SELECT * FROM points`,  async (error, points) => {
+                if (error) throw error;
+                if (!error) {
+                    io.in(lobbyId).emit("receive_point_table", points);
+                }
+            })
            
         })
+        
     }
 };
 

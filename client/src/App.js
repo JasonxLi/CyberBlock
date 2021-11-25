@@ -1,7 +1,7 @@
 import './App.css';
 import io from 'socket.io-client'
 import { useEffect, useState, useContext } from 'react';
-import {Button, Input, Box, Typography, Card} from '@material-ui/core'
+import {Button, Input, Box, Typography} from '@material-ui/core'
 import Layout from './components/Layout';
 import { withStyles } from '@material-ui/styles';
 import HostInterFace from './components/HostInterface/HostInterface';
@@ -13,13 +13,13 @@ const socket = io.connect("http://localhost:3001");
 
 function App() {
   const [isInLobby, setIsInLobby] = useState(false);
-  const [lobbyId, setLobbyId] = useState("");
+  
   const [isHost, setIsHost] = useState(false);
   const [inBuyingPhase, setBuyingPhase] = useState(false);
-  const [rolledAttack, setRolledAttack] = useState("");
   const [userDefenses, setUserDefenses] = useState([]);
+  const [pointTable, setPointTable] = useState([]);
   
-  const {endBuyPhase}=useContext(Context)
+  const {endBuyPhase,lobbyId,setLobbyId, rolledAttack,setRolledAttack}=useContext(Context)
 
   useEffect(() => {
     socket.on("create_lobby", (lobbyId) => {
@@ -27,7 +27,6 @@ function App() {
       setIsHost(true);
       console.log(`lobby id is ${lobbyId}`);
     })
-
     socket.on("receive_roll", (attack) => {
       setRolledAttack(attack);
       console.log(attack);
@@ -37,8 +36,11 @@ function App() {
       setBuyingPhase(true)
       console.log(defenses);
     })
-
   }, [socket])
+  
+  socket.on("receive_point_table", (points) => {
+    setPointTable(points);
+  })
 
   const createLobby = () => {
     socket.emit("create_lobby");
@@ -52,15 +54,6 @@ function App() {
     }
   }
 
-  const roll = (lobbyId) => {
-    socket.emit("roll", lobbyId);
-  }
-
-  const start_buy_phase =() =>{
-    socket.emit("start_buy_phase", lobbyId)
-    
-  }
-  console.log(userDefenses)
   const boxStyling ={
     p:6,
     border: '1px solid black',
@@ -70,7 +63,7 @@ function App() {
     position:'absolute',
     top: '50%',
     left: '50%',
-    transform: 'translate(-50%, -50%)'
+    transform: 'translate(-50%, -50%)',
    
   }
   const TitleText = withStyles({
@@ -104,29 +97,7 @@ function App() {
           :
           isHost
             ?
-            <Box >
-              <Box>
-                <Button  variant="contained"onClick={() => roll(lobbyId)}>Roll Attack</Button>
-                  <br></br>
-                  <br></br>
-                <Button  variant="contained"onClick={() => start_buy_phase(lobbyId)}>Start Game</Button>
-                  <br></br>
-                  <br></br>
-              </Box>  
-              <Typography>{`Lobby created, use code ${lobbyId} to join.`}</Typography>
-             
-              {rolledAttack !== "" && 
-              <Typography>
-                {`You rolled ${rolledAttack}`}
-
-                <br></br>
-                <br></br>
-                <HostInterFace
-                  roll={()=>roll}
-                  lobbyId={lobbyId}
-                />
-              </Typography>}
-            </Box>
+            <HostInterFace />
             :
             <Box>{
               (inBuyingPhase && !endBuyPhase) ?
@@ -135,7 +106,7 @@ function App() {
               <PlayerInterface userDefenses={userDefenses}   /> </Typography>
               : 
               rolledAttack !== "" &&
-              <GameInterFace rolledAttack={rolledAttack} /> 
+              <GameInterFace rolledAttack={rolledAttack.Name} attackId={rolledAttack.AttackID} pointTable={pointTable}/> 
             }
            </Box>
         } 

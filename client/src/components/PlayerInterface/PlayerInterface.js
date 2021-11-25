@@ -63,8 +63,6 @@ const PlayerInterface = ({userDefenses}) => {
            
             <Box justifyContent='space-between'>
                 
-                {/* <Typography variant='h7'm> Round No: 4</Typography><br></br>
-               <Typography variant='h7'> Points Accquired: 458</Typography><br></br> */}
                <Typography variant='h7'> Earnings:${userEarnings}</Typography>
 
             </Box>

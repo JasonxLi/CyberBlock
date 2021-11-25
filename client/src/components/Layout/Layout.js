@@ -10,7 +10,7 @@ const Layout = ({ children}) => {
     const layoutStyling ={
         overflow:'auto',
         positon:'relative',
-        minHeight:'100vh',
+        //minHeight:'100vh',
     }
  
   
@@ -25,11 +25,11 @@ const Layout = ({ children}) => {
 
             {children}
             
-            <Box sx={base} sx={{position:'fixed', bottom : 0}} >
+            {/* <Box sx={base} sx={{position:'sticky', bottom : '0'}} >
             
                 <Typography >CopyRights Reserved 2021</Typography>
             
-            </Box>
+            </Box> */}
         </Box>
        
     )
