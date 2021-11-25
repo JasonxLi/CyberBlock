@@ -17,30 +17,16 @@ module.exports = {
         })
 
 
-        socket.on("roll", (lobbyId) => {
-            const rolledNum = Math.floor(Math.random() * 11 + 2);
-            connection.query(`SELECT attack.AttackID, attack.Name, attack.Description FROM attack WHERE RollValue = ${rolledNum} AND Difficulty = 1`, async (error, rows) => {
-                if (error) throw error;
-                if (!error) {
-                    io.in(lobbyId).emit("receive_roll", rows[0]);
-                }
-            })
+        socket.on("roll", async (lobbyId) => {
+            const attack = await mysql_queries.rollAttack(connection, 1);
+            io.in(lobbyId).emit("receive_roll", attack);
         })
 
-        socket.on("start_buy_phase", (lobbyId) => {
-            connection.query(`SELECT * FROM defense`,  async (error, defense) => {
-                if (error) throw error;
-                if (!error) {
-                    io.in(lobbyId).emit("receive_defense_cards", defense);
-                }
-            })
-            connection.query(`SELECT * FROM points`,  async (error, points) => {
-                if (error) throw error;
-                if (!error) {
-                    io.in(lobbyId).emit("receive_point_table", points);
-                }
-            })
-           
+        socket.on("start_buy_phase", async (lobbyId) => {
+            const defenses = await mysql_queries.getDefenses(connection, 1);
+            io.in(lobbyId).emit("receive_defense_cards", defenses);
+            const points = await mysql_queries.getPoints(connection, 1);
+            io.in(lobbyId).emit("receive_point_table", points); 
         })
         
     }
