@@ -29,7 +29,7 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
     console.log(`An user has connected, id is ${socket.id}`);
 
-    cb_socket.handleEvents(io, socket, connection);
+    cb_socket.handleEvents(socket, app, io, connection);
 
     socket.on("disconnect", () => {
         console.log(`An user disconnected, id is ${socket.id}`);
