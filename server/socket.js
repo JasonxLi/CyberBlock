@@ -9,7 +9,7 @@ module.exports = {
 
             //initialize lobby
             app.locals.lobbyId = {};
-            app.locals.lobbyId.host = socket.id;
+            app.locals.lobbyId.hostId = socket.id;
 
             //store lobby configuration info
             app.locals.lobbyId.nbOfTeams = nbOfTeams;
@@ -32,7 +32,7 @@ module.exports = {
             ack(lobbyId);
         })
 
-        socket.on("student_join_lobby", ({ alias, lobbyId }, ack) => {
+        socket.on("student_join_lobby", ({ lobbyId, alias }, ack) => {
             //add student to a team with least members
             let nbOfMembers = 9999;
             let teamWithLeastMembers = null;
@@ -85,13 +85,68 @@ module.exports = {
             //add each team member to their team socket room for chat 
             app.locals.lobbyId.teamsInfo.forEach((item, index) => {
                 item.forEach(item => {
-                    app.locals.sockets.get(item.socketId).join(lobbyId + 'team' + index);
+                    app.locals.sockets.get(item.socketId).join(lobbyId + '_team' + index);
                 })
             })
             //emit event so front end knows game has been started when they receive this event
-            io.in(lobbyId).emit(host_started_game);
+            io.in(lobbyId).emit("host_started_game");
         })
 
+        socket.on("host_gets_trivia_question", async (ack) => {
+            //TODO: figure out the format for this w/ Nelson
+            const triviaQuestions = await mysql_queries.getAllTriviaQuestions(db_connection);
+            ack(triviaQuestions);
+        })
+
+        socket.on("host_pick_trivia_question", ({ lobbyId, selectedQuestion }) => {
+            //TODO: figure out the format for this w/ Nelson
+            io.in(lobbyId).emit("host_picked_trivia_question", selectedQuestion);
+            setTimeout(() => {
+                //TODO: query database to check answer
+                io.in(lobbyId).emit("student_receive_trivia_points", triviaRewardPoints);
+            }, 30000);
+        })
+
+        socket.on("student_submit_trivia_answer", ({ lobbyId, choice }) => {
+            //TODO: figure out format of data, then store answers
+        })
+
+        socket.on("host_start_buy_phase", async (lobbyId) => {
+            //TODO: figure out the format for this w/ Nelson
+            const defenses = await mysql_queries.getDefenses(db_connection, apps.locals.lobbyId.difficulty);
+            io.in(lobbyId).emit("student_receive_defenses", defenses);
+        })
+
+        socket.on("host_start_next_defense_round", async (ack) => {
+            //TODO: figure out the format for this w/ Nelson
+            const attackCategory = await mysql_queries.rollAttackCategory(db_connection);
+            ack(attackCategory);
+        })
+
+        socket.on("host_pick_attack", async (lobbyId, attackCategory, attackId) => {
+            //TODO: figure out how exactly to implement this
+            app.locals.lobbyId.attackId = attackId;
+            io.in(lobbyId).emit("student_receive_attack_category", attackCategory);
+
+            const bestDefenses = await mysql_queries.getBestDefenses(db_connection, attackId);
+
+            setTimeout(() => {
+                //TODO: query database to check locally stored answer
+                io.in(lobbyId).emit("student_receive_results", result, bestDefenses);
+            }, app.locals.lobbyId.timeForEachRound * 1000);
+        })
+
+        socket.on("student_play_defenses", (lobbyId, teamId, defenses) => {
+            //TODO: store defenses for each team
+        })
+
+        socket.on("chat_sendToAll", ({ lobbyId, alias, message }) => {
+            io.in(lobbyId).emit("chat_receiveFromAll", { alias: alias, message: message });
+        })
+
+        socket.on("chat_sendToTeam", ({ lobbyId, alias, teamId, message }) => {
+            io.in(lobbyId + `_team` + teamId).emit("chat_receiveFromTeam", { alias: alias, message: message });
+        })
 
         // --------------------old socket events-------------------- //
         socket.on("join_lobby", (lobbyId) => {
