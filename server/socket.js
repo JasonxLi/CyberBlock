@@ -25,8 +25,10 @@ module.exports = {
                 app.locals.lobbyId.teamsInfo.push([]);
             }
 
+            //join host to lobby
             socket.join(lobbyId);
             console.log(`Host with socketID ${socket.id} joined lobby ${lobbyId}`);
+            //ack with lobbyId
             ack(lobbyId);
         })
 
@@ -35,16 +37,21 @@ module.exports = {
             let nbOfMembers = 9999;
             let teamWithLeastMembers = null;
             for (i = app.locals.lobbyId.nbOfTeams - 1; i >= 0; i--) {
-                if(app.locals.lobbyId.teamsInfo[i].length <= nbOfMembers){
+                if (app.locals.lobbyId.teamsInfo[i].length <= nbOfMembers) {
                     nbOfMembers = app.locals.lobbyId.teamsInfo[i].length;
                     teamWithLeastMembers = i;
                 }
             }
-            app.locals.lobbyId.teamsInfo[teamWithLeastMembers].push({socketId:socket.id, alias: alias});
+            app.locals.lobbyId.teamsInfo[teamWithLeastMembers].push({ socketId: socket.id, alias: alias });
 
+            //add student to lobby
             socket.join(lobbyId);
             console.log(`User with ID ${socket.id} joined lobby ${lobbyId}`)
 
+            //emit to members already in the room with updated teamsInfo
+            socket.to(lobbyId).emit("new_student_joined_lobby", app.locals.lobbyId.teamsInfo);
+
+            //ack to newly joined student, with configuration and teamsInfo
             ack({
                 nbOfTeams: app.locals.lobbyId.nbOfTeams,
                 nbOfRounds: app.locals.lobbyId.nbOfRounds,
@@ -56,8 +63,33 @@ module.exports = {
             });
         })
 
+        socket.on("host_move_student", ({ lobbyId, socketId, oldTeamId, newTeamId }) => {
+            const oldTeam = app.locals.lobbyId.teamsInfo[oldTeamId];
+            const newTeam = app.locals.lobbyId.teamsInfo[newTeamId];
+            let alias = null;
+            //remove student from old team
+            oldTeam.forEach((item, index) => {
+                if (item.socketId === socketId) {
+                    alias = item.alias;
+                    oldTeam.splice(index, 1);
+                }
+            })
+            //add student to new team
+            newTeam.push({ socketId: socketId, alias: alias });
+
+            //emit updated teamsInfo to lobby
+            io.in(lobbyId).emit("host_moved_student", app.locals.lobbyId.teamsInfo);
+        })
+
         socket.on("host_start_game", lobbyId => {
-            //TODO: add each team to their own socket room
+            //add each team member to their team socket room for chat 
+            app.locals.lobbyId.teamsInfo.forEach((item, index) => {
+                item.forEach(item => {
+                    app.locals.sockets.get(item.socketId).join(lobbyId + 'team' + index);
+                })
+            })
+            //emit event so front end knows game has been started when they receive this event
+            io.in(lobbyId).emit(host_started_game);
         })
 
 
