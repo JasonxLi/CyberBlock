@@ -1,2 +1,2 @@
-import GameInterFace from "./GameInterFace";
+import GameInterFace from "./GameInterface";
 export default GameInterFace;

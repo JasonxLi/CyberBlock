@@ -1,49 +1,29 @@
 import * as React from 'react';
-import { Box, TableContainer, Table, TableBody, TableRow, TableCell, FormControl,InputLabel,Select,MenuItem, Button, Typography} from '@material-ui/core'
+import { Box, TableContainer, Table, TableBody, TableRow, TableCell, Button, Typography} from '@material-ui/core'
 import {  useState, useContext } from 'react';
 import { Context} from '../../context/ContextProvider'
 
 const HostInterFace = ({ children}) => {
-    const {lobbyId, roll,start_buy_phase,rolledAttack }=useContext(Context);
+   
+    const {lobbyId, roll,start_buy_phase,rolledAttack , nbOfRounds, teaminfo, setTeamInfo}=useContext(Context);
     const [endGame, setEndGame]= useState(false);
-    const[isDisabled,setDisabled] =useState(true);
-    const [round, setRound] = useState(0);
-    const [difficulty, setDifficulty] = useState(1);
+
     const [roundCount, setRoundCount] = useState(0);
 
     const boxStyling={
         m:'20px',
         p:'10px',
     }
-    const formControlBox={
-        ...boxStyling,
-        maxWidth:140,
-    }
-    const outerBoxStyling ={
-        ...boxStyling,
-        display: 'flex',
-        flexWrap: 'nowrap',
-        mt:'80px',
-        mx:'40px'
-    }
-    
-    
-    const handleDifficultyChange=(value)=>{
-        setDifficulty(value)
-        setDisabled(false)
-    }
+   
     const rollPhase = ()=>{
-       if(roundCount !== round){
-
+       if(roundCount !== nbOfRounds){
         roll(lobbyId);
         setRoundCount(roundCount + 1)
        }
        else{
-           setEndGame(true)
-
+        setEndGame(true)
        }
     }
-
    const createData=(teamName, totalPoints, roundNumber) => {
         return { teamName, totalPoints, roundNumber};
     }
@@ -59,52 +39,36 @@ const HostInterFace = ({ children}) => {
 
         <Box sx={boxStyling} >
             <Typography align='center' variant='h6'>{`Lobby created, use code ${lobbyId} to join.`}</Typography>
-          
-           
-            <Box sx={outerBoxStyling}>
-            
+            {/* {teaminfo.map(row =>{ */}
+                <TableContainer >
+                <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
+                    <TableBody>
+                        {/* {row.map((row) => ( */}
+                            <TableRow >
+                            <TableCell component="th" scope="row">
+                                {/* {member.socketId} */}
+                            </TableCell>
+                            <TableCell style={{ width: 160 }} align="right">
+                                {/* {member.alias} */}
+                            </TableCell>
+        
+                            </TableRow>
+                        {/* ))} */}
+                    </TableBody>
+                </Table>
+            </TableContainer>
 
-            <Box sx={formControlBox}>
-            <Typography > Step 1</Typography>
-                <FormControl fullWidth>
-                    <InputLabel id="select-label-round">Round</InputLabel>
-                    <Select
-                        label="Round"
-                        onChange={(event)=>  setRound(event.target.value)}
-                    >
-                        <MenuItem value={5}>5</MenuItem>
-                        <MenuItem value={8}>8</MenuItem>
-                        <MenuItem value={10}>10</MenuItem>
-                    </Select>
-                </FormControl>
-                
-                <FormControl fullWidth>
-                    <InputLabel id="select-label-difficulty">Difficulty</InputLabel>
-                    <Select
-                        
-                        label="Difficulty"
-                        onChange={(event)=> handleDifficultyChange(event.target.value)}
-                    >
-                        <MenuItem value={1}>Beginner</MenuItem>
-                        <MenuItem value={2}>Intermediate</MenuItem>
-                        <MenuItem value={3}>Expert</MenuItem>
-                    </Select>
-                </FormControl>
-               
+            {/* })} */}
             
-            </Box>
            
             <Box  sx={boxStyling}>
-                <Typography> Step 2</Typography>
-                <Button  variant="contained" disabled={isDisabled} onClick={() => start_buy_phase(lobbyId)}>Start Game</Button>
-                
+               
+                <Button  variant="contained" onClick={() => start_buy_phase(lobbyId)}>Start Game</Button>
+                <br></br>
+                <br></br>            
+                <Button  variant="contained"  onClick={rollPhase}>Roll Attack</Button>
             </Box>
             
-            <Box  sx={boxStyling}>
-                <Typography> Step 3</Typography>
-                <Button  variant="contained"  disabled={isDisabled} onClick={rollPhase}>Roll Attack</Button>
-            </Box>
-            </Box>
             <br></br>
             <br></br>
             {
@@ -115,7 +79,7 @@ const HostInterFace = ({ children}) => {
              <br></br>
             <br></br>
                  
-            <TableContainer >
+            {/* <TableContainer >
                 <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
                     <TableBody>
                         {rows.map((row) => (
@@ -133,7 +97,7 @@ const HostInterFace = ({ children}) => {
                         ))}
                     </TableBody>
                 </Table>
-            </TableContainer>
+            </TableContainer> */}
             {children}
            
         </Box>

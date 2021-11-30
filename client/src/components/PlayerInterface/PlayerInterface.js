@@ -57,7 +57,6 @@ const PlayerInterface = ({userDefenses}) => {
 
     }
     
- 
     return (
         <Box sx={boxStyling}>
            
