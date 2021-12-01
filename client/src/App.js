@@ -4,19 +4,15 @@ import {  useContext, useState } from 'react';
 import { Box, Typography} from '@material-ui/core'
 import Layout from './components/Layout';
 import { withStyles } from '@material-ui/styles';
-import HostInterFace from './components/HostInterface/HostInterface';
+import HostInterface from './components/HostInterface/HostInterface';
 import PlayerInterface from './components/PlayerInterface/PlayerInterface'
 import { Context } from './context/ContextProvider';
-import GameInterFace from './components/GameInterface/GameInterface';
+import GameInterface from './components/GameInterface/GameInterface';
 import LobbyInterFace from './components/LobbyInterface/LobbyInterface';
-import HostConfiguration from './components/HostConfiguration';
-
 
 
 function App() {
-  
-  const [endConfigurationPhase, setEndConfigurationPhase] = useState(false);
-  
+
   const {endBuyPhase, rolledAttack,isHost, isInLobby,inBuyingPhase,userDefenses,pointTable}=useContext(Context)
   
   const TitleText = withStyles({
@@ -27,7 +23,9 @@ function App() {
     }
   })(Typography);
   
-
+  
+    
+  
   return (
     <Layout >
       <Box align='center' >
@@ -42,7 +40,7 @@ function App() {
           :
           isHost
             ?
-            endConfigurationPhase ? <HostInterFace /> : <HostConfiguration setEndConfigurationPhase={setEndConfigurationPhase}/>
+            <HostInterface /> 
             :
             <Box>{
               (inBuyingPhase && !endBuyPhase) ?
@@ -50,7 +48,7 @@ function App() {
               <Typography > <PlayerInterface userDefenses={userDefenses} /> </Typography>
               : 
               rolledAttack !== "" &&
-              <GameInterFace rolledAttack={rolledAttack.Name} attackId={rolledAttack.AttackID} pointTable={pointTable}/> 
+              <GameInterface rolledAttack={rolledAttack.Name} attackId={rolledAttack.AttackID} pointTable={pointTable}/> 
             }
            </Box>
         } 

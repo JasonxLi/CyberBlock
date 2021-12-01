@@ -64,6 +64,7 @@ module.exports = {
         })
 
         socket.on("host_move_student", ({ lobbyId, socketId, oldTeamId, newTeamId }) => {
+            console.log(lobbyId, socketId, oldTeamId, newTeamId)
             const oldTeam = app.locals.lobbyId.teamsInfo[oldTeamId];
             const newTeam = app.locals.lobbyId.teamsInfo[newTeamId];
             let alias = null;

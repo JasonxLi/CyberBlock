@@ -10,7 +10,7 @@ const HostConfiguration = ({ children, setEndConfigurationPhase}) => {
     const [difficulty, setDifficulty] = useState(1);
     const [timeForEachRound, setTimeForEachRound] = useState(0);
     const [hasTriviaRound, setHasTriviaRound] = useState(false);
-    const [nbOfTeams, setNbOfTeams] = useState(0);
+    const [nbOfTeams, setNbOfTeams] = useState(2);
     const [nbOfDefenses, setNbOfDefenses] = useState(2);
 
 

@@ -3,6 +3,7 @@ import { useState,useContext } from 'react';
 import { Box, Typography, TableContainer, Table, TableBody, TableRow, TableCell, Button, TableHead, FormGroup, FormControl, FormControlLabel,Checkbox} from '@material-ui/core'
 import { Context } from '../../context/ContextProvider';
 
+
 const PlayerInterface = ({userDefenses}) => {
 
     const {selectedDefenses, setSelectedDefenses, setEndBuyPhase, userEarnings, setUserEarnings} =useContext(Context)

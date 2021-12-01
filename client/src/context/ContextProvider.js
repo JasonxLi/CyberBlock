@@ -19,11 +19,17 @@ const ThemeContextProvider = ({children}) => {
     const [userDefenses, setUserDefenses] = useState([]);
     const [pointTable, setPointTable] = useState([]);
     const [nbOfRounds, setNbOfRounds] = useState(0);
+    
     const [teamInfo, setTeamInfo] = useState([]);
-
+   
     useEffect(() => {
-        
-      
+        socket.on("new_student_joined_lobby", (info) =>{
+            setTeamInfo(info)
+        })
+        socket.on("host_moved_student", (info) =>{
+            setTeamInfo(info)
+        })
+
         socket.on("receive_roll", (attack) => {
           setRolledAttack(attack);
           console.log(attack);
@@ -35,19 +41,28 @@ const ThemeContextProvider = ({children}) => {
         })
     }, [socket])
       
-    socket.on("receive_point_table", (points) => {
-    setPointTable(points);
-    })
+   const host_move_student = (lobbyId, socketId, oldTeamId, newTeamId) => {
+        socket.emit("host_move_student", {lobbyId, socketId, oldTeamId, newTeamId});
+   }
     
     const student_join_lobby = () => {
         if (lobbyId !== "" && alias !== "") {
             socket.emit("student_join_lobby",{lobbyId, alias}, result =>{
-                setTeamInfo(result)
-                setIsInLobby(true)
+               
             })
-            
+            setIsInLobby(true)    
         }
     }
+
+    const host_create_lobby =(nbOfTeams, nbOfRounds, nbOfDefenses, timeForEachRound, hasTriviaRound, difficulty) =>{
+        socket.emit("host_create_lobby",{nbOfTeams, nbOfRounds, nbOfDefenses, timeForEachRound, hasTriviaRound, difficulty}, lobbyId =>{
+            setLobbyId(lobbyId);
+            setIsHost(true);
+            setIsInLobby(true);
+        })
+    }
+
+
     const roll = (lobbyId) => {
         socket.emit("roll", lobbyId);
     }
@@ -55,15 +70,9 @@ const ThemeContextProvider = ({children}) => {
     const start_buy_phase =() =>{
         socket.emit("start_buy_phase", lobbyId)
     }
-
-    const host_create_lobby =(nbOfTeams, nbOfRounds, nbOfDefenses, timeForEachRound, hasTriviaRound, difficulty) =>{
-        socket.emit("host_create_lobby",{nbOfTeams, nbOfRounds, nbOfDefenses, timeForEachRound, hasTriviaRound, difficulty}, lobbyId =>{
-            console.log(lobbyId)
-            setLobbyId(lobbyId);
-            setIsHost(true);
-            setIsInLobby(true);
+    socket.on("receive_point_table", (points) => {
+        setPointTable(points);
         })
-    }
     
     return(
         <Context.Provider
@@ -93,7 +102,8 @@ const ThemeContextProvider = ({children}) => {
                 setAlias,
                 alias, 
                 teamInfo,
-                setTeamInfo
+                setTeamInfo,
+                host_move_student
             }}
         >
             {children}

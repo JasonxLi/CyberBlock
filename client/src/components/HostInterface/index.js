@@ -1,2 +1,2 @@
-import HostInterFace from "./HostInterFace";
-export default HostInterFace;
+import HostInterface from "./HostInterface";
+export default HostInterface;
