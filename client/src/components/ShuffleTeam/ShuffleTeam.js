@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Box, TableContainer, Table, TableBody, TableRow, TableCell, TableHead, FormControl,InputLabel,Select,MenuItem,} from '@material-ui/core'
-import {  useState, useContext } from 'react';
+import { useContext } from 'react';
 import { Context} from '../../context/ContextProvider'
 
 const ShuffleTeam = ({ children}) => {
@@ -11,7 +11,9 @@ const ShuffleTeam = ({ children}) => {
         host_move_student(lobbyId,socketId, oldTeamId, newTeamId)
 
     }
-    console.log(teamInfo);
+    
+
+    
     return (
         <Box>
             <TableContainer >
@@ -38,10 +40,10 @@ const ShuffleTeam = ({ children}) => {
                                         <InputLabel id="select-label-round" >Switch</InputLabel>
                                         <Select
                                             label="Round"
-                                            onChange={(event)=> handleChange(event.target.value, child.socketId, index+1)}
+                                            onChange={(event)=> handleChange(event.target.value, child.socketId, index)}
                                         >
                                             {teamInfo.map((item, index) =>
-                                            <MenuItem value={index+1}>{index+1}</MenuItem>
+                                            <MenuItem value={index}>{index+1}</MenuItem>
                                             )}
                                         </Select>
                                     </FormControl>

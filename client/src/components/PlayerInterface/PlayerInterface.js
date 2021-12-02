@@ -1,17 +1,20 @@
 import * as React from 'react';
 import { useState,useContext } from 'react';
-import { Box, Typography, TableContainer, Table, TableBody, TableRow, TableCell, Button, TableHead, FormGroup, FormControl, FormControlLabel,Checkbox} from '@material-ui/core'
+import { Box, Typography, TableContainer, Table, TableBody, TableRow, TableCell, Button, TableHead, FormGroup, FormControl, FormControlLabel,Checkbox, Card, CardContent} from '@material-ui/core'
 import { Context } from '../../context/ContextProvider';
 
 
 const PlayerInterface = ({userDefenses}) => {
 
-    const {selectedDefenses, setSelectedDefenses, setEndBuyPhase, userEarnings, setUserEarnings} =useContext(Context)
+    const {selectedDefenses, setSelectedDefenses, setEndBuyPhase, userEarnings, setUserEarnings, alias, currentLead, teamInfo } =useContext(Context)
     const boxStyling ={
         p:6,
         minWidth:'85%'
     }
+    
+    var teamNumber=0;
 
+    const [isLeader, setisLeader] =useState(false)
     const [isChecked, setIsChecked] =useState([]);
 
     const removeDefense = (index, cost) =>{
@@ -55,17 +58,68 @@ const PlayerInterface = ({userDefenses}) => {
                 
             }
         }
-
     }
+    console.log(teamInfo)
+    // const getMemberinfo=()=>{
+    //     if(teamInfo.length > 0){
+    //         teamInfo.map((player, index)=>{
+    //             if(player.alias === alias){
+    //                 teamNumber= index +1 ;
+                    
+    //             }
+    //             if(player.socketId === currentLead.socketId){
+    //                 setisLeader(true);
+    //             }
+    //         })
+    //     }
+    //     else{        
+    //         teamInfo.teamsInfo.map((team, index) =>{
+    //             team.map(player=>{
+    //                 if(player.alias === alias){
+    //                     teamNumber= index +1 ;
+    //                 }
+    //                 if(player.socketId === currentLead.socketId){
+    //                     setisLeader(true);
+    //                 }
+    
+    //             })
+    //         })   
+            
+    //     }
+    
+       
+    // }
+    // getMemberinfo();
     
     return (
         <Box sx={boxStyling}>
-           
-            <Box justifyContent='space-between'>
+            <Card>
+                <CardContent>
+                <Typography     gutterBottom>
+                    {alias}
+                </Typography>
+                <Typography     gutterBottom>
+                            
+                    You are in Team {teamNumber}
+                </Typography>
+                {isLeader ? 
+                    <Typography     gutterBottom>
+                        
+                        You are the current leader
+                    </Typography>
+                    :
+                    <Typography></Typography>
+                }
                 
-               <Typography variant='h7'> Earnings:${userEarnings}</Typography>
-
-            </Box>
+                </CardContent>
+            </Card>
+            <br></br>
+            <br></br>
+            
+            <Typography   variant='h7' color="text.secondary"  gutterBottom>
+                Earnings:${userEarnings}
+            </Typography>  
+            
             <br></br>
             <br></br>
             <TableContainer >
@@ -98,7 +152,7 @@ const PlayerInterface = ({userDefenses}) => {
                                                 <Checkbox 
                                                     key={row.label}
                                                     onChange={(event)=> getUserDefense( event.target.checked, row.Name,row.Cost, index, row.DefenseID )}
-                                                    disabled={row.Cost > userEarnings && !isChecked[index] ? true : false }
+                                                    disabled={row.Cost > userEarnings && !isChecked[index] ? true : false || isLeader ? true : false}
                                                     checked={isChecked[index]}
                                                 />
                                                 }

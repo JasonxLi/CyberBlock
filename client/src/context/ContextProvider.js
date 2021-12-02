@@ -21,6 +21,9 @@ const ThemeContextProvider = ({children}) => {
     const [nbOfRounds, setNbOfRounds] = useState(0);
     
     const [teamInfo, setTeamInfo] = useState([]);
+    
+
+    const [currentLead, setCurrentLead] =useState([]);
    
     useEffect(() => {
         socket.on("new_student_joined_lobby", (info) =>{
@@ -48,7 +51,7 @@ const ThemeContextProvider = ({children}) => {
     const student_join_lobby = () => {
         if (lobbyId !== "" && alias !== "") {
             socket.emit("student_join_lobby",{lobbyId, alias}, result =>{
-               
+                
             })
             setIsInLobby(true)    
         }
@@ -72,7 +75,7 @@ const ThemeContextProvider = ({children}) => {
     }
     socket.on("receive_point_table", (points) => {
         setPointTable(points);
-        })
+    })
     
     return(
         <Context.Provider
@@ -103,7 +106,10 @@ const ThemeContextProvider = ({children}) => {
                 alias, 
                 teamInfo,
                 setTeamInfo,
-                host_move_student
+                host_move_student,
+                setCurrentLead,
+                currentLead,
+               
             }}
         >
             {children}

@@ -13,7 +13,8 @@ import LobbyInterFace from './components/LobbyInterface/LobbyInterface';
 
 function App() {
 
-  const {endBuyPhase, rolledAttack,isHost, isInLobby,inBuyingPhase,userDefenses,pointTable}=useContext(Context)
+  const {endBuyPhase, rolledAttack,isHost, isInLobby,inBuyingPhase,userDefenses,pointTable, }=useContext(Context)
+  
   
   const TitleText = withStyles({
     root: {
@@ -22,9 +23,6 @@ function App() {
       
     }
   })(Typography);
-  
-  
-    
   
   return (
     <Layout >
@@ -45,7 +43,7 @@ function App() {
             <Box>{
               (inBuyingPhase && !endBuyPhase) ?
               
-              <Typography > <PlayerInterface userDefenses={userDefenses} /> </Typography>
+              <Typography > <PlayerInterface userDefenses={userDefenses}  /> </Typography>
               : 
               rolledAttack !== "" &&
               <GameInterface rolledAttack={rolledAttack.Name} attackId={rolledAttack.AttackID} pointTable={pointTable}/> 

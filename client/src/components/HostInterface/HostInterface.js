@@ -5,14 +5,15 @@ import { Context} from '../../context/ContextProvider'
 import ShuffleTeam from '../ShuffleTeam/ShuffleTeam';
 import HostConfiguration from '../HostConfiguration/HostConfiguration';
 
-const HostInterface = ({ teamInfo}) => {
+const HostInterface = ({}) => {
    
-    const {lobbyId, roll,start_buy_phase,rolledAttack , nbOfRounds }= useContext(Context);
+    const {lobbyId, roll,start_buy_phase,rolledAttack , nbOfRounds, teamInfo, setCurrentLead}= useContext(Context);
 
     const [endGame, setEndGame]= useState(false);
     const [endConfigurationPhase, setEndConfigurationPhase] = useState(false);
 
     const [roundCount, setRoundCount] = useState(0);
+  
 
     const boxStyling={
         m:'20px',
@@ -28,6 +29,28 @@ const HostInterface = ({ teamInfo}) => {
         setEndGame(true)
        }
     }
+
+    const getTeamLead =()=>{
+        var playerIndex = 0;
+        teamInfo.map((team) =>{
+            const leadSwitch = nbOfRounds/team.length
+            for (let i = 0; i < nbOfRounds ; i++) {
+                if(nbOfRounds % Math.ceil(leadSwitch) === 0){
+                    const leaderId = team[playerIndex]
+                    setCurrentLead(leaderId)
+                    playerIndex ++
+                    i++
+                }
+                else{
+                    i++
+                }
+               
+            }
+        })
+
+    }
+    getTeamLead()
+
     
     return (
         <Box>
