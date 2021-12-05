@@ -5,15 +5,16 @@ import { Context} from '../../context/ContextProvider'
 import ShuffleTeam from '../ShuffleTeam/ShuffleTeam';
 import HostConfiguration from '../HostConfiguration/HostConfiguration';
 
+
 const HostInterface = ({}) => {
    
-    const {lobbyId, roll,start_buy_phase,rolledAttack , nbOfRounds, teamInfo, setCurrentLead}= useContext(Context);
+    const {lobbyId, roll,start_buy_phase,rolledAttack , nbOfRounds, roundCount,setRoundCount,  }= useContext(Context);
 
     const [endGame, setEndGame]= useState(false);
     const [endConfigurationPhase, setEndConfigurationPhase] = useState(false);
 
-    const [roundCount, setRoundCount] = useState(0);
-  
+    
+    
 
     const boxStyling={
         m:'20px',
@@ -30,28 +31,14 @@ const HostInterface = ({}) => {
        }
     }
 
-    const getTeamLead =()=>{
-        var playerIndex = 0;
-        teamInfo.map((team) =>{
-            const leadSwitch = nbOfRounds/team.length
-            for (let i = 0; i < nbOfRounds ; i++) {
-                if(nbOfRounds % Math.ceil(leadSwitch) === 0){
-                    const leaderId = team[playerIndex]
-                    setCurrentLead(leaderId)
-                    playerIndex ++
-                    i++
-                }
-                else{
-                    i++
-                }
-               
-            }
-        })
-
-    }
-    getTeamLead()
+    
+    
+   const buyPhase =()=>{
+    start_buy_phase(lobbyId);
 
     
+   }
+   
     return (
         <Box>
             {endConfigurationPhase ?
@@ -60,7 +47,7 @@ const HostInterface = ({}) => {
                         <Typography align='center' variant='h6'>{`Lobby created, use code ${lobbyId} to join.`}</Typography>
                         <Box  sx={boxStyling}>
                         
-                            <Button  variant="contained" onClick={() => start_buy_phase(lobbyId)}>Start Game</Button>
+                            <Button  variant="contained" onClick={buyPhase}>Start Game</Button>
                             <br></br>
                             <br></br>            
                             <Button  variant="contained"  onClick={rollPhase}>Roll Attack</Button>
@@ -74,11 +61,12 @@ const HostInterface = ({}) => {
                         <br></br>
                         <br></br>
                         <ShuffleTeam />
+                        
                     </Box>
                 )
                 :
                 (<HostConfiguration setEndConfigurationPhase={setEndConfigurationPhase} />)
-            
+                        
             }
 
         </Box>

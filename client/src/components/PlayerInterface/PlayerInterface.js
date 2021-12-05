@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { useState,useContext } from 'react';
+import { useState,useContext, useEffect } from 'react';
 import { Box, Typography, TableContainer, Table, TableBody, TableRow, TableCell, Button, TableHead, FormGroup, FormControl, FormControlLabel,Checkbox, Card, CardContent} from '@material-ui/core'
 import { Context } from '../../context/ContextProvider';
 
 
-const PlayerInterface = ({userDefenses}) => {
+const PlayerInterface = ({userDefenses, }) => {
 
-    const {selectedDefenses, setSelectedDefenses, setEndBuyPhase, userEarnings, setUserEarnings, alias, currentLead, teamInfo } =useContext(Context)
+    const {selectedDefenses, setSelectedDefenses, setEndBuyPhase, userEarnings, setUserEarnings, alias, teamInfo, currentLead, roundCount, nbOfRounds,setCurrentLead } =useContext(Context)
     const boxStyling ={
         p:6,
         minWidth:'85%'
@@ -16,6 +16,7 @@ const PlayerInterface = ({userDefenses}) => {
 
     const [isLeader, setisLeader] =useState(false)
     const [isChecked, setIsChecked] =useState([]);
+    
 
     const removeDefense = (index, cost) =>{
            
@@ -59,38 +60,47 @@ const PlayerInterface = ({userDefenses}) => {
             }
         }
     }
-    console.log(teamInfo)
-    // const getMemberinfo=()=>{
-    //     if(teamInfo.length > 0){
-    //         teamInfo.map((player, index)=>{
-    //             if(player.alias === alias){
-    //                 teamNumber= index +1 ;
-                    
-    //             }
-    //             if(player.socketId === currentLead.socketId){
-    //                 setisLeader(true);
-    //             }
-    //         })
-    //     }
-    //     else{        
-    //         teamInfo.teamsInfo.map((team, index) =>{
-    //             team.map(player=>{
-    //                 if(player.alias === alias){
-    //                     teamNumber= index +1 ;
-    //                 }
-    //                 if(player.socketId === currentLead.socketId){
-    //                     setisLeader(true);
-    //                 }
     
-    //             })
-    //         })   
+        
+
+    
+    const getMemberinfo=()=>{
+        var playerIndex = 0;
+
+        const leadSwitch = nbOfRounds/teamInfo.length
+        
+        if(roundCount % Math.ceil(leadSwitch) === 0){
+            const tempLeader = [...currentLead];
+            teamInfo.map( (team, index)=>{
+                
+                let tempLeaderIndex = {...tempLeader[index]}
+                tempLeaderIndex =team[playerIndex].socketId
+                tempLeader[index] =tempLeaderIndex
+                console.log(tempLeader)
+                setCurrentLead(tempLeader)
+                
+            })
             
-    //     }
-    
-       
-    // }
-    // getMemberinfo();
-    
+           playerIndex++    
+        }
+        console.log(currentLead)
+        teamInfo.map((team, index) =>{
+           
+            team.map(player=>{
+                if(player.alias === alias){
+                    teamNumber= index +1 ;
+                    // if(player.socketId == currentLead[index].socketId){
+                    //     setisLeader(true)
+                    // }
+                }
+                
+
+            })
+        })   
+    }
+    getMemberinfo();
+    console.log(currentLead)
+
     return (
         <Box sx={boxStyling}>
             <Card>

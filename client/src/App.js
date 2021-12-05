@@ -13,7 +13,7 @@ import LobbyInterFace from './components/LobbyInterface/LobbyInterface';
 
 function App() {
 
-  const {endBuyPhase, rolledAttack,isHost, isInLobby,inBuyingPhase,userDefenses,pointTable, }=useContext(Context)
+  const {endBuyPhase, rolledAttack,isHost, isInLobby,inBuyingPhase,userDefenses,pointTable }=useContext(Context)
   
   
   const TitleText = withStyles({

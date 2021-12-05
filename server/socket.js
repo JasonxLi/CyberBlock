@@ -49,7 +49,7 @@ module.exports = {
             console.log(`User with ID ${socket.id} joined lobby ${lobbyId}`)
 
             //emit to members already in the room with updated teamsInfo
-            socket.to(lobbyId).emit("new_student_joined_lobby", app.locals.lobbyId.teamsInfo);
+            io.in(lobbyId).emit("new_student_joined_lobby", app.locals.lobbyId.teamsInfo);
 
             //ack to newly joined student, with configuration and teamsInfo
             ack({
