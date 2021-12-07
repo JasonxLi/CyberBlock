@@ -4,7 +4,7 @@ import {  useContext } from 'react';
 import { Context} from '../../context/ContextProvider'
 
 const LobbyInterFace = ({ children}) => {
-    const {setLobbyId, host_create_lobby,student_join_lobby, setAlias }=useContext(Context);
+    const {setLobbyId, setIsInLobby, setIsHost, student_join_lobby, setAlias }=useContext(Context);
     
     const boxStyling ={
         p:6,
@@ -20,7 +20,7 @@ const LobbyInterFace = ({ children}) => {
       }
     return ( 
         <Box sx={boxStyling}>
-            <Button variant="contained" onClick={() => host_create_lobby()}>Create Lobby</Button>
+            <Button variant="contained" onClick={() => {setIsInLobby(true);setIsHost(true);}}>Create Lobby</Button>
             <h4>or</h4>
 
             <Input type="text" placeholder="Enter Lobby ID" onChange={(event) => setLobbyId(event.target.value)} />
