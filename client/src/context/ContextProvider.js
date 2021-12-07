@@ -1,64 +1,64 @@
-import React, { createContext,useState, useEffect} from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 
 import io from 'socket.io-client'
 const socket = io.connect("http://localhost:3001");
 
 export const Context = createContext({});
 
-const ThemeContextProvider = ({children}) => {
-    const [selectedDefenses, setSelectedDefenses]=useState([]);
+const ThemeContextProvider = ({ children }) => {
+    const [selectedDefenses, setSelectedDefenses] = useState([]);
     const [endBuyPhase, setEndBuyPhase] = useState(false);
-    const [userEarnings, setUserEarnings]= useState(30);
+    const [userEarnings, setUserEarnings] = useState(30);
     const [lobbyId, setLobbyId] = useState("");
     const [rolledAttack, setRolledAttack] = useState("");
     const [alias, setAlias] = useState("");
     const [isInLobby, setIsInLobby] = useState(false);
-  
+
     const [isHost, setIsHost] = useState(false);
     const [inBuyingPhase, setBuyingPhase] = useState(false);
     const [userDefenses, setUserDefenses] = useState([]);
     const [pointTable, setPointTable] = useState([]);
     const [nbOfRounds, setNbOfRounds] = useState(0);
-    
+
     const [teamInfo, setTeamInfo] = useState([]);
-    const [currentLead,setCurrentLead,] =useState([]);
+    const [currentLead, setCurrentLead,] = useState([]);
 
     const [roundCount, setRoundCount] = useState(0);
 
     useEffect(() => {
-        socket.on("new_student_joined_lobby", (info) =>{
+        socket.on("new_student_joined_lobby", (info) => {
             setTeamInfo(info)
         })
-        socket.on("host_moved_student", (info) =>{
+        socket.on("host_moved_student", (info) => {
             setTeamInfo(info)
-            
+
         })
 
         socket.on("receive_roll", (attack) => {
-          setRolledAttack(attack);
-          console.log(attack);
+            setRolledAttack(attack);
+            console.log(attack);
         })
         socket.on("receive_defense_cards", (defenses) => {
-          setUserDefenses(defenses);
-          setBuyingPhase(true)
-          
+            setUserDefenses(defenses);
+            setBuyingPhase(true)
+
         })
     }, [socket])
-      
-   const host_move_student = (lobbyId, socketId, oldTeamId, newTeamId) => {
-        socket.emit("host_move_student", {lobbyId, socketId, oldTeamId, newTeamId});
-   }
-    
+
+    const host_move_student = (lobbyId, socketId, oldTeamId, newTeamId) => {
+        socket.emit("host_move_student", { lobbyId, socketId, oldTeamId, newTeamId });
+    }
+
     const student_join_lobby = () => {
         if (lobbyId !== "" && alias !== "") {
-            socket.emit("student_join_lobby",{lobbyId, alias}, result =>{
+            socket.emit("student_join_lobby", { lobbyId, alias }, result => {
             })
-            setIsInLobby(true)    
+            setIsInLobby(true)
         }
     }
 
-    const host_create_lobby =(nbOfTeams, nbOfRounds, nbOfDefenses, timeForEachRound, hasTriviaRound, difficulty) =>{
-        socket.emit("host_create_lobby",{nbOfTeams, nbOfRounds, nbOfDefenses, timeForEachRound, hasTriviaRound, difficulty}, lobbyId =>{
+    const host_create_lobby = (nbOfTeams, nbOfRounds, nbOfDefenses, timeForEachRound, hasTriviaRound, difficulty) => {
+        socket.emit("host_create_lobby", { nbOfTeams, nbOfRounds, nbOfDefenses, timeForEachRound, hasTriviaRound, difficulty }, lobbyId => {
             setLobbyId(lobbyId);
             setIsHost(true);
             setIsInLobby(true);
@@ -68,19 +68,15 @@ const ThemeContextProvider = ({children}) => {
     const roll = (lobbyId) => {
         socket.emit("roll", lobbyId);
     }
-    
-    const start_buy_phase =() =>{
+
+    const start_buy_phase = () => {
         socket.emit("start_buy_phase", lobbyId)
     }
     socket.on("receive_point_table", (points) => {
         setPointTable(points);
     })
-    
-  
-    
 
-
-    return(
+    return (
         <Context.Provider
             value={{
                 selectedDefenses,
@@ -89,12 +85,12 @@ const ThemeContextProvider = ({children}) => {
                 setEndBuyPhase,
                 userEarnings,
                 setUserEarnings,
-                lobbyId, 
+                lobbyId,
                 setLobbyId,
                 roll,
                 start_buy_phase,
                 rolledAttack,
-                setRolledAttack, 
+                setRolledAttack,
                 isInLobby,
                 setIsInLobby,
                 isHost,
@@ -108,16 +104,14 @@ const ThemeContextProvider = ({children}) => {
                 setNbOfRounds,
                 host_create_lobby,
                 setAlias,
-                alias, 
+                alias,
                 teamInfo,
                 setTeamInfo,
                 host_move_student,
                 currentLead,
-                setCurrentLead, 
+                setCurrentLead,
                 roundCount,
                 setRoundCount,
-                
-               
             }}
         >
             {children}

@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { Box,  FormControl,InputLabel,Select,MenuItem, Button} from '@material-ui/core'
-import {  useState,useContext } from 'react';
-import { Context} from '../../context/ContextProvider'
+import { Box, FormControl, InputLabel, Select, MenuItem, Button } from '@material-ui/core'
+import { useState, useContext } from 'react';
+import { Context } from '../../context/ContextProvider'
 
-const HostConfiguration = ({ children, setEndConfigurationPhase}) => {
+const HostConfiguration = ({ children, setEndConfigurationPhase }) => {
 
-    const {setNbOfRounds, host_create_lobby, nbOfRounds}=useContext(Context);
+    const { setNbOfRounds, host_create_lobby, nbOfRounds } = useContext(Context);
 
     const [difficulty, setDifficulty] = useState(1);
     const [timeForEachRound, setTimeForEachRound] = useState(0);
@@ -13,96 +13,89 @@ const HostConfiguration = ({ children, setEndConfigurationPhase}) => {
     const [nbOfTeams, setNbOfTeams] = useState(2);
     const [nbOfDefenses, setNbOfDefenses] = useState(2);
 
-
-    const formControlBox={
-        m:'20px',
-        p:'10px',
-        maxWidth:140,
+    const formControlBox = {
+        m: '20px',
+        p: '10px',
+        maxWidth: 140,
     }
-    const outerBoxStyling ={
+    const outerBoxStyling = {
         display: 'flex',
         flexWrap: 'nowrap',
-        mt:'80px',
-        mx:'40px'
+        mt: '80px',
+        mx: '40px'
     }
 
-    const handleOnClick = () =>{
+    const handleOnClick = () => {
         setEndConfigurationPhase(true);
         host_create_lobby(nbOfTeams, nbOfRounds, nbOfDefenses, timeForEachRound, hasTriviaRound, difficulty)
-        
     }
 
     return (
 
         <Box sx={formControlBox}>
-                
-                <FormControl fullWidth>
-                    <InputLabel id="select-label-round">Round</InputLabel>
-                    <Select
-                        label="Round"
-                        onChange={(event)=> setNbOfRounds(event.target.value)}
-                    >
-                        <MenuItem value={5}>5</MenuItem>
-                        <MenuItem value={8}>8</MenuItem>
-                        <MenuItem value={10}>10</MenuItem>
-                    </Select>
-                </FormControl>
-                
-                <FormControl fullWidth>
-                    <InputLabel id="select-label-difficulty">Difficulty</InputLabel>
-                    <Select
-                        
-                        label="Difficulty"
-                        onChange={(event)=> setDifficulty(event.target.value)}
-                    >
-                        <MenuItem value={1}>Beginner</MenuItem>
-                        <MenuItem value={2}>Intermediate</MenuItem>
-                        <MenuItem value={3}>Expert</MenuItem>
-                    </Select>
-                </FormControl>
 
-                <FormControl fullWidth>
-                    <InputLabel id="select-label-timeForEachRound">Time per Round</InputLabel>
-                    <Select
-                        
-                        label="timeForEachRound"
-                        onChange={(event)=> setTimeForEachRound(event.target.value)}
-                    >
-                        <MenuItem value={30}>30 secs</MenuItem>
-                        <MenuItem value={60}>60 secs</MenuItem>
-                        <MenuItem value={90}>90 secs</MenuItem>
-                    </Select>
-                </FormControl>
-                <FormControl fullWidth>
-                    <InputLabel id="select-label-hasTriviaRound"> Trivia Rounds</InputLabel>
-                    <Select
-                        
-                        label="hasTriviaRound"
-                        onChange={(event)=> setHasTriviaRound(event.target.value)}
-                    >
-                        <MenuItem value={2}>2</MenuItem>
-                        <MenuItem value={5}>5</MenuItem>
-                        
-                    </Select>
-                </FormControl>
-                <FormControl fullWidth>
-                    <InputLabel id="select-label-TeamNo"> No of teams</InputLabel>
-                    <Select
-                        
-                        label="nbOfTeams"
-                        onChange={(event)=> setNbOfTeams(event.target.value)}
-                    >
-                        <MenuItem value={2}>2</MenuItem>
-                        <MenuItem value={3}>3</MenuItem>
-                        
-                    </Select>
-                </FormControl>
-                <br></br>
-                <br></br>
-                <Button variant="contained" onClick={handleOnClick}>Submit </Button>
-               
-            
-            </Box>
+            <FormControl fullWidth>
+                <InputLabel id="select-label-round">Round</InputLabel>
+                <Select
+                    label="Round"
+                    onChange={(event) => setNbOfRounds(event.target.value)}
+                >
+                    <MenuItem value={5}>5</MenuItem>
+                    <MenuItem value={8}>8</MenuItem>
+                    <MenuItem value={10}>10</MenuItem>
+                </Select>
+            </FormControl>
+
+            <FormControl fullWidth>
+                <InputLabel id="select-label-difficulty">Difficulty</InputLabel>
+                <Select
+                    label="Difficulty"
+                    onChange={(event) => setDifficulty(event.target.value)}
+                >
+                    <MenuItem value={1}>Beginner</MenuItem>
+                    <MenuItem value={2}>Intermediate</MenuItem>
+                    <MenuItem value={3}>Expert</MenuItem>
+                </Select>
+            </FormControl>
+
+            <FormControl fullWidth>
+                <InputLabel id="select-label-timeForEachRound">Time per Round</InputLabel>
+                <Select
+                    label="timeForEachRound"
+                    onChange={(event) => setTimeForEachRound(event.target.value)}
+                >
+                    <MenuItem value={30}>30 secs</MenuItem>
+                    <MenuItem value={60}>60 secs</MenuItem>
+                    <MenuItem value={90}>90 secs</MenuItem>
+                </Select>
+            </FormControl>
+
+            <FormControl fullWidth>
+                <InputLabel id="select-label-hasTriviaRound"> Trivia Rounds</InputLabel>
+                <Select
+                    label="hasTriviaRound"
+                    onChange={(event) => setHasTriviaRound(event.target.value)}
+                >
+                    <MenuItem value={2}>2</MenuItem>
+                    <MenuItem value={5}>5</MenuItem>
+                </Select>
+            </FormControl>
+
+            <FormControl fullWidth>
+                <InputLabel id="select-label-TeamNo"> No of teams</InputLabel>
+                <Select
+                    label="nbOfTeams"
+                    onChange={(event) => setNbOfTeams(event.target.value)}
+                >
+                    <MenuItem value={2}>2</MenuItem>
+                    <MenuItem value={3}>3</MenuItem>
+                </Select>
+            </FormControl>
+            <br></br>
+            <br></br>
+            <Button variant="contained" onClick={handleOnClick}>Submit </Button>
+
+        </Box>
 
     );
 }

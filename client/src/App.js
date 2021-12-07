@@ -1,7 +1,7 @@
 import './App.css';
 
-import {  useContext, useState } from 'react';
-import { Box, Typography} from '@material-ui/core'
+import { useContext, useState } from 'react';
+import { Box, Typography } from '@material-ui/core'
 import Layout from './components/Layout';
 import { withStyles } from '@material-ui/styles';
 import HostInterface from './components/HostInterface/HostInterface';
@@ -13,17 +13,17 @@ import LobbyInterFace from './components/LobbyInterface/LobbyInterface';
 
 function App() {
 
-  const {endBuyPhase, rolledAttack,isHost, isInLobby,inBuyingPhase,userDefenses,pointTable }=useContext(Context)
-  
-  
+  const { endBuyPhase, rolledAttack, isHost, isInLobby, inBuyingPhase, userDefenses, pointTable } = useContext(Context)
+
+
   const TitleText = withStyles({
     root: {
-      fontWeight:600,
+      fontWeight: 600,
       color: '#088F8F',
-      
+
     }
   })(Typography);
-  
+
   return (
     <Layout >
       <Box align='center' >
@@ -32,24 +32,24 @@ function App() {
 
       <br></br>
       <br></br>
-        {!isInLobby
+      {!isInLobby
+        ?
+        <LobbyInterFace />
+        :
+        isHost
           ?
-          <LobbyInterFace />
+          <HostInterface />
           :
-          isHost
-            ?
-            <HostInterface /> 
-            :
-            <Box>{
-              (inBuyingPhase && !endBuyPhase) ?
-              
-              <Typography > <PlayerInterface userDefenses={userDefenses}  /> </Typography>
-              : 
+          <Box>{
+            (inBuyingPhase && !endBuyPhase) ?
+
+              <Typography > <PlayerInterface userDefenses={userDefenses} /> </Typography>
+              :
               rolledAttack !== "" &&
-              <GameInterface rolledAttack={rolledAttack.Name} attackId={rolledAttack.AttackID} pointTable={pointTable}/> 
-            }
-           </Box>
-        } 
+              <GameInterface rolledAttack={rolledAttack.Name} attackId={rolledAttack.AttackID} pointTable={pointTable} />
+          }
+          </Box>
+      }
 
     </Layout>
   );
