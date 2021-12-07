@@ -42,9 +42,8 @@ io.on("connection", (socket) => {
     })
 })
 
-/*
-only serve build folder for production
 
+//only serve build folder for production
 //specifying where files should be served
 app.use(express.static(path.join(__dirname, 'build')));
 
@@ -52,8 +51,6 @@ app.use(express.static(path.join(__dirname, 'build')));
 app.get('/*', (req, res) => {
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
-
-*/
 
 server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
