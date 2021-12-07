@@ -31,11 +31,11 @@ module.exports = {
     },
     getAttack: function (connection, difficulty){
         return new Promise(function(resolve, reject) {
-            connection.query(`SELECT attack.AttackID, attack.Name, attack.Description FROM attack WHERE attack.Difficulty = ${difficulty} ORDER BY RAND() LIMIT 1`, function (err, defenses) {
+            connection.query(`SELECT attack.AttackID, attack.Name, attack.Description FROM attack WHERE attack.Difficulty = ${difficulty} ORDER BY RAND() LIMIT 1`, function (err, attack) {
                 if (err) {
                     return reject(err);
                 }
-                resolve(defenses);
+                resolve(attack[0]);
             });
         });
     },

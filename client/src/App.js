@@ -46,7 +46,7 @@ function App() {
               <Typography > <PlayerInterface userDefenses={userDefenses} /> </Typography>
               :
               rolledAttack !== "" &&
-              <GameInterface rolledAttack={rolledAttack.Name} attackId={rolledAttack.AttackID} pointTable={pointTable} />
+              <GameInterface rolledAttack={rolledAttack} attackId={rolledAttack.AttackID} pointTable={pointTable} />
           }
           </Box>
       }

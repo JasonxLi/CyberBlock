@@ -36,7 +36,6 @@ const ThemeContextProvider = ({ children }) => {
 
         socket.on("receive_roll", (attack) => {
             setRolledAttack(attack);
-            console.log(attack);
         })
         socket.on("receive_defense_cards", (defenses) => {
             setUserDefenses(defenses);

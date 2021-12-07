@@ -164,15 +164,16 @@ module.exports = {
 
 
         socket.on("roll", async (lobbyId) => {
-            const attack = await mysql_queries.rollAttack(db_connection, 1);
-            io.in(lobbyId).emit("receive_roll", attack);
+            const attack = await mysql_queries.getAttack(db_connection, 1);
+            // console.log(attack.Name);
+            io.in(lobbyId).emit("receive_roll", attack); 
         })
 
         socket.on("start_buy_phase", async (lobbyId) => {
             const defenses = await mysql_queries.getDefenses(db_connection, 1);
             io.in(lobbyId).emit("receive_defense_cards", defenses);
-            const points = await mysql_queries.getPoints(db_connection, 1);
-            io.in(lobbyId).emit("receive_point_table", points);
+            // const points = await mysql_queries.getPoints(db_connection, 1);
+            // io.in(lobbyId).emit("receive_point_table", points);
         })
         // --------------------old socket events-------------------- //
 

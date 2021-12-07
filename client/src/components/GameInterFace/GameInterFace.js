@@ -31,7 +31,7 @@ const GameInterFace = ({ rolledAttack, attackId, pointTable }) => {
                 <Card >
                     <CardContent>
                         <Typography align='center' variant='h6' color="text.secondary" gutterBottom>
-                            {`Attack rolled: ${rolledAttack}`}
+                            {`Attack rolled: ${rolledAttack.Name} `}
                         </Typography>
                     </CardContent>
                 </Card>
