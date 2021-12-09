@@ -49,13 +49,13 @@ module.exports = {
             });
         });
     },
-    getPoints: function (connection, defenseID, attackID) {
+    getPoints: function (connection) {
         return new Promise(function (resolve, reject) {
-            connection.query(`SELECT points.PointValue FROM points WHERE points.Attack_ID = ${attackID} AND points.Defense_ID = ${defenseID}`, function (err, point) {
+            connection.query(`SELECT * FROM points`, function (err, pointTable) {
                 if (err) {
                     return reject(err);
                 }
-                resolve(point);
+                resolve(pointTable);
             });
         });
     }
