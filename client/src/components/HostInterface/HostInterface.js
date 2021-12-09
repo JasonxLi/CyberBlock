@@ -8,7 +8,7 @@ import HostConfiguration from '../HostConfiguration/HostConfiguration';
 
 const HostInterface = ({ }) => {
 
-    const { lobbyId, roll, start_buy_phase, rolledAttack, nbOfRounds, roundCount, setRoundCount, } = useContext(Context);
+    const { lobbyId, roll, start_buy_phase, rolledAttack, nbOfRounds, roundCount, setRoundCount, getLead, setCurrentLead, teamInfo , currentLead} = useContext(Context);
 
     const [endGame, setEndGame] = useState(false);
     const [endConfigurationPhase, setEndConfigurationPhase] = useState(false);
@@ -21,6 +21,7 @@ const HostInterface = ({ }) => {
     const rollPhase = () => {
         if (roundCount !== nbOfRounds) {
             roll(lobbyId);
+            //  getLead()
             setRoundCount(roundCount + 1)
         }
         else {
@@ -32,7 +33,11 @@ const HostInterface = ({ }) => {
     const buyPhase = () => {
         start_buy_phase(lobbyId);
     }
-
+    const getLeader =() =>{
+       getLead()
+    }
+   
+    console.log(currentLead)
     return (
         <Box>
             {endConfigurationPhase ?
@@ -40,8 +45,10 @@ const HostInterface = ({ }) => {
                     <Box sx={boxStyling} >
                         <Typography align='center' variant='h6'>{`Lobby created, use code ${lobbyId} to join.`}</Typography>
                         <Box sx={boxStyling}>
-
-                            <Button variant="contained" onClick={buyPhase}>Start Game</Button>
+                        <Button variant="contained" onClick={getLeader}>Start </Button>
+                            <br></br>
+                            <br></br>
+                            <Button variant="contained" onClick={buyPhase}>Start BuyPhase</Button>
                             <br></br>
                             <br></br>
                             <Button variant="contained" onClick={rollPhase}>Roll Attack</Button>

@@ -24,6 +24,7 @@ const ThemeContextProvider = ({ children }) => {
     const [currentLead, setCurrentLead,] = useState([]);
 
     const [roundCount, setRoundCount] = useState(0);
+    const[showPlayerPhase, setShowPlayerPhase]=useState(false)
 
     useEffect(() => {
         socket.on("new_student_joined_lobby", (info) => {
@@ -31,7 +32,7 @@ const ThemeContextProvider = ({ children }) => {
         })
         socket.on("host_moved_student", (info) => {
             setTeamInfo(info)
-
+           
         })
 
         socket.on("receive_roll", (attack) => {
@@ -40,7 +41,7 @@ const ThemeContextProvider = ({ children }) => {
         socket.on("receive_defense_cards", (defenses) => {
             setUserDefenses(defenses);
             setBuyingPhase(true)
-
+           
         })
     }, [socket])
 
@@ -53,6 +54,7 @@ const ThemeContextProvider = ({ children }) => {
             socket.emit("student_join_lobby", { lobbyId, alias }, result => {
             })
             setIsInLobby(true)
+            setShowPlayerPhase(true)
         }
     }
 
@@ -69,12 +71,32 @@ const ThemeContextProvider = ({ children }) => {
     }
 
     const start_buy_phase = () => {
-        socket.emit("start_buy_phase", lobbyId)
+        socket.emit("start_buy_phase", lobbyId)   
     }
     socket.on("receive_point_table", (points) => {
         setPointTable(points);
     })
 
+    
+    const getLead =() =>{
+        var playerIndex = 0;
+        const leadSwitch = nbOfRounds / teamInfo.length
+
+        if (roundCount % Math.ceil(leadSwitch) === 0) {
+            const tempLeader = [...currentLead];
+            teamInfo.map((team, index) => {
+
+                let tempLeaderIndex = { ...tempLeader[index] }
+                tempLeaderIndex = team[playerIndex].socketId
+                tempLeader[index] = tempLeaderIndex
+                setCurrentLead(tempLeader)
+            })
+
+            playerIndex++
+        }
+
+    }
+  
     return (
         <Context.Provider
             value={{
@@ -111,6 +133,9 @@ const ThemeContextProvider = ({ children }) => {
                 setCurrentLead,
                 roundCount,
                 setRoundCount,
+                getLead,
+                showPlayerPhase, 
+                setShowPlayerPhase
             }}
         >
             {children}

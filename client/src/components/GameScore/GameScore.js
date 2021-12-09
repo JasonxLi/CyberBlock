@@ -4,7 +4,9 @@ import { useState, useContext } from 'react';
 import { Context } from '../../context/ContextProvider'
 
 const GameScore = ({ children }) => {
-    const { teamInfo, host_move_student, lobbyId } = useContext(Context);
+    
+    const { teamInfo,} = useContext(Context);
+    
     const createData = (teamName, totalPoints, roundNumber) => {
         return { teamName, totalPoints, roundNumber };
     }

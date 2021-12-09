@@ -7,13 +7,13 @@ import { withStyles } from '@material-ui/styles';
 import HostInterface from './components/HostInterface/HostInterface';
 import PlayerInterface from './components/PlayerInterface/PlayerInterface'
 import { Context } from './context/ContextProvider';
-import GameInterface from './components/GameInterface/GameInterface';
+
 import LobbyInterFace from './components/LobbyInterface/LobbyInterface';
 
 
 function App() {
 
-  const { endBuyPhase, rolledAttack, isHost, isInLobby, inBuyingPhase, userDefenses, pointTable } = useContext(Context)
+  const { isHost, isInLobby } = useContext(Context)
 
 
   const TitleText = withStyles({
@@ -40,15 +40,7 @@ function App() {
           ?
           <HostInterface />
           :
-          <Box>{
-            (inBuyingPhase && !endBuyPhase) ?
-
-              <Typography > <PlayerInterface userDefenses={userDefenses} /> </Typography>
-              :
-              rolledAttack !== "" &&
-              <GameInterface rolledAttack={rolledAttack} attackId={rolledAttack.AttackID} pointTable={pointTable} />
-          }
-          </Box>
+          <PlayerInterface />
       }
 
     </Layout>
