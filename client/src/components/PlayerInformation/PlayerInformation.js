@@ -5,27 +5,9 @@ import { Context } from '../../context/ContextProvider'
 
 const PlayerInfromation = ({}) => {
     
-    const { currentLead, teamInfo, nbOfRounds, roundCount,setCurrentLead } = useContext(Context)
+    const {  teamInfo, } = useContext(Context)
    
-    // const leaderPhase= ()=>{
-    //     var playerIndex = 0;
-    //     const leadSwitch = nbOfRounds / teamInfo.length
 
-    //     if (roundCount % Math.ceil(leadSwitch) === 0) {
-    //         const tempLeader = [...currentLead];
-    //         teamInfo.map((team, index) => {
-
-    //             let tempLeaderIndex = { ...tempLeader[index] }
-    //             tempLeaderIndex = team[playerIndex].socketId
-    //             tempLeader[index] = tempLeaderIndex
-                
-    //             setCurrentLead(tempLeader)
-    //         })
-
-    //         playerIndex++
-    //     }
-    // }
-    // console.log(currentLead)
     return (
         <Box>
             <TableContainer >

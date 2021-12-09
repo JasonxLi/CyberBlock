@@ -3,11 +3,12 @@ import { Box, Typography, Card, CardContent, Button, Grid,Modal } from '@materia
 import { Context } from '../../context/ContextProvider'
 import { useState, useContext } from 'react';
 
-
+// this page displays the actual game play witht the attack rolled by the host ad user selected defense as buttons 
 const GameInterface = ({ rolledAttack, attackId, pointTable, teamNumber }) => {
-
-    const { selectedDefenses } = useContext(Context);
-    const [points, setPoints] = useState([0])
+    
+    //importing shared states
+    const { selectedDefenses, points, setPoints } = useContext(Context);
+    
     const[selectedItems, setSelectedItems] =useState([])
     const[count, setCount]=useState(0)
 
@@ -15,19 +16,22 @@ const GameInterface = ({ rolledAttack, attackId, pointTable, teamNumber }) => {
         m: '20px',
         p: '10px',
     }
-    console.log(pointTable)
     
+    //handles the user submitted defenses
     const handleChange = (defenseID, defenseName) => {
         
+        //this statement prohibits the user from submitting more than 2 defenses against the attack
         if(count < 2 ) {
            
             setCount(count + 1 );
+            //adds the selected defense to selectedItem list
             const tempDefense = {
                 defenseName: defenseName,
                 defenseID: defenseID,
             }
             setSelectedItems([...selectedItems, tempDefense])
         }
+        // this function allows the user to delete first defense from the selected item list and add the new defense to the selected item list
         else{
             const tempDefense = {
                 defenseName: defenseName,
@@ -36,8 +40,11 @@ const GameInterface = ({ rolledAttack, attackId, pointTable, teamNumber }) => {
             setSelectedItems( [...selectedItems.slice(1), tempDefense])   
         }
     }
+
+    // once the user hits the submit button the function checks to see if there is a point associated with the attack and defense ID and if so 
+    // awards the user with points which is stored in an index that corelated to the team number 
     const checkPoints =()=>{
-         const currentIndex = [...points];
+        const currentIndex = [...points];
 
         selectedItems.map(defense =>{
             pointTable.map((item) => {

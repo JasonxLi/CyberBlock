@@ -3,37 +3,49 @@ import { useState, useContext } from 'react';
 import { Box, Typography, TableContainer, Table, TableBody, TableRow, TableCell, Button, TableHead, FormGroup, FormControl, FormControlLabel, Checkbox, Card, CardContent } from '@material-ui/core'
 import { Context } from '../../context/ContextProvider';
 
-const BuyingInterface = ({userDefenses, setTeamNumber, teamNumber }) => {
+//this page displys all the defense for players to purchase those defenses
 
+const BuyingInterface = ({userDefenses, setTeamNumber, teamNumber, currentLead }) => {
+
+    // importing shared states between different components
     const { selectedDefenses, setSelectedDefenses, setEndBuyPhase, userEarnings, setUserEarnings, alias, teamInfo, getLead} = useContext(Context)
+    
+    
     const boxStyling = {
         p: 6,
         minWidth: '85%'
     }
 
-    
-
+    //state to see if the person player the game is the leader
     const [isLeader, setisLeader] = useState(false)
+
+    // a state to store the checkboxstate and see if its is checked or not
     const [isChecked, setIsChecked] = useState([]);
 
+    // when the user toggles a checkbox the function removes the defense associated with the checkbox from the collection of user chosen defenses
     const removeDefense = (index, cost) => {
 
+        //creates a shallow copy of defense list to removes the selected index from the list
         const tempDefenseList = [
             ...selectedDefenses.slice(0, index),
             ...selectedDefenses.slice(index + 1, selectedDefenses.length)
         ]
+        //settting the temp list as the new selected defense list
         setSelectedDefenses(tempDefenseList);
+        // adding the cost of the deleted item back to the total money of the user
         setUserEarnings(userEarnings + cost);
     }
+
     const getUserDefense = (value, name, cost, index, id) => {
-       
+       // adds the selected defense to the selected defense list in the specific index
+       //the specific index helps keep track of the checkstate of the defense 
         const currentIndex = [...isChecked];
         let tempIndex = { ...currentIndex[index] }
         tempIndex = value;
         currentIndex[index] = tempIndex
         setIsChecked(currentIndex)
 
-
+        // if the user unclicks the checkbox and the defense in in the seelcted defense list the defense is removed from the selectd defense list
         if (!value && selectedDefenses.length > 0 && userEarnings > 0) {
             selectedDefenses.map((item, index) => {
                 if (item.defenseName === name) {
@@ -41,6 +53,7 @@ const BuyingInterface = ({userDefenses, setTeamNumber, teamNumber }) => {
                 }
             })
         }
+        //else if the uer clicks on the checkbox to select the denfense it adds the defense to the selected defense list and the removes the defense cost from the total earnings
         else if (value && selectedDefenses.length >= 0 && userEarnings > 0) {
             const tempDefense = {
                 defenseName: name,
@@ -58,7 +71,7 @@ const BuyingInterface = ({userDefenses, setTeamNumber, teamNumber }) => {
             }
         }
     }
-
+    // A function to retrive the name and the team number of the user
     const getMemberinfo = () => {
         getLead()
         teamInfo.map((team, index) => {
@@ -76,7 +89,7 @@ const BuyingInterface = ({userDefenses, setTeamNumber, teamNumber }) => {
     }
     getMemberinfo();
    
-   
+   console.log(currentLead)
     return (
         <Box sx={boxStyling}>
             <Card>
@@ -134,6 +147,9 @@ const BuyingInterface = ({userDefenses, setTeamNumber, teamNumber }) => {
                                         <FormGroup>
                                             <FormControlLabel
                                                 control={
+                                                    // The disabled prop checks if the cost of the selected defense is less than the total user earning, if so disbales the defense to restrict the user fromm purchasing that defense
+                                                    // onChange handles any time the user toggles the checkbox
+                                                    // the checkfeature retrives the value from the isChecked array
                                                     <Checkbox
                                                         key={row.label}
                                                         onChange={(event) => getUserDefense(event.target.checked, row.Name, row.cost, index, row.DefenseID)}

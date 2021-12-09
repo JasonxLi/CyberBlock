@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Box, FormControl, InputLabel, Select, MenuItem, Button } from '@material-ui/core'
+import { Box, FormControl, InputLabel, Select, MenuItem, Button, Input } from '@material-ui/core'
 import { useState, useContext } from 'react';
 import { Context } from '../../context/ContextProvider'
 
@@ -64,9 +64,9 @@ const HostConfiguration = ({ children, setEndConfigurationPhase }) => {
                     label="timeForEachRound"
                     onChange={(event) => setTimeForEachRound(event.target.value)}
                 >
-                    <MenuItem value={30}>30 secs</MenuItem>
-                    <MenuItem value={60}>60 secs</MenuItem>
-                    <MenuItem value={90}>90 secs</MenuItem>
+                    <MenuItem value={240}>240 secs</MenuItem>
+                    <MenuItem value={300}>300 secs</MenuItem>
+                    <MenuItem value={360}>360 secs</MenuItem>
                 </Select>
             </FormControl>
 
@@ -81,16 +81,10 @@ const HostConfiguration = ({ children, setEndConfigurationPhase }) => {
                 </Select>
             </FormControl>
 
-            <FormControl fullWidth>
-                <InputLabel id="select-label-TeamNo"> No of teams</InputLabel>
-                <Select
-                    label="nbOfTeams"
-                    onChange={(event) => setNbOfTeams(event.target.value)}
-                >
-                    <MenuItem value={2}>2</MenuItem>
-                    <MenuItem value={3}>3</MenuItem>
-                </Select>
-            </FormControl>
+           
+            <Input type="text" placeholder="Enter No of teams" onChange={(event) => setNbOfTeams(event.target.value)} />
+               
+           
             <br></br>
             <br></br>
             <Button variant="contained" onClick={handleOnClick}>Submit </Button>
@@ -101,3 +95,4 @@ const HostConfiguration = ({ children, setEndConfigurationPhase }) => {
 }
 
 export default HostConfiguration;
+

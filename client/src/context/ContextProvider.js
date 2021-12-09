@@ -31,6 +31,8 @@ const ThemeContextProvider = ({ children }) => {
     const [submittedTriviaAnswer, setSubmittedTriviaAnswer] = useState(false);
     const [correctTriviaAnswer, setCorrectTriviaAnswer] = useState();
 
+    const [points, setPoints] = useState([0])
+
     useEffect(() => {
         socket.on("new_student_joined_lobby", (info) => {
             setTeamInfo(info)
@@ -58,6 +60,9 @@ const ThemeContextProvider = ({ children }) => {
             setBuyingPhase(true)
            
         })
+        // socket.on("award_points_to_team", (points) => {
+       
+        // })
     }, [socket])
 
     const host_move_student = (lobbyId, socketId, oldTeamId, newTeamId) => {
@@ -105,9 +110,12 @@ const ThemeContextProvider = ({ children }) => {
     const start_buy_phase = () => {
         socket.emit("start_buy_phase", lobbyId)   
     }
-    socket.on("receive_point_table", (points) => {
-        setPointTable(points);
-    })
+
+    const receive_points_per_round = (defenseID, attackID) => {
+        socket.emit("receive_points_per_round", { lobbyId, defenseID, attackID})   
+    }
+
+    
 
     
     const getLead =() =>{
@@ -178,7 +186,9 @@ const ThemeContextProvider = ({ children }) => {
                 setSubmittedTriviaAnswer,
                 correctTriviaAnswer,
                 setCorrectTriviaAnswer,
-
+                points, 
+                setPoints,
+                receive_points_per_round
             }}
         >
             {children}
