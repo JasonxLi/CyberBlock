@@ -30,8 +30,15 @@ const ThemeContextProvider = ({ children }) => {
     const [userDefenses, setUserDefenses] = useState([]);
     //a sate to store all the point table from the dtatbase
     const [pointTable, setPointTable] = useState([]);
+
+    const [nbOfTeams, setNbOfTeams] = useState(2);
+    const [nbOfDefenses, setNbOfDefenses] = useState(2);
+    const [timeForEachRound, setTimeForEachRound] = useState(120);
+    const [hasTriviaRound, setHasTriviaRound] = useState(false);
+    const [difficulty, setDifficulty] = useState(1);
+
     //a state to store the number of rounds configured by the host
-    const [nbOfRounds, setNbOfRounds] = useState(0);
+    const [nbOfRounds, setNbOfRounds] = useState(5);
     // a state to store all team information once student joins and host moves the players
     const [teamInfo, setTeamInfo] = useState([]);
     // a state to store all the current Leader from each team
@@ -39,10 +46,10 @@ const ThemeContextProvider = ({ children }) => {
     // a state to store the current round in the game
     const [roundCount, setRoundCount] = useState(0);
     // a state to change the interface to displayer all the team info to students
-    const[showPlayerPhase, setShowPlayerPhase]=useState(false)
+    const [showPlayerPhase, setShowPlayerPhase] = useState(false)
     //a state to hold trivia questions
     const [triviaQuestion, setTriviaQuestion] = useState();
-    
+
     const [triviaAnswer, setTriviaAnswer] = useState();
     //a state to hold the selected trivia answers
     const [submittedTriviaAnswer, setSubmittedTriviaAnswer] = useState(false);
@@ -51,7 +58,7 @@ const ThemeContextProvider = ({ children }) => {
     //a state to hold points for each team
     const [points, setPoints] = useState([0])
     //state to store current leader index
-    const[playerIndex, setPlayerIndex] =useState(0)
+    const [playerIndex, setPlayerIndex] = useState(0)
 
     //recalls all the socket events each time the socket changes to retrive the infromation from the server
     useEffect(() => {
@@ -60,7 +67,6 @@ const ThemeContextProvider = ({ children }) => {
         })
         socket.on("host_moved_student", (info) => {
             setTeamInfo(info)
-
         })
 
         socket.on("host_ended_trivia_round", () => {
@@ -70,7 +76,6 @@ const ThemeContextProvider = ({ children }) => {
         socket.on("student_receives_trivia_question", (triviaQuestion) => {
             setTriviaQuestion(triviaQuestion);
             setSubmittedTriviaAnswer(false);
-
         })
 
         socket.on("receive_roll", (attack) => {
@@ -79,28 +84,18 @@ const ThemeContextProvider = ({ children }) => {
         socket.on("receive_defense_cards", (defenses) => {
             setUserDefenses(defenses);
             setBuyingPhase(true)
-           
+
         })
         //listening to receive the pointTable from the server
         socket.on("obtained_point_table", (points) => {
             setPointTable(points)
-            
+
         })
     }, [socket])
 
-    const host_move_student = (lobbyId, socketId, oldTeamId, newTeamId) => {
-        socket.emit("host_move_student", { lobbyId, socketId, oldTeamId, newTeamId });
-    }
+    
 
-    const student_join_lobby = () => {
-        if (lobbyId !== "" && alias !== "") {
-            socket.emit("student_join_lobby", { lobbyId, alias }, result => {
-            })
-            setIsInLobby(true)
-            setShowPlayerPhase(true)
-        }
-    }
-
+    //Start-------------Lobby Events------------Start//
     const host_create_lobby = (nbOfTeams, nbOfRounds, nbOfDefenses, timeForEachRound, hasTriviaRound, difficulty) => {
         socket.emit("host_create_lobby", { nbOfTeams, nbOfRounds, nbOfDefenses, timeForEachRound, hasTriviaRound, difficulty }, lobbyId => {
             setLobbyId(lobbyId);
@@ -109,14 +104,34 @@ const ThemeContextProvider = ({ children }) => {
         })
     }
 
+    const student_join_lobby = () => {
+        if (lobbyId !== "" && alias !== "") {
+            socket.emit("student_join_lobby", { lobbyId, alias }, ({ nbOfTeams, nbOfRounds, nbOfDefenses, timeForEachRound, hasTriviaRound, difficulty, teamsInfo }) => {
+                setNbOfTeams(nbOfTeams);
+                setNbOfRounds(nbOfRounds);
+                setNbOfDefenses(nbOfDefenses);
+                setTimeForEachRound(timeForEachRound);
+                setHasTriviaRound(hasTriviaRound);
+                setDifficulty(difficulty);
+                setTeamInfo(teamsInfo);
+
+                setIsInLobby(true);
+                setShowPlayerPhase(true);
+            })
+        }
+    }
+
+    const host_move_student = (lobbyId, socketId, oldTeamId, newTeamId) => {
+        socket.emit("host_move_student", { lobbyId, socketId, oldTeamId, newTeamId });
+    }
+    //End-------------Lobby Events------------End//
+
+
+    //Start-------------Trivia Events------------Start//
     const host_gets_trivia_question = () => {
         socket.emit("host_gets_trivia_question", lobbyId, (newTriviaQuestion) => {
             setTriviaQuestion(newTriviaQuestion);
         })
-    }
-
-    const host_ends_trivia_round = () => {
-        socket.emit("host_ends_trivia_round", lobbyId);
     }
 
     const student_submit_trivia_answer = () => {
@@ -126,38 +141,45 @@ const ThemeContextProvider = ({ children }) => {
         });
     }
 
+    const host_ends_trivia_round = () => {
+        socket.emit("host_ends_trivia_round", lobbyId);
+    }
+    //End-------------Trivia Events------------End//
+
+
     const roll = (lobbyId) => {
         socket.emit("roll", lobbyId);
     }
 
     const start_buy_phase = () => {
-        socket.emit("start_buy_phase", lobbyId)   
+        socket.emit("start_buy_phase", lobbyId)
     }
     // event sent to server to ask points table from the server
     const receive_point_table = () => {
-        socket.emit("receive_point_table", lobbyId)   
+        socket.emit("receive_point_table", lobbyId)
     }
 
     // function to get all the teamleaders from the team
-    const getLead =() =>{
-        
+    const getLead = () => {
+
         //to get the round number when the team leader needs to be switched
-        
+
         // state to change the leader when the required round numer hits
-        
-            // a copy of the state arru=y to add the new team lead in the index corresponding to the team 
-            const tempLeader = [...currentLead];
-            teamInfo.map((team, index) => {
-                const leadSwitch = nbOfRounds / team.length
-                if (roundCount % Math.ceil(leadSwitch) === 0) {
+
+        // a copy of the state arru=y to add the new team lead in the index corresponding to the team 
+        const tempLeader = [...currentLead];
+        teamInfo.map((team, index) => {
+            const leadSwitch = nbOfRounds / team.length
+            if (roundCount % Math.ceil(leadSwitch) === 0) {
                 let tempLeaderIndex = { ...tempLeader[index] }
                 tempLeaderIndex = team[playerIndex].socketId
                 tempLeader[index] = tempLeaderIndex
                 setCurrentLead(tempLeader)
-            }})
-            // increasing the player index to retrive the next team lead
-            playerIndex++
-        
+            }
+        })
+        // increasing the player index to retrive the next team lead
+        setPlayerIndex(playerIndex+1);
+
 
     }
 
@@ -199,7 +221,7 @@ const ThemeContextProvider = ({ children }) => {
                 roundCount,
                 setRoundCount,
                 getLead,
-                showPlayerPhase, 
+                showPlayerPhase,
                 setShowPlayerPhase,
                 host_gets_trivia_question,
                 host_ends_trivia_round,
@@ -211,7 +233,7 @@ const ThemeContextProvider = ({ children }) => {
                 setSubmittedTriviaAnswer,
                 correctTriviaAnswer,
                 setCorrectTriviaAnswer,
-                points, 
+                points,
                 setPoints,
                 receive_point_table
             }}
