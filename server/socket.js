@@ -161,6 +161,11 @@ module.exports = {
             io.in(lobbyId + `_team` + teamId).emit("chat_receiveFromTeam", { alias: alias, message: message });
         })
 
+        socket.on("receive_point_table", async (lobbyId) => {
+            const points = await mysql_queries.getPoints(db_connection);
+            io.in(lobbyId).emit("obtained_point_table",points)
+        })
+
         // --------------------old socket events-------------------- //
         socket.on("join_lobby", (lobbyId) => {
             socket.join(lobbyId);
@@ -187,6 +192,7 @@ module.exports = {
             // const points = await mysql_queries.getPoints(db_connection, 1);
             // io.in(lobbyId).emit("receive_point_table", points);
         })
+        
         // --------------------old socket events-------------------- //
 
     }

@@ -160,8 +160,8 @@ const ThemeContextProvider = ({ children }) => {
     }
 
     // function to get all the teamleaders from the team
-    const getLead = () => {
-
+    const getLead =() =>{
+        var playerIndex = 0;
         //to get the round number when the team leader needs to be switched
 
         // state to change the leader when the required round numer hits
