@@ -8,7 +8,7 @@ import HostConfiguration from '../HostConfiguration/HostConfiguration';
 
 const HostInterface = ({ }) => {
 
-    const { lobbyId, roll, start_buy_phase, rolledAttack, nbOfRounds, roundCount, setRoundCount, getLead, setCurrentLead, teamInfo , currentLead} = useContext(Context);
+    const { lobbyId, roll, start_buy_phase, rolledAttack, nbOfRounds, roundCount, setRoundCount, getLead, currentLead, receive_point_table } = useContext(Context);
     //temporary dummy state to set the end game event
     const [endGame, setEndGame] = useState(false);
 
@@ -32,9 +32,10 @@ const HostInterface = ({ }) => {
         }
     }
 
-    // function to trigger the buying event
+    // function to trigger the buying event and obtain the point table
     const buyPhase = () => {
         start_buy_phase(lobbyId);
+        receive_point_table(lobbyId)
     }
     //function to call on another function to get team leader for each round
     const getLeader =() =>{

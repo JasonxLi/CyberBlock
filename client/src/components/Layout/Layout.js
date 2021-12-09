@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Box, Divider, Typography } from '@material-ui/core'
+import { Box, Divider } from '@material-ui/core'
 import { MedtronicsIcon } from '../Icons/Icons'
 
 

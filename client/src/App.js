@@ -1,6 +1,6 @@
 import './App.css';
 
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { Box, Typography } from '@material-ui/core'
 import Layout from './components/Layout';
 import { withStyles } from '@material-ui/styles';

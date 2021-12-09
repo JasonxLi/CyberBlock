@@ -50,6 +50,8 @@ const ThemeContextProvider = ({ children }) => {
     const [correctTriviaAnswer, setCorrectTriviaAnswer] = useState();
     //a state to hold points for each team
     const [points, setPoints] = useState([0])
+    //state to store current leader index
+    const[playerIndex, setPlayerIndex] =useState(0)
 
     //recalls all the socket events each time the socket changes to retrive the infromation from the server
     useEffect(() => {
@@ -79,9 +81,11 @@ const ThemeContextProvider = ({ children }) => {
             setBuyingPhase(true)
            
         })
-        // socket.on("award_points_to_team", (points) => {
-       
-        // })
+        //listening to receive the pointTable from the server
+        socket.on("obtained_point_table", (points) => {
+            setPointTable(points)
+            
+        })
     }, [socket])
 
     const host_move_student = (lobbyId, socketId, oldTeamId, newTeamId) => {
@@ -129,32 +133,34 @@ const ThemeContextProvider = ({ children }) => {
     const start_buy_phase = () => {
         socket.emit("start_buy_phase", lobbyId)   
     }
-
-    const receive_points_per_round = (defenseID, attackID) => {
-        socket.emit("receive_points_per_round", { lobbyId, defenseID, attackID})   
+    // event sent to server to ask points table from the server
+    const receive_point_table = () => {
+        socket.emit("receive_point_table", lobbyId)   
     }
 
     // function to get all the teamleaders from the team
     const getLead =() =>{
-        var playerIndex = 0;
+        
         //to get the round number when the team leader needs to be switched
-        const leadSwitch = nbOfRounds / teamInfo.length
+        
         // state to change the leader when the required round numer hits
-        if (roundCount % Math.ceil(leadSwitch) === 0) {
+        
             // a copy of the state arru=y to add the new team lead in the index corresponding to the team 
             const tempLeader = [...currentLead];
             teamInfo.map((team, index) => {
-
+                const leadSwitch = nbOfRounds / team.length
+                if (roundCount % Math.ceil(leadSwitch) === 0) {
                 let tempLeaderIndex = { ...tempLeader[index] }
                 tempLeaderIndex = team[playerIndex].socketId
                 tempLeader[index] = tempLeaderIndex
                 setCurrentLead(tempLeader)
-            })
+            }})
             // increasing the player index to retrive the next team lead
             playerIndex++
-        }
+        
 
     }
+
     // providing access to these value to all the interfaces
     return (
         <Context.Provider
@@ -207,7 +213,7 @@ const ThemeContextProvider = ({ children }) => {
                 setCorrectTriviaAnswer,
                 points, 
                 setPoints,
-                receive_points_per_round
+                receive_point_table
             }}
         >
             {children}

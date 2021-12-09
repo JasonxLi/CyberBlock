@@ -3,17 +3,18 @@ import { Box, TableContainer, Table, TableBody, TableRow, TableCell, TableHead }
 import {  useContext } from 'react';
 import { Context } from '../../context/ContextProvider'
 
+//Displays game scores for each team
 const GameScore = ({ children }) => {
     
-
     //importing shared states to dispaly the points per team
     const {points} = useContext(Context);
+    
     
     // displays the scores per team in a row and column format
     return (
         <Box>
 
-            {/* <TableContainer >
+            <TableContainer >
                 <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
                 <TableHead >
                         <TableRow>
@@ -35,7 +36,7 @@ const GameScore = ({ children }) => {
                     })}
                     </TableBody>
                 </Table>
-            </TableContainer> */}
+            </TableContainer>
         </Box>
     )
 

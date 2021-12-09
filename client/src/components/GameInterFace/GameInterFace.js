@@ -19,39 +19,52 @@ const GameInterface = ({ rolledAttack, attackId, pointTable, teamNumber }) => {
     
     //handles the user submitted defenses
     const handleChange = (defenseID, defenseName) => {
+        selectedItems.map(defense =>{
+            //avoids repetition
+            if(!defense.includues(defenseName)){
         
-        //this statement prohibits the user from submitting more than 2 defenses against the attack
-        if(count < 2 ) {
-           
-            setCount(count + 1 );
-            //adds the selected defense to selectedItem list
-            const tempDefense = {
-                defenseName: defenseName,
-                defenseID: defenseID,
+            //this statement prohibits the user from submitting more than 2 defenses against the attack
+            if(count < 2 ) {
+            
+                setCount(count + 1 );
+                //adds the selected defense to selectedItem list
+                const tempDefense = {
+                    defenseName: defenseName,
+                    defenseID: defenseID,
+                }
+                setSelectedItems([...selectedItems, tempDefense])
             }
-            setSelectedItems([...selectedItems, tempDefense])
-        }
-        // this function allows the user to delete first defense from the selected item list and add the new defense to the selected item list
-        else{
-            const tempDefense = {
-                defenseName: defenseName,
-                defenseID: defenseID,
+            // this function allows the user to delete first defense from the selected item list and add the new defense to the selected item list
+            else{
+                const tempDefense = {
+                    defenseName: defenseName,
+                    defenseID: defenseID,
+                }
+                setSelectedItems( [...selectedItems.slice(1), tempDefense])   
             }
-            setSelectedItems( [...selectedItems.slice(1), tempDefense])   
-        }
+        }})
     }
-
     // once the user hits the submit button the function checks to see if there is a point associated with the attack and defense ID and if so 
     // awards the user with points which is stored in an index that corelated to the team number 
     const checkPoints =()=>{
         const currentIndex = [...points];
-
+       
         selectedItems.map(defense =>{
+            
             pointTable.map((item) => {
+                
                 if (item.Attack_ID === attackId && item.Defense_ID === defense.defenseID) {
                     let tempIndex = { ...currentIndex[teamNumber-1] }
-                    tempIndex = tempIndex+ item.PointValue ;
+                    
+                    if(tempIndex=""){
+                        tempIndex = item.PointValue ;
+                    }
+                    else{
+                        tempIndex = tempIndex+ item.PointValue ;
+                    }
+                    console.log(tempIndex)
                     currentIndex[teamNumber-1] = tempIndex
+                    console.log(currentIndex)
                     setPoints(currentIndex)
                 }
             })
@@ -103,7 +116,7 @@ const GameInterface = ({ rolledAttack, attackId, pointTable, teamNumber }) => {
             </Box>
             <br></br>
             <br></br>
-            <Button variant='contained' onClick={checkPoints()} >Submit</Button>
+            <Button variant='contained' onClick={checkPoints} >Submit</Button>
           
 
         </Box>
