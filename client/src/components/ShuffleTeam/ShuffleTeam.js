@@ -3,9 +3,12 @@ import { Box, TableContainer, Table, TableBody, TableRow, TableCell, TableHead, 
 import { useContext } from 'react';
 import { Context } from '../../context/ContextProvider'
 
+//the page is for the host specifically to changes the team members from each team
 const ShuffleTeam = ({ children }) => {
+    //shared states
     const { teamInfo, host_move_student, lobbyId } = useContext(Context);
 
+    // when the host changes the team of each player call the host_moved_student event
     const handleChange = (newTeamId, socketId, oldTeamId) => {
         host_move_student(lobbyId, socketId, oldTeamId, newTeamId)
     }

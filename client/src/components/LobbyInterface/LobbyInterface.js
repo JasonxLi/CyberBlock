@@ -6,6 +6,7 @@ import { Context } from '../../context/ContextProvider'
 const LobbyInterFace = ({ children }) => {
   const { setLobbyId, setIsInLobby, setIsHost, student_join_lobby, setAlias } = useContext(Context);
 
+  //generic styling for the box
   const boxStyling = {
     p: 6,
     border: '1px solid black',

@@ -3,14 +3,20 @@ import { Box, FormControl, InputLabel, Select, MenuItem, Button, Input } from '@
 import { useState, useContext } from 'react';
 import { Context } from '../../context/ContextProvider'
 
+// page to allow the host to add configurations to the game
 const HostConfiguration = ({ children, setEndConfigurationPhase }) => {
-
+    // shared states
     const { setNbOfRounds, host_create_lobby, nbOfRounds } = useContext(Context);
 
+    //local states sets the difficulty of the game 
     const [difficulty, setDifficulty] = useState(1);
+    //local state set the time for each round
     const [timeForEachRound, setTimeForEachRound] = useState(0);
+    //sets whether or not the host wants trivia game
     const [hasTriviaRound, setHasTriviaRound] = useState(false);
+    //state to selects the numbe rof teams that the host wants
     const [nbOfTeams, setNbOfTeams] = useState(2);
+    //state to set number correct defense that the game should show after each round
     const [nbOfDefenses, setNbOfDefenses] = useState(2);
 
     const formControlBox = {
@@ -18,14 +24,9 @@ const HostConfiguration = ({ children, setEndConfigurationPhase }) => {
         p: '10px',
         maxWidth: 140,
     }
-    const outerBoxStyling = {
-        display: 'flex',
-        flexWrap: 'nowrap',
-        mt: '80px',
-        mx: '40px'
-    }
-
+    // handles the submission of the configuration by calling the create lobby event
     const handleOnClick = () => {
+        //changes to the next interface
         setEndConfigurationPhase(true);
         host_create_lobby(nbOfTeams, nbOfRounds, nbOfDefenses, timeForEachRound, hasTriviaRound, difficulty)
     }
@@ -33,7 +34,7 @@ const HostConfiguration = ({ children, setEndConfigurationPhase }) => {
     return (
 
         <Box sx={formControlBox}>
-
+            
             <FormControl fullWidth>
                 <InputLabel id="select-label-round">Round</InputLabel>
                 <Select
@@ -76,8 +77,8 @@ const HostConfiguration = ({ children, setEndConfigurationPhase }) => {
                     label="hasTriviaRound"
                     onChange={(event) => setHasTriviaRound(event.target.value)}
                 >
-                    <MenuItem value={2}>2</MenuItem>
-                    <MenuItem value={5}>5</MenuItem>
+                    <MenuItem value={true}>yes</MenuItem>
+                    <MenuItem value={false}>No</MenuItem>
                 </Select>
             </FormControl>
 

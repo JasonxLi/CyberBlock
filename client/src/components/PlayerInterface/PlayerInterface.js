@@ -6,12 +6,14 @@ import GameInterface from '../GameInterface/GameInterface';
 import BuyingInterface from '../BuyingInterface/BuyingInterface';
 import PlayerInformation from '../PlayerInformation/PlayerInformation';
 
-
+// tha main player interface that handles the the change of pages for the players
 const PlayerInterface = ({ }) => {
-
+    // shared states
     const { endBuyPhase, rolledAttack, inBuyingPhase, userDefenses, pointTable, showPlayerPhase } = useContext(Context)
     
+    //local state to get the team number for teamleader
     const [teamNumber, setTeamNumber] =useState()
+    
     
     return (
         <Box>

@@ -9,16 +9,19 @@ import HostConfiguration from '../HostConfiguration/HostConfiguration';
 const HostInterface = ({ }) => {
 
     const { lobbyId, roll, start_buy_phase, rolledAttack, nbOfRounds, roundCount, setRoundCount, getLead, setCurrentLead, teamInfo , currentLead} = useContext(Context);
-
+    //temporary dummy state to set the end game event
     const [endGame, setEndGame] = useState(false);
+
+    //a state to change to the second interface
     const [endConfigurationPhase, setEndConfigurationPhase] = useState(false);
 
     const boxStyling = {
         m: '20px',
         p: '10px',
     }
-
+    // function to check the total number of attacks played 
     const rollPhase = () => {
+        //checks to see if the game has come to an end
         if (roundCount !== nbOfRounds) {
             roll(lobbyId);
             //  getLead()
@@ -29,10 +32,11 @@ const HostInterface = ({ }) => {
         }
     }
 
-
+    // function to trigger the buying event
     const buyPhase = () => {
         start_buy_phase(lobbyId);
     }
+    //function to call on another function to get team leader for each round
     const getLeader =() =>{
        getLead()
     }

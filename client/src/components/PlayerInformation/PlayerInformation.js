@@ -3,9 +3,10 @@ import { Box, TableContainer, Table, TableBody, TableRow, TableCell, TableHead, 
 import { useContext } from 'react';
 import { Context } from '../../context/ContextProvider'
 
+//displays the current team member info and displays in a row and column format 
 const PlayerInfromation = ({}) => {
-    
-    const {  teamInfo, } = useContext(Context)
+    //shared state
+    const { teamInfo } = useContext(Context)
    
 
     return (

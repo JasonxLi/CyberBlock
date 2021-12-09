@@ -2,6 +2,8 @@ import * as React from 'react';
 import { Box, Divider, Typography } from '@material-ui/core'
 import { MedtronicsIcon } from '../Icons/Icons'
 
+
+// layout for all the interfaces
 const Layout = ({ children }) => {
 
     const base = {
@@ -10,9 +12,7 @@ const Layout = ({ children }) => {
     const layoutStyling = {
         overflow: 'auto',
         positon: 'relative',
-        //minHeight:'100vh',
     }
-
 
     return (
 
@@ -24,11 +24,7 @@ const Layout = ({ children }) => {
 
             {children}
 
-            {/* <Box sx={base} sx={{position:'sticky', bottom : '0'}} >
-            
-                <Typography >CopyRights Reserved 2021</Typography>
-            
-            </Box> */}
+           
         </Box>
 
     )

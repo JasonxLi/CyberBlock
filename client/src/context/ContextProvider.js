@@ -1,38 +1,57 @@
 import React, { createContext, useState, useEffect } from 'react';
 
 import io from 'socket.io-client'
+//establishes a socket io connection to the server
 const socket = io.connect("http://localhost:3001");
 
 export const Context = createContext({});
 
 const ThemeContextProvider = ({ children }) => {
+
+    // state that holds the user selected defense in the buying phase
     const [selectedDefenses, setSelectedDefenses] = useState([]);
+    // a stae to end the buying phase and move to the next interface
     const [endBuyPhase, setEndBuyPhase] = useState(false);
+    // a state that handles user earning in the buying state
     const [userEarnings, setUserEarnings] = useState(30);
+    //state that hold the lobbyId created by the host
     const [lobbyId, setLobbyId] = useState("");
+    //state that holds the attack rolled by the host
     const [rolledAttack, setRolledAttack] = useState("");
+    //a state that holds the alias of each player that joined
     const [alias, setAlias] = useState("");
+    // a state to see if users are in the set lobby or not
     const [isInLobby, setIsInLobby] = useState(false);
-
+    // a state that decides whether a player is host or student ans puts them in a correct interface
     const [isHost, setIsHost] = useState(false);
+    //a state to change the interface to buying interface
     const [inBuyingPhase, setBuyingPhase] = useState(false);
+    // a state to store all the user defense obtained from the database
     const [userDefenses, setUserDefenses] = useState([]);
+    //a sate to store all the point table from the dtatbase
     const [pointTable, setPointTable] = useState([]);
+    //a state to store the number of rounds configured by the host
     const [nbOfRounds, setNbOfRounds] = useState(0);
-
+    // a state to store all team information once student joins and host moves the players
     const [teamInfo, setTeamInfo] = useState([]);
+    // a state to store all the current Leader from each team
     const [currentLead, setCurrentLead,] = useState([]);
-
+    // a state to store the current round in the game
     const [roundCount, setRoundCount] = useState(0);
+    // a state to change the interface to displayer all the team info to students
     const[showPlayerPhase, setShowPlayerPhase]=useState(false)
-
+    //a state to hold trivia questions
     const [triviaQuestion, setTriviaQuestion] = useState();
+    
     const [triviaAnswer, setTriviaAnswer] = useState();
+    //a state to hold the selected trivia answers
     const [submittedTriviaAnswer, setSubmittedTriviaAnswer] = useState(false);
+    //a state to hold the correct trivia answers
     const [correctTriviaAnswer, setCorrectTriviaAnswer] = useState();
-
+    //a state to hold points for each team
     const [points, setPoints] = useState([0])
 
+    //recalls all the socket events each time the socket changes to retrive the infromation from the server
     useEffect(() => {
         socket.on("new_student_joined_lobby", (info) => {
             setTeamInfo(info)
@@ -115,14 +134,14 @@ const ThemeContextProvider = ({ children }) => {
         socket.emit("receive_points_per_round", { lobbyId, defenseID, attackID})   
     }
 
-    
-
-    
+    // function to get all the teamleaders from the team
     const getLead =() =>{
         var playerIndex = 0;
+        //to get the round number when the team leader needs to be switched
         const leadSwitch = nbOfRounds / teamInfo.length
-
+        // state to change the leader when the required round numer hits
         if (roundCount % Math.ceil(leadSwitch) === 0) {
+            // a copy of the state arru=y to add the new team lead in the index corresponding to the team 
             const tempLeader = [...currentLead];
             teamInfo.map((team, index) => {
 
@@ -131,12 +150,12 @@ const ThemeContextProvider = ({ children }) => {
                 tempLeader[index] = tempLeaderIndex
                 setCurrentLead(tempLeader)
             })
-
+            // increasing the player index to retrive the next team lead
             playerIndex++
         }
 
     }
-  
+    // providing access to these value to all the interfaces
     return (
         <Context.Provider
             value={{
