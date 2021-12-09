@@ -4,7 +4,7 @@ import { Context } from '../../context/ContextProvider'
 import { useState, useContext } from 'react';
 
 
-const GameInterFace = ({ rolledAttack, attackId, pointTable }) => {
+const GameInterface = ({ rolledAttack, attackId, pointTable }) => {
 
     const { selectedDefenses } = useContext(Context);
     const [points, setPoints] = useState(0)
@@ -57,4 +57,4 @@ const GameInterFace = ({ rolledAttack, attackId, pointTable }) => {
 
 
 }
-export default GameInterFace;
+export default GameInterface;
