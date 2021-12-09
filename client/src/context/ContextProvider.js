@@ -51,7 +51,7 @@ const ThemeContextProvider = ({ children }) => {
     //a state to hold points for each team
     const [points, setPoints] = useState([0])
     //state to store current leader index
-    const[playerIndex, setPlayerIndex] =useState(0)
+    
 
     //recalls all the socket events each time the socket changes to retrive the infromation from the server
     useEffect(() => {
@@ -140,7 +140,7 @@ const ThemeContextProvider = ({ children }) => {
 
     // function to get all the teamleaders from the team
     const getLead =() =>{
-        
+        var playerIndex = 0;
         //to get the round number when the team leader needs to be switched
         
         // state to change the leader when the required round numer hits
