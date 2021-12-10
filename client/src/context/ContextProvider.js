@@ -92,12 +92,8 @@ const ThemeContextProvider = ({ children }) => {
         // SOCKET EVENTS FOR CHAT BOX
         // Receive message for all chat
         socket.on("chat_receiveFromAll", ({alias, message}) => {
-            console.log(`${alias}, ${message}`)
-            //setChatMessagesAll([...chatMessagesAll, {alias, message}]);
-            setChatMessagesAll(chatMessagesAll => [...chatMessagesAll, {alias, message}]);
-            console.log(([...chatMessagesAll, {alias, message}]))
-            console.log(chatMessagesAll);
-            console.log({chatMessagesAll});
+            console.log(`Received message from ${alias} with message: ${message}`)
+            setChatMessagesAll(oldArray => [...oldArray, {alias, message}]);
         })
         // Receive message for team chat
         socket.on("chat_receiveFromTeam", ({alias, message}) => {
@@ -235,7 +231,9 @@ const ThemeContextProvider = ({ children }) => {
                 points, 
                 setPoints,
                 receive_points_per_round,
-                chat_sendToAll
+                chat_sendToAll,
+                chatMessagesAll,
+                chatMessagesTeam
             }}
         >
             {children}

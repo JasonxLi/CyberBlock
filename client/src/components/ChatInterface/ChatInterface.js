@@ -19,8 +19,8 @@ const ChatInterface = ({lobbyId, alias, teamId}) => {
 
     // Send to all chat function
     const sendToAll = () => {
-        console.log({textValue}.textValue)
         chat_sendToAll({textValue}.textValue)
+        clearText()
     }
 
     // Handle the text field changes
@@ -28,6 +28,13 @@ const ChatInterface = ({lobbyId, alias, teamId}) => {
         // set the value of value
         setText(e.target.value);
     };
+
+    const clearText = () => {
+        setText('');
+        var chatTB = function(x) {
+            return document.getElemenyById(x)
+        }
+    }
 
     // Return the actual chat box
     return (
@@ -44,9 +51,6 @@ const ChatInterface = ({lobbyId, alias, teamId}) => {
                                 <ListItemText primary={chatMessage.message} secondary={chatMessage.alias}/>
                             )
                         }))}
-                        {chatMessagesAll
-                        ?<div>bruh</div>
-                    :<div>whyyy</div>}
                     </List>
                 </Grid>
                 <Grid container spacing={2}>
