@@ -51,6 +51,12 @@ const ThemeContextProvider = ({ children }) => {
     //a state to hold points for each team
     const [points, setPoints] = useState([0])
 
+    // Context for Chat Box
+    // All chat messages
+    const[chatMessagesAll, setChatMessagesAll] = useState([]);
+    // Team chat messages
+    const[chatMessagesTeam, setChatMessagesTeam] = useState([]);
+
     //recalls all the socket events each time the socket changes to retrive the infromation from the server
     useEffect(() => {
         socket.on("new_student_joined_lobby", (info) => {
@@ -82,7 +88,19 @@ const ThemeContextProvider = ({ children }) => {
         // socket.on("award_points_to_team", (points) => {
        
         // })
+
+        // SOCKET EVENTS FOR CHAT BOX
+        // Receive message for all chat
+        socket.on("chat_receiveFromAll", ({alias, message}) => {
+            chatMessagesAll.push({alias, message})
+        })
+        // Receive message for team chat
+        socket.on("chat_receiveFromTeam", ({alias, message}) => {
+            chatMessagesTeam.push({alias, message})
+        })
+
     }, [socket])
+
 
     const host_move_student = (lobbyId, socketId, oldTeamId, newTeamId) => {
         socket.emit("host_move_student", { lobbyId, socketId, oldTeamId, newTeamId });

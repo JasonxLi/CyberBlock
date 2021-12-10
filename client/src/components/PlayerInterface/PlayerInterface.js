@@ -5,6 +5,7 @@ import { Context } from '../../context/ContextProvider';
 import GameInterface from '../GameInterface/GameInterface';
 import BuyingInterface from '../BuyingInterface/BuyingInterface';
 import PlayerInformation from '../PlayerInformation/PlayerInformation';
+import ChatInterface from '../ChatInterface/ChatInterface';
 
 // tha main player interface that handles the the change of pages for the players
 const PlayerInterface = ({ }) => {
@@ -37,8 +38,7 @@ const PlayerInterface = ({ }) => {
                         )
                     )
                 }
-        
-        
+        <ChatInterface/>
         </Box>
     );
 
