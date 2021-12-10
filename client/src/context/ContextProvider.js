@@ -93,7 +93,8 @@ const ThemeContextProvider = ({ children }) => {
         // Receive message for all chat
         socket.on("chat_receiveFromAll", ({alias, message}) => {
             console.log(`${alias}, ${message}`)
-            setChatMessagesAll([...chatMessagesAll, {alias, message}]);
+            //setChatMessagesAll([...chatMessagesAll, {alias, message}]);
+            setChatMessagesAll(chatMessagesAll => [...chatMessagesAll, {alias, message}]);
             console.log(([...chatMessagesAll, {alias, message}]))
             console.log(chatMessagesAll);
             console.log({chatMessagesAll});
