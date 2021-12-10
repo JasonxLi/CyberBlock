@@ -92,7 +92,11 @@ const ThemeContextProvider = ({ children }) => {
         // SOCKET EVENTS FOR CHAT BOX
         // Receive message for all chat
         socket.on("chat_receiveFromAll", ({alias, message}) => {
-            chatMessagesAll.push({alias, message})
+            console.log(`${alias}, ${message}`)
+            setChatMessagesAll([...chatMessagesAll, {alias, message}]);
+            console.log(([...chatMessagesAll, {alias, message}]))
+            console.log(chatMessagesAll);
+            console.log({chatMessagesAll});
         })
         // Receive message for team chat
         socket.on("chat_receiveFromTeam", ({alias, message}) => {
@@ -101,6 +105,10 @@ const ThemeContextProvider = ({ children }) => {
 
     }, [socket])
 
+    // Chat box sending
+    const chat_sendToAll = (message) => {
+        socket.emit("chat_sendToAll", {lobbyId, alias, message})
+    }
 
     const host_move_student = (lobbyId, socketId, oldTeamId, newTeamId) => {
         socket.emit("host_move_student", { lobbyId, socketId, oldTeamId, newTeamId });
@@ -225,7 +233,8 @@ const ThemeContextProvider = ({ children }) => {
                 setCorrectTriviaAnswer,
                 points, 
                 setPoints,
-                receive_points_per_round
+                receive_points_per_round,
+                chat_sendToAll
             }}
         >
             {children}

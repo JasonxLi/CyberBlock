@@ -9,22 +9,25 @@ const ChatInterface = ({lobbyId, alias, teamId}) => {
     // Grab the elements from ContextProvider.js
     const {chatMessagesAll, chat_sendToAll} = useContext(Context);
 
-    var value
+    // Variable for text box
+    const [textValue, setText] = useState('');
 
     // Generic Handle Function
-    const handleClick=() => {
-        alert('Test')
+    function handleClick() {
+        alert('test');
     }
 
     // Send to all chat function
-    function sendToAll() {
-        chat_sendToAll(value)
+    const sendToAll = () => {
+        console.log({textValue}.textValue)
+        chat_sendToAll({textValue}.textValue)
     }
 
     // Handle the text field changes
-    function handleTextFieldChange(e) {
-        value = e.target.value
-    }
+    const handleChange = e => {
+        // set the value of value
+        setText(e.target.value);
+    };
 
     // Return the actual chat box
     return (
@@ -36,24 +39,25 @@ const ChatInterface = ({lobbyId, alias, teamId}) => {
                 </Grid>
                 <Grid>
                     <List id="ChatBoxMessages">
-                        <ListItemText primary="Hi John!" secondary="By Jimmy"/>
-                        <ListItemText primary="Hi Jimmy!" secondary="By John"/>
-                        {(chatMessagesAll && chatMessagesAll.map(chatMessage => {
+                        {(chatMessagesAll && {chatMessagesAll}.chatMessagesAll.map(chatMessage => {
                             return (
                                 <ListItemText primary={chatMessage.message} secondary={chatMessage.alias}/>
                             )
                         }))}
+                        {chatMessagesAll
+                        ?<div>bruh</div>
+                    :<div>whyyy</div>}
                     </List>
                 </Grid>
                 <Grid container spacing={2}>
                     <Grid item xs={8}>
-                        <TextField id="chatTextBox" fullWidth variant="standard" label="Send message"/>
+                        <TextField onChange={handleChange} id="chatTextBox" fullWidth variant="standard" label="Send message"/>
                     </Grid>
                     <Grid item xs={2}>
-                        <Button onclick={handleClick} id="SendToTeamButton" variant="outlined">Send To Team</Button>
+                        <Button onClick={handleClick} variant="outlined">Send To Team</Button>
                     </Grid>
                     <Grid item xs={2}>
-                        <Button onclick="sendToAll()" id="SendToAllButton" variant="outlined">Send To All</Button>
+                        <Button onClick={sendToAll} variant="outlined">Send To All</Button>
                     </Grid>
                 </Grid>
             </Grid>

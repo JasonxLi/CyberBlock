@@ -153,8 +153,9 @@ module.exports = {
             //TODO: store defenses for each team
         })
 
-        socket.on("chat_sendToAll", ({ lobbyId, alias, message }) => {
-            io.in(lobbyId).emit("chat_receiveFromAll", { alias: alias, message: message });
+        socket.on("chat_sendToAll", ({lobbyId, alias, message}) => {
+            io.in(lobbyId).emit("chat_receiveFr6153omAll", ({alias: alias, message: message}));
+            console.log(`User with alias ${alias} from lobby ${lobbyId} has sent a message ${message}`);
         })
 
         socket.on("chat_sendToTeam", ({ lobbyId, alias, teamId, message }) => {
