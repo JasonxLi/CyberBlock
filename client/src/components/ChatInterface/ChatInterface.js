@@ -4,6 +4,7 @@ import React from 'react'
 import { useState, useContext } from 'react';
 import { Context } from '../../context/ContextProvider'
 
+
 const ChatInterface = ({lobbyId, alias, teamId}) => {
 
     // Grab the elements from ContextProvider.js
@@ -11,6 +12,9 @@ const ChatInterface = ({lobbyId, alias, teamId}) => {
 
     // Variable for text box
     const [textValue, setText] = useState('');
+
+    // Variable for scrolling to bottom
+    const messagesEndRef = React.createRef()
 
     // Generic Handle Function
     function handleClick() {
@@ -23,6 +27,9 @@ const ChatInterface = ({lobbyId, alias, teamId}) => {
         clearText()
     }
 
+    const scrollToBottom = () => {
+        messagesEndRef.current.scrollIntoView({behavior: "smooth"});
+    }
     // Handle the text field changes
     const handleChange = e => {
         // set the value of value
@@ -31,12 +38,10 @@ const ChatInterface = ({lobbyId, alias, teamId}) => {
 
     const clearText = () => {
         setText('');
-        var chatTB = function(x) {
-            return document.getElemenyById(x)
-        }
     }
 
     // Return the actual chat box
+
     return (
         // Container for the chat box
         <div>
@@ -44,25 +49,24 @@ const ChatInterface = ({lobbyId, alias, teamId}) => {
                 <Grid item xs={12} align="center">
                     <Typography>Chat Box</Typography>
                 </Grid>
-                <Grid>
-                    <List id="ChatBoxMessages">
+                <Grid item xs={12}>
+                    <List id="ChatBoxMessages" style={{maxHeight: '200px', width: '100%', maxWidth: '100%', overflow: 'auto'}}>
                         {(chatMessagesAll && {chatMessagesAll}.chatMessagesAll.map(chatMessage => {
                             return (
                                 <ListItemText primary={chatMessage.message} secondary={chatMessage.alias}/>
                             )
                         }))}
+                        <div ref={messagesEndRef}/>
                     </List>
                 </Grid>
-                <Grid container spacing={2}>
-                    <Grid item xs={8}>
-                        <TextField onChange={handleChange} id="chatTextBox" fullWidth variant="standard" label="Send message"/>
-                    </Grid>
-                    <Grid item xs={2}>
-                        <Button onClick={handleClick} variant="outlined">Send To Team</Button>
-                    </Grid>
-                    <Grid item xs={2}>
-                        <Button onClick={sendToAll} variant="outlined">Send To All</Button>
-                    </Grid>
+                <Grid item xs={8}>
+                    <TextField value={textValue} onChange={handleChange} fullWidth variant="standard" label="Send message"/>
+                </Grid>
+                <Grid item xs={2}>
+                    <Button onClick={handleClick} variant="outlined">Send To Team</Button>
+                </Grid>
+                <Grid item xs={2}>
+                    <Button onClick={sendToAll} variant="outlined">Send To All</Button>
                 </Grid>
             </Grid>
         </div>
@@ -70,13 +74,3 @@ const ChatInterface = ({lobbyId, alias, teamId}) => {
 }
 
 export default ChatInterface;
-
-/*
-socket.on("chat_sendToAll", ({ lobbyId, alias, message }) => {
-    io.in(lobbyId).emit("chat_receiveFromAll", { alias: alias, message: message });
-})
-
-socket.on("chat_sendToTeam", ({ lobbyId, alias, teamId, message }) => {
-    io.in(lobbyId + `_team` + teamId).emit("chat_receiveFromTeam", { alias: alias, message: message });
-})
-*/
