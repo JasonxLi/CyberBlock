@@ -185,6 +185,7 @@ const ThemeContextProvider = ({ children }) => {
 	const start_buy_phase = () => {
 		socket.emit("start_buy_phase", lobbyId);
 	};
+
 	// event sent to server to see the correct answer  and get points from the server
 
 	const receive_points_per_round = (
@@ -215,25 +216,32 @@ const ThemeContextProvider = ({ children }) => {
 
 	// function to get all the teamleaders from the team
 	const getLead = () => {
+		//shallow copy
 		const copyOfLdrPlyIndex = [...leaderPlayerIndex];
 
 		const tempLeader = [...currentLead];
 
 		teamInfo.map((team, index) => {
-			console.log(team);
+			//switching the lead depending on the size of the team
 			const leadSwitch = nbOfRounds / team.length;
 
 			console.log("round", roundCount);
+
+			//when the round count hits the leader nedds to be switched
 			if (roundCount % Math.ceil(leadSwitch) === 0) {
+				//making a placeholder for the leader's socket
 				let tempLeaderIndex = tempLeader[index];
-
+				// keeping track of the player index as no teams might have the same no of players
 				var tempdata = copyOfLdrPlyIndex[index];
-
+				// grabbing the socket id of the leader
 				tempLeaderIndex = team[tempdata].socketId;
 				console.log(tempLeaderIndex);
+				// storing the lleader's socket in the place holder
 				tempLeader[index] = tempLeaderIndex;
 				console.log(tempLeader);
+				// setting the updated array
 				setCurrentLead(tempLeader);
+				//increasing the player index value
 				copyOfLdrPlyIndex[index] = copyOfLdrPlyIndex[index] + 1;
 
 				console.log(copyOfLdrPlyIndex);
