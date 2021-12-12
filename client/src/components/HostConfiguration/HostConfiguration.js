@@ -12,9 +12,10 @@ import { useState, useContext } from "react";
 import { Context } from "../../context/ContextProvider";
 
 // page to allow the host to add configurations to the game
-const HostConfiguration = ({ children, setEndConfigurationPhase }) => {
+const HostConfiguration = ({ children }) => {
 	// shared states
 	const { 
+		setGameStage,
 		nbOfTeams, setNbOfTeams,
 		nbOfRounds, setNbOfRounds,
 		timeForEachRound, setTimeForEachRound,
@@ -32,7 +33,7 @@ const HostConfiguration = ({ children, setEndConfigurationPhase }) => {
 	// handles the submission of the configuration by calling the create lobby event
 	const handleOnClick = () => {
 		//changes to the next interface
-		setEndConfigurationPhase(true);
+		setGameStage('WAITING');
 		host_create_lobby();
 	};
 
@@ -56,7 +57,7 @@ const HostConfiguration = ({ children, setEndConfigurationPhase }) => {
 			<Input
 				fullWidth
 				type="text"
-				placeholder="Enter Time Allowed For Each Round"
+				placeholder="Enter Time Allowed For Each Round (in seconds)"
 				onChange={(event) => setTimeForEachRound(event.target.value)}
 			/>
 			<br />

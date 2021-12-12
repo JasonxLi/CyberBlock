@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { Context } from "../../context/ContextProvider";
 
 const LobbyInterFace = ({ children }) => {
-	const { setLobbyId, setIsInLobby, setIsHost, setAlias, student_join_lobby } = useContext(Context);
+	const { setLobbyId, setIsInLobby, setIsHost, setAlias, setGameStage, student_join_lobby } = useContext(Context);
 
 	//generic styling for the box
 	const boxStyling = {
@@ -21,6 +21,7 @@ const LobbyInterFace = ({ children }) => {
 
 	const handleOnClick = () => {
 		setIsInLobby(true);
+		setGameStage('WAITING');
 		student_join_lobby();
 	}
 

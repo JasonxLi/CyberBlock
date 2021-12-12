@@ -21,6 +21,7 @@ module.exports = {
 				app.locals[lobbyId] = {};
 				app.locals[lobbyId].hostId = socket.id;
 				app.locals[lobbyId].previousTriviaQuestionIds = [];
+				app.locals[lobbyId].submittedTriviaAnswers = Array(nbOfTeams).fill(null);
 
 				//store lobby configuration info
 				app.locals[lobbyId].nbOfTeams = nbOfTeams;
@@ -138,31 +139,35 @@ module.exports = {
 			app.locals[lobbyId].previousTriviaQuestionIds.push(newTriviaId);
 
 			app.locals[lobbyId].triviaQuestionAnswer = triviaQuestion.Answer;
+			app.locals[lobbyId].submittedTriviaAnswers = [];
 
-			socket
-				.to(lobbyId)
-				.emit("student_receives_trivia_question", triviaQuestion);
+			io.in(lobbyId).emit("student_receives_trivia_question", triviaQuestion);
 			ack(triviaQuestion);
 		});
 
 		socket.on(
 			"student_submit_trivia_answer",
-			({ lobbyId, triviaAnswer }, ack) => {
-				const triviaReward = 2;
+			({ lobbyId, teamId, triviaAnswer }, ack) => {
+				const triviaReward = 5;
+
+				app.locals[lobbyId].submittedTriviaAnswers[teamId] = triviaAnswer;
+				io.in(lobbyId).emit("student_submitted_trivia_answer", app.locals[lobbyId].submittedTriviaAnswers);
 
 				if (triviaAnswer === app.locals[lobbyId].triviaQuestionAnswer) {
 					ack({
 						triviaReward: triviaReward,
-						correctAnswer: app.locals[lobbyId].triviaQuestionAnswer,
 					});
 				} else {
 					ack({
 						triviaReward: 0,
-						correctAnswer: app.locals[lobbyId].triviaQuestionAnswer,
 					});
 				}
 			}
 		);
+
+		socket.on("host_ends_trivia_round", lobbyId => {
+			io.in(lobbyId).emit("host_ended_trivia_round");
+		})
 
 		socket.on("host_start_buy_phase", async (lobbyId) => {
 			//TODO: figure out the format for this w/ Nelson
