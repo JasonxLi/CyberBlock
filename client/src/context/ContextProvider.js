@@ -7,56 +7,59 @@ const socket = io.connect("http://localhost:3001");
 export const Context = createContext({});
 
 const ThemeContextProvider = ({ children }) => {
+
+	/*----lobby configuration----*/
+	const [nbOfTeams, setNbOfTeams] = useState(2);
+	const [nbOfRounds, setNbOfRounds] = useState(5);
+	const [timeForEachRound, setTimeForEachRound] = useState(120);
+	const [hasTriviaRound, setHasTriviaRound] = useState(true);
+	const [difficulty, setDifficulty] = useState(1);
+	//TODO 
+	const [nbOfDefenses, setNbOfDefenses] = useState(2);
+
+	// a state that decides whether a player is host or student ans puts them in a correct interface
+	const [isHost, setIsHost] = useState(false);
+	// a state to see if users are in the set lobby or not
+	const [isInLobby, setIsInLobby] = useState(false);
+	//a state that holds the alias of each player that joined
+	const [alias, setAlias] = useState("");
+	//state that hold the lobbyId created by the host
+	const [lobbyId, setLobbyId] = useState("");
+	
+	// a state to store all team information once student joins and host moves the players
+	const [teamInfo, setTeamInfo] = useState([]);
+	/*------------end-------------*/
+
+
 	// state that holds the user selected defense in the buying phase
 	const [selectedDefenses, setSelectedDefenses] = useState([]);
 	// a stae to end the buying phase and move to the next interface
 	const [endBuyPhase, setEndBuyPhase] = useState(false);
 	// a state that handles user earning in the buying state
 	const [userEarnings, setUserEarnings] = useState(30);
-	//state that hold the lobbyId created by the host
-	const [lobbyId, setLobbyId] = useState("");
 	//state that holds the attack rolled by the host
 	const [rolledAttack, setRolledAttack] = useState("");
-	//a state that holds the alias of each player that joined
-	const [alias, setAlias] = useState("");
-	// a state to see if users are in the set lobby or not
-	const [isInLobby, setIsInLobby] = useState(false);
-	// a state that decides whether a player is host or student ans puts them in a correct interface
-	const [isHost, setIsHost] = useState(false);
+
+
 	//a state to change the interface to buying interface
 	const [inBuyingPhase, setBuyingPhase] = useState(false);
 	// a state to store all the user defense obtained from the database
 	const [userDefenses, setUserDefenses] = useState([]);
 
-	const [nbOfTeams, setNbOfTeams] = useState(2);
-	const [nbOfDefenses, setNbOfDefenses] = useState(2);
-	const [timeForEachRound, setTimeForEachRound] = useState(120);
-	const [hasTriviaRound, setHasTriviaRound] = useState(false);
-	const [difficulty, setDifficulty] = useState(1);
 
-	//a state to store the number of rounds configured by the host
-	const [nbOfRounds, setNbOfRounds] = useState(5);
-	// a state to store all team information once student joins and host moves the players
-	const [teamInfo, setTeamInfo] = useState([]);
 	// a state to store all the current Leader from each team
 	const [currentLead, setCurrentLead] = useState([]);
 	// a state to store the current round in the game
 	const [roundCount, setRoundCount] = useState(0);
-	// a state to change the interface to displayer all the team info to students
-	const [showPlayerPhase, setShowPlayerPhase] = useState(false);
+
 	//a state to hold trivia questions
 	const [triviaQuestion, setTriviaQuestion] = useState();
-
 	const [triviaAnswer, setTriviaAnswer] = useState();
 	//a state to hold the selected trivia answers
 	const [submittedTriviaAnswer, setSubmittedTriviaAnswer] = useState(false);
 	//a state to hold the correct trivia answers
 	const [correctTriviaAnswer, setCorrectTriviaAnswer] = useState();
 	//a state to hold points for each team
-
-	//state to store current leader index
-
-	const [tempinfo, settempinfo] = useState();
 
 	var playerIndex = 0;
 	//recalls all the socket events each time the socket changes to retrive the infromation from the server
@@ -87,14 +90,7 @@ const ThemeContextProvider = ({ children }) => {
 	}, [socket]);
 
 	//Start-------------Lobby Events------------Start//
-	const host_create_lobby = (
-		nbOfTeams,
-		nbOfRounds,
-		nbOfDefenses,
-		timeForEachRound,
-		hasTriviaRound,
-		difficulty
-	) => {
+	const host_create_lobby = () => {
 		socket.emit(
 			"host_create_lobby",
 			{
@@ -107,8 +103,6 @@ const ThemeContextProvider = ({ children }) => {
 			},
 			(lobbyId) => {
 				setLobbyId(lobbyId);
-				setIsHost(true);
-				setIsInLobby(true);
 			}
 		);
 	};
@@ -125,7 +119,7 @@ const ThemeContextProvider = ({ children }) => {
 					timeForEachRound,
 					hasTriviaRound,
 					difficulty,
-					teamsInfo,
+					teamInfo,
 				}) => {
 					setNbOfTeams(nbOfTeams);
 					setNbOfRounds(nbOfRounds);
@@ -133,14 +127,12 @@ const ThemeContextProvider = ({ children }) => {
 					setTimeForEachRound(timeForEachRound);
 					setHasTriviaRound(hasTriviaRound);
 					setDifficulty(difficulty);
-					settempinfo(teamsInfo);
-
-					setIsInLobby(true);
-					setShowPlayerPhase(true);
+					setTeamInfo(teamInfo);
 				}
 			);
 		}
 	};
+
 	const initailArray = new Array(nbOfTeams).fill(0);
 	const [leaderPlayerIndex, setLeaderPlayerIndex] = useState(initailArray);
 	const [points, setPoints] = useState(initailArray);
@@ -254,54 +246,21 @@ const ThemeContextProvider = ({ children }) => {
 	return (
 		<Context.Provider
 			value={{
-				selectedDefenses,
-				setSelectedDefenses,
-				endBuyPhase,
-				setEndBuyPhase,
-				userEarnings,
-				setUserEarnings,
-				lobbyId,
-				setLobbyId,
-				roll,
-				start_buy_phase,
-				rolledAttack,
-				setRolledAttack,
-				isInLobby,
-				setIsInLobby,
-				isHost,
-				setIsHost,
-				inBuyingPhase,
-				userDefenses,
+				//lobby configuration
+				nbOfTeams, setNbOfTeams,
+				nbOfRounds, setNbOfRounds,
+				timeForEachRound, setTimeForEachRound,
+				hasTriviaRound, setHasTriviaRound,
+				difficulty, setDifficulty,
 				host_create_lobby,
+				isHost, setIsHost,
+				isInLobby, setIsInLobby,
+				alias, setAlias,
+				lobbyId, setLobbyId,
 				student_join_lobby,
-				nbOfRounds,
-				setNbOfRounds,
-				host_create_lobby,
-				setAlias,
-				alias,
-				teamInfo,
-				setTeamInfo,
-				host_move_student,
-				currentLead,
-				setCurrentLead,
-				roundCount,
-				setRoundCount,
-				getLead,
-				showPlayerPhase,
-				setShowPlayerPhase,
-				host_gets_trivia_question,
-				host_ends_trivia_round,
-				triviaQuestion,
-				triviaAnswer,
-				setTriviaAnswer,
-				student_submit_trivia_answer,
-				submittedTriviaAnswer,
-				setSubmittedTriviaAnswer,
-				correctTriviaAnswer,
-				setCorrectTriviaAnswer,
-				points,
-				setPoints,
-				receive_points_per_round,
+				//lobby waiting page
+				teamInfo, setTeamInfo,
+				host_move_student
 			}}
 		>
 			{children}

@@ -31,9 +31,9 @@ module.exports = {
 				app.locals[lobbyId].difficulty = difficulty;
 
 				//initialize team arrays
-				app.locals[lobbyId].teamsInfo = [];
+				app.locals[lobbyId].teamInfo = [];
 				for (i = 0; i < nbOfTeams; i++) {
-					app.locals[lobbyId].teamsInfo.push([]);
+					app.locals[lobbyId].teamInfo.push([]);
 				}
 
 				//join host to lobby
@@ -49,27 +49,27 @@ module.exports = {
 			let nbOfMembers = 9999;
 			let teamWithLeastMembers = null;
 			for (i = app.locals[lobbyId].nbOfTeams - 1; i >= 0; i--) {
-				if (app.locals[lobbyId].teamsInfo[i].length <= nbOfMembers) {
-					nbOfMembers = app.locals[lobbyId].teamsInfo[i].length;
+				if (app.locals[lobbyId].teamInfo[i].length <= nbOfMembers) {
+					nbOfMembers = app.locals[lobbyId].teamInfo[i].length;
 					teamWithLeastMembers = i;
 				}
 			}
-			app.locals[lobbyId].teamsInfo[teamWithLeastMembers].push({
+			app.locals[lobbyId].teamInfo[teamWithLeastMembers].push({
 				socketId: socket.id,
 				alias: alias,
 			});
 
 			//add student to lobby
 			socket.join(lobbyId);
-			console.log(`User with ID ${socket.id} joined lobby ${lobbyId}`);
+			console.log(`Student with socketId ${socket.id} joined lobby ${lobbyId}`);
 
-			//emit to members already in the room with updated teamsInfo
+			//emit to members already in the room with updated teamInfo
 			io.in(lobbyId).emit(
 				"new_student_joined_lobby",
-				app.locals[lobbyId].teamsInfo
+				app.locals[lobbyId].teamInfo
 			);
 
-			//ack to newly joined student, with configuration and teamsInfo
+			//ack to newly joined student, with configuration and teamInfo
 			ack({
 				nbOfTeams: app.locals[lobbyId].nbOfTeams,
 				nbOfRounds: app.locals[lobbyId].nbOfRounds,
@@ -77,16 +77,16 @@ module.exports = {
 				timeForEachRound: app.locals[lobbyId].timeForEachRound,
 				hasTriviaRound: app.locals[lobbyId].hasTriviaRound,
 				difficulty: app.locals[lobbyId].difficulty,
-				teamsInfo: app.locals[lobbyId].teamsInfo,
+				teamInfo: app.locals[lobbyId].teamInfo,
 			});
 		});
 
 		socket.on(
 			"host_move_student",
 			({ lobbyId, socketId, oldTeamId, newTeamId }) => {
-				console.log(lobbyId, socketId, oldTeamId, newTeamId);
-				const oldTeam = app.locals[lobbyId].teamsInfo[oldTeamId];
-				const newTeam = app.locals[lobbyId].teamsInfo[newTeamId];
+				// console.log(lobbyId, socketId, oldTeamId, newTeamId);
+				const oldTeam = app.locals[lobbyId].teamInfo[oldTeamId];
+				const newTeam = app.locals[lobbyId].teamInfo[newTeamId];
 				let alias = null;
 				//remove student from old team
 				oldTeam.forEach((item, index) => {
@@ -98,17 +98,17 @@ module.exports = {
 				//add student to new team
 				newTeam.push({ socketId: socketId, alias: alias });
 
-				//emit updated teamsInfo to lobby
+				//emit updated teamInfo to lobby
 				io.in(lobbyId).emit(
 					"host_moved_student",
-					app.locals[lobbyId].teamsInfo
+					app.locals[lobbyId].teamInfo
 				);
 			}
 		);
 
 		socket.on("host_start_game", (lobbyId) => {
 			//add each team member to their team socket room for chat
-			app.locals[lobbyId].teamsInfo.forEach((item, index) => {
+			app.locals[lobbyId].teamInfo.forEach((item, index) => {
 				item.forEach((item) => {
 					app.locals.sockets.get(item.socketId).join(lobbyId + "_team" + index);
 				});

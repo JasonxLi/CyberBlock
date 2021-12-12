@@ -4,8 +4,7 @@ import { useContext } from "react";
 import { Context } from "../../context/ContextProvider";
 
 const LobbyInterFace = ({ children }) => {
-	const { setLobbyId, setIsInLobby, setIsHost, student_join_lobby, setAlias } =
-		useContext(Context);
+	const { setLobbyId, setIsInLobby, setIsHost, setAlias, student_join_lobby } = useContext(Context);
 
 	//generic styling for the box
 	const boxStyling = {
@@ -20,6 +19,16 @@ const LobbyInterFace = ({ children }) => {
 		transform: "translate(-50%, -50%)",
 	};
 
+	const handleOnClick = () => {
+		setIsInLobby(true);
+		student_join_lobby();
+	}
+
+	const handleSetLobbyId = (lobbyId) => {
+		//get rid of white spaces
+		setLobbyId(lobbyId.trim());
+	}
+
 	return (
 		<Box sx={boxStyling}>
 			<Button
@@ -27,6 +36,7 @@ const LobbyInterFace = ({ children }) => {
 				onClick={() => {
 					setIsInLobby(true);
 					setIsHost(true);
+					setAlias("Host");
 				}}
 			>
 				Create Lobby
@@ -36,7 +46,7 @@ const LobbyInterFace = ({ children }) => {
 			<Input
 				type="text"
 				placeholder="Enter Lobby ID"
-				onChange={(event) => setLobbyId(event.target.value)}
+				onChange={(event) => handleSetLobbyId(event.target.value)}
 			/>
 			<br></br>
 			<br></br>
@@ -47,7 +57,7 @@ const LobbyInterFace = ({ children }) => {
 			/>
 			<br></br>
 			<br></br>
-			<Button variant="contained" onClick={() => student_join_lobby()}>
+			<Button variant="contained" onClick={() => handleOnClick()}>
 				Join Lobby
 			</Button>
 		</Box>

@@ -54,7 +54,9 @@ const HostInterface = ({}) => {
 						align="center"
 						variant="h6"
 					>{`Lobby created, use code ${lobbyId} to join.`}</Typography>
-					<Box sx={boxStyling}>
+
+					<ShuffleTeam/>
+					{/* <Box sx={boxStyling}>
 						<br></br>
 						<br></br>
 						<Button variant="contained" onClick={buyPhase}>
@@ -73,7 +75,7 @@ const HostInterface = ({}) => {
 					)}
 					<br></br>
 					<br></br>
-					{endShufflePhase ? <GameScore /> : <ShuffleTeam />}
+					{endShufflePhase ? <GameScore /> : <ShuffleTeam />} */}
 				</Box>
 			) : (
 				<HostConfiguration

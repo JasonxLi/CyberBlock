@@ -7,7 +7,7 @@ import BuyingInterface from "../BuyingInterface/BuyingInterface";
 import PlayerInformation from "../PlayerInformation/PlayerInformation";
 
 // tha main player interface that handles the the change of pages for the players
-const PlayerInterface = ({}) => {
+const PlayerInterface = ({ }) => {
 	// shared states
 	const {
 		endBuyPhase,
@@ -15,7 +15,6 @@ const PlayerInterface = ({}) => {
 		inBuyingPhase,
 		userDefenses,
 		pointTable,
-		showPlayerPhase,
 	} = useContext(Context);
 
 	//local state to get the team number for teamleader
@@ -23,9 +22,13 @@ const PlayerInterface = ({}) => {
 
 	return (
 		<Box>
-			{!showPlayerPhase ? (
-				<Typography>Please wait </Typography>
-			) : !inBuyingPhase ? (
+			<Typography
+				align="center"
+				variant="h6"
+			>{`Waiting for host to start game...`}</Typography>
+
+			<PlayerInformation />
+			{/* {!inBuyingPhase ? (
 				<PlayerInformation />
 			) : inBuyingPhase && !endBuyPhase ? (
 				<BuyingInterface
@@ -42,7 +45,7 @@ const PlayerInterface = ({}) => {
 						teamNumber={teamNumber}
 					/>
 				)
-			)}
+			)} */}
 		</Box>
 	);
 };
