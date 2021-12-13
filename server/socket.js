@@ -33,8 +33,10 @@ module.exports = {
 
 				//initialize team arrays
 				app.locals[lobbyId].teamInfo = [];
+				app.locals[lobbyId].boughtDefenses = [];
 				for (i = 0; i < nbOfTeams; i++) {
 					app.locals[lobbyId].teamInfo.push([]);
+					app.locals[lobbyId].boughtDefenses.push([]);
 				}
 
 				//join host to lobby
@@ -170,13 +172,17 @@ module.exports = {
 		})
 
 		socket.on("host_start_buy_phase", async (lobbyId) => {
-			//TODO: figure out the format for this w/ Nelson
 			const defenses = await mysql_queries.getDefenses(
 				db_connection,
 				app.locals[lobbyId].difficulty
 			);
 			io.in(lobbyId).emit("student_receive_defenses", defenses);
 		});
+
+		socket.on("student_buy_defenses", ({ lobbyId, teamId, defenses }) => {
+			app.locals[lobbyId].boughtDefenses[teamId] = defenses;
+			io.in(lobbyId).emit("student_bought_defenses", app.locals[lobbyId].boughtDefenses);
+		})
 
 		socket.on("host_start_next_defense_round", async (ack) => {
 			//TODO: figure out the format for this w/ Nelson

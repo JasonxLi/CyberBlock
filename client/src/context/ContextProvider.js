@@ -39,24 +39,22 @@ const ThemeContextProvider = ({ children }) => {
 
 	// a state to store the current round in the game
 	const [roundCount, setRoundCount] = useState(0);
+	// a state that handles user earning in the buying state
+	const [userEarnings, setUserEarnings] = useState(40);
+	// a state to store all the user defense obtained from the database
+	const [userDefenses, setUserDefenses] = useState([]);
+	// state that holds the user selected defense in the buying phase
+	const [selectedDefenses, setSelectedDefenses] = useState([]);
+	const [boughtDefenses, setBoughtDefenses] = useState([]);
 
 
 	const initialArray = new Array(nbOfTeams).fill(0);
 	const [leaderPlayerIndex, setLeaderPlayerIndex] = useState(initialArray);
 	// a state to store all the current Leader from each team
 	const [currentLead, setCurrentLead] = useState([]);
-	// state that holds the user selected defense in the buying phase
-	const [selectedDefenses, setSelectedDefenses] = useState([]);
-	// a stae to end the buying phase and move to the next interface
-	const [endBuyPhase, setEndBuyPhase] = useState(false);
-	// a state that handles user earning in the buying state
-	const [userEarnings, setUserEarnings] = useState(30);
+
 	//state that holds the attack rolled by the host
 	const [rolledAttack, setRolledAttack] = useState("");
-	//a state to change the interface to buying interface
-	const [inBuyingPhase, setBuyingPhase] = useState(false);
-	// a state to store all the user defense obtained from the database
-	const [userDefenses, setUserDefenses] = useState([]);
 	//a state to hold points for each team
 	const [points, setPoints] = useState(initialArray);
 
@@ -91,14 +89,18 @@ const ThemeContextProvider = ({ children }) => {
 
 		socket.on("student_submitted_trivia_answer", (submittedTriviaAnswers) => {
 			setSubmittedTriviaAnswers(submittedTriviaAnswers);
+		});
+
+		socket.on("student_receive_defenses", (defenses) => {
+			setUserDefenses(defenses);
+		});
+
+		socket.on("student_bought_defenses", (boughtDefenses) => {
+			setBoughtDefenses(boughtDefenses);
 		})
 
 		socket.on("receive_roll", (attack) => {
 			setRolledAttack(attack);
-		});
-		socket.on("receive_defense_cards", (defenses) => {
-			setUserDefenses(defenses);
-			setBuyingPhase(true);
 		});
 
 		return () => {
@@ -134,6 +136,14 @@ const ThemeContextProvider = ({ children }) => {
 			})
 		}
 	}, [myTeamId, roundCount]);
+
+	//this is a workaround for the socket.on not reading real-time value bug
+	useEffect(() => {
+		if (gameStage === 'BUY_DEFENSE') {
+			socket.emit("host_start_buy_phase", lobbyId);
+		}
+	}, [gameStage]);
+
 
 	//Start-------------Lobby Events------------Start//
 	const host_create_lobby = () => {
@@ -215,16 +225,12 @@ const ThemeContextProvider = ({ children }) => {
 	};
 	//End-------------Trivia Events------------End//
 
-	const roll = (lobbyId) => {
-		socket.emit("roll", lobbyId);
-	};
-
-	const start_buy_phase = () => {
-		socket.emit("start_buy_phase", lobbyId);
-	};
+	const student_buy_defenses = () => {
+		console.log(selectedDefenses);
+		socket.emit("student_buy_defenses", ({ lobbyId, teamId: myTeamId, defenses: selectedDefenses }));
+	}
 
 	// event sent to server to see the correct answer  and get points from the server
-
 	const receive_points_per_round = (
 		lobbyId,
 		defenseID,
@@ -270,6 +276,7 @@ const ThemeContextProvider = ({ children }) => {
 
 				//lobby waiting page
 				teamInfo, setTeamInfo,
+				roundCount, setRoundCount,
 				myTeamId, setMyTeamId,
 				isTeamLeader, setIsTeamLeader,
 
@@ -279,10 +286,17 @@ const ThemeContextProvider = ({ children }) => {
 				hasSubmittedTrivia, setHasSubmittedTrivia,
 				submittedTriviaAnswers, setSubmittedTriviaAnswers,
 
+				//buy defenses
+				userEarnings, setUserEarnings,
+				userDefenses, setUserDefenses,
+				selectedDefenses, setSelectedDefenses,
+				boughtDefenses, setBoughtDefenses,
+
 				//socket events
 				host_create_lobby, student_join_lobby, host_move_student,
 				host_start_game,
-				host_gets_trivia_question, student_submit_trivia_answer, host_ends_trivia_round
+				host_gets_trivia_question, student_submit_trivia_answer, host_ends_trivia_round,
+				student_buy_defenses,
 			}}
 		>
 			{children}

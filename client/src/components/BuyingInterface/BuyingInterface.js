@@ -24,14 +24,13 @@ import { Context } from "../../context/ContextProvider";
 const BuyingInterface = ({ }) => {
 	// importing shared states between different components
 	const {
-		selectedDefenses,
-		setSelectedDefenses,
-		setEndBuyPhase,
-		userEarnings,
-		setUserEarnings,
-		alias,
-		teamInfo,
-		getLead,
+		alias, myTeamId, isTeamLeader,
+		userEarnings, setUserEarnings,
+		userDefenses, setUserDefenses,
+		selectedDefenses, setSelectedDefenses,
+		boughtDefenses,
+		setGameStage,
+		student_buy_defenses,
 	} = useContext(Context);
 
 	const boxStyling = {
@@ -39,8 +38,11 @@ const BuyingInterface = ({ }) => {
 		minWidth: "85%",
 	};
 
-	//state to see if the person player the game is the leader
-	const [isLeader, setisLeader] = useState(false);
+	React.useEffect(() => {
+		if (boughtDefenses.length !== 0 && boughtDefenses[myTeamId].length !== 0) {
+			setGameStage("DONE_BUYING");
+		} 
+	}, [boughtDefenses])
 
 	// a state to store the checkboxstate and see if its is checked or not
 	const [isChecked, setIsChecked] = useState([]);
@@ -91,31 +93,20 @@ const BuyingInterface = ({ }) => {
 			}
 		}
 	};
-	// A function to retrive the name and the team number of the user
-	const getMemberinfo = () => {
-		teamInfo.map((team, index) => {
-			team.map((player) => {
-				if (player.alias === alias) {
-					setTeamNumber(index + 1);
-					// if(player.socketId == currentLead[index].socketId){
-					//     setisLeader(true)
-					// }
-				}
-			});
-		});
-	};
-	getMemberinfo();
-	console.log(currentLead);
+
+	const handleSubmit = () => {
+		setGameStage('DONE_BUYING');
+		student_buy_defenses();
+	}
+
 	return (
 		<Box sx={boxStyling}>
 			<Card>
 				<CardContent>
-					<Typography gutterBottom>{alias}</Typography>
-					<Typography gutterBottom>You are in Team {teamNumber}</Typography>
-					{isLeader ? (
-						<Typography gutterBottom>You are the current team leader, discuss with your team to decide what defenses to buy!</Typography>
+					{isTeamLeader ? (
+						<Typography gutterBottom>{`You are the current team leader of team ${myTeamId + 1}, discuss with your team to decide what defenses to buy!`}</Typography>
 					) : (
-						<Typography>You are not the current team leader, discuss with your team to help your team leader decide what defenses to buy!</Typography>
+						<Typography>{`You are not the current team leader of team ${myTeamId + 1}, discuss with your team to help your team leader decide what defenses to buy!`}</Typography>
 					)}
 				</CardContent>
 			</Card>
@@ -166,13 +157,7 @@ const BuyingInterface = ({ }) => {
 																row.DefenseID
 															)
 														}
-														disabled={
-															row.cost > userEarnings && !isChecked[index]
-																? true
-																: false || isLeader
-																	? true
-																	: false
-														}
+														disabled={row.cost > userEarnings && !isChecked[index]}
 														checked={isChecked[index]}
 													/>
 												}
@@ -186,9 +171,14 @@ const BuyingInterface = ({ }) => {
 				</Table>
 			</TableContainer>
 			<br></br>
-			<Button variant="contained" onClick={() => setEndBuyPhase(true)}>
+			<Button variant="contained" disabled={!isTeamLeader} onClick={() => handleSubmit()}>
 				Submit
 			</Button>
+			{!isTeamLeader &&
+				<Box sx={{ fontStyle: 'italic' }}>
+					<Typography>Only team leader can submit</Typography>
+				</Box>
+			}
 		</Box>
 	);
 };
