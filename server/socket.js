@@ -10,6 +10,7 @@ module.exports = {
 					nbOfRounds,
 					nbOfDefenses,
 					timeForEachRound,
+					userEarnings,
 					hasTriviaRound,
 					difficulty,
 				},
@@ -28,6 +29,7 @@ module.exports = {
 				app.locals[lobbyId].nbOfRounds = nbOfRounds;
 				app.locals[lobbyId].nbOfDefenses = nbOfDefenses;
 				app.locals[lobbyId].timeForEachRound = timeForEachRound;
+				app.locals[lobbyId].userEarnings = userEarnings;
 				app.locals[lobbyId].hasTriviaRound = hasTriviaRound;
 				app.locals[lobbyId].difficulty = difficulty;
 
@@ -78,6 +80,7 @@ module.exports = {
 				nbOfRounds: app.locals[lobbyId].nbOfRounds,
 				nbOfDefenses: app.locals[lobbyId].nbOfDefenses,
 				timeForEachRound: app.locals[lobbyId].timeForEachRound,
+				userEarnings: app.locals[lobbyId].userEarnings,
 				hasTriviaRound: app.locals[lobbyId].hasTriviaRound,
 				difficulty: app.locals[lobbyId].difficulty,
 				teamInfo: app.locals[lobbyId].teamInfo,

@@ -38,7 +38,6 @@ const HostInterface = ({ }) => {
 	React.useEffect(() => {
 		let aTeamIsNotDone = true;
 		
-		console.log(boughtDefenses);
 		boughtDefenses.forEach(team => {
 			if (team.length === 0) {
 				aTeamIsNotDone = false;

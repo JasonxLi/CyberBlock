@@ -47,7 +47,7 @@ const PlayerInterface = ({ }) => {
 	if (gameStage === 'DONE_BUYING') {
 		return (
 			<Box>
-				<Typography align="center" variant="h6">Waiting for host to start game...</Typography>
+				<Typography align="center" variant="h6">Waiting for the host to start game...</Typography>
 				<Typography align="center" variant="h6">Meanwhile, you can view each team's purchased defenses.</Typography>
 				<BoughtDefensesBoard />
 			</Box>

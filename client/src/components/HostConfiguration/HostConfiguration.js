@@ -16,19 +16,15 @@ const HostConfiguration = ({ children }) => {
 	// shared states
 	const {
 		setGameStage,
-		nbOfTeams, setNbOfTeams,
-		nbOfRounds, setNbOfRounds,
-		timeForEachRound, setTimeForEachRound,
-		hasTriviaRound, setHasTriviaRound,
-		difficulty, setDifficulty,
-		setAlias,
+		setNbOfTeams, setNbOfRounds, setTimeForEachRound, setUserEarnings,
+		hasTriviaRound, setHasTriviaRound, difficulty, setDifficulty,
 		host_create_lobby
 	} = useContext(Context);
 
 	const formControlBox = {
 		m: "20px",
 		p: "10px",
-		maxWidth: 300,
+		maxWidth: 500,
 	};
 	// handles the submission of the configuration by calling the create lobby event
 	const handleOnClick = () => {
@@ -59,6 +55,13 @@ const HostConfiguration = ({ children }) => {
 				type="text"
 				placeholder="Enter Time Allowed For Each Round (in seconds)"
 				onChange={(event) => setTimeForEachRound(event.target.value)}
+			/>
+			<br /><br />
+			<Input
+				fullWidth
+				type="text"
+				placeholder="Enter Amount of Starting Money"
+				onChange={(event) => setUserEarnings(event.target.value)}
 			/>
 			<br /><br />
 			<FormControl fullWidth>

@@ -144,6 +144,10 @@ const ThemeContextProvider = ({ children }) => {
 		}
 	}, [gameStage]);
 
+	useEffect(() => {
+		console.log("User Earnings: ", userEarnings);
+	}, [userEarnings]);
+
 
 	//Start-------------Lobby Events------------Start//
 	const host_create_lobby = () => {
@@ -154,6 +158,7 @@ const ThemeContextProvider = ({ children }) => {
 				nbOfRounds,
 				nbOfDefenses,
 				timeForEachRound,
+				userEarnings,
 				hasTriviaRound,
 				difficulty,
 			},
@@ -173,6 +178,7 @@ const ThemeContextProvider = ({ children }) => {
 					nbOfRounds,
 					nbOfDefenses,
 					timeForEachRound,
+					userEarnings,
 					hasTriviaRound,
 					difficulty,
 					teamInfo,
@@ -181,6 +187,7 @@ const ThemeContextProvider = ({ children }) => {
 					setNbOfRounds(nbOfRounds);
 					setNbOfDefenses(nbOfDefenses);
 					setTimeForEachRound(timeForEachRound);
+					setUserEarnings(parseInt(userEarnings));
 					setHasTriviaRound(hasTriviaRound);
 					setDifficulty(difficulty);
 					setTeamInfo(teamInfo);
@@ -215,7 +222,7 @@ const ThemeContextProvider = ({ children }) => {
 			"student_submit_trivia_answer",
 			{ lobbyId, teamId: myTeamId, triviaAnswer },
 			({ triviaReward }) => {
-				setUserEarnings(userEarnings + triviaReward);
+				setUserEarnings(userEarnings => userEarnings + triviaReward);
 			}
 		);
 	};
@@ -271,6 +278,7 @@ const ThemeContextProvider = ({ children }) => {
 				nbOfTeams, setNbOfTeams,
 				nbOfRounds, setNbOfRounds,
 				timeForEachRound, setTimeForEachRound,
+				userEarnings, setUserEarnings,
 				hasTriviaRound, setHasTriviaRound,
 				difficulty, setDifficulty,
 
@@ -287,7 +295,6 @@ const ThemeContextProvider = ({ children }) => {
 				submittedTriviaAnswers, setSubmittedTriviaAnswers,
 
 				//buy defenses
-				userEarnings, setUserEarnings,
 				userDefenses, setUserDefenses,
 				selectedDefenses, setSelectedDefenses,
 				boughtDefenses, setBoughtDefenses,
