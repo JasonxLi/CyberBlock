@@ -14,7 +14,7 @@ import { Context } from "../../context/ContextProvider";
 // page to allow the host to add configurations to the game
 const HostConfiguration = ({ children }) => {
 	// shared states
-	const { 
+	const {
 		setGameStage,
 		nbOfTeams, setNbOfTeams,
 		nbOfRounds, setNbOfRounds,
@@ -60,10 +60,13 @@ const HostConfiguration = ({ children }) => {
 				placeholder="Enter Time Allowed For Each Round (in seconds)"
 				onChange={(event) => setTimeForEachRound(event.target.value)}
 			/>
-			<br />
+			<br /><br />
 			<FormControl fullWidth>
-				<InputLabel id="select-label-difficulty">Difficulty</InputLabel>
+				<InputLabel id="select-difficulty-label">Difficulty</InputLabel>
 				<Select
+					labelId="select-difficulty-label"
+					id="select-difficulty"
+					value={difficulty}
 					label="Difficulty"
 					onChange={(event) => setDifficulty(event.target.value)}
 				>
@@ -72,11 +75,14 @@ const HostConfiguration = ({ children }) => {
 					<MenuItem value={3}>Expert</MenuItem>
 				</Select>
 			</FormControl>
-
+			<br />
 			<FormControl fullWidth>
-				<InputLabel id="select-label-hasTriviaRound"> Play Trivia Rounds?</InputLabel>
+				<InputLabel id="select-label-hasTriviaRound">Play Trivia Rounds?</InputLabel>
 				<Select
-					label="hasTriviaRound"
+					labelId="select-label-hasTriviaRound"
+					id="select-hasTrivia"
+					value={hasTriviaRound}
+					label="hasTrivia"
 					onChange={(event) => setHasTriviaRound(event.target.value)}
 				>
 					<MenuItem value={true}>Yes</MenuItem>
@@ -87,7 +93,7 @@ const HostConfiguration = ({ children }) => {
 			<br></br>
 			<br></br>
 			<Button variant="contained" onClick={handleOnClick}>
-				Submit{" "}
+				Submit
 			</Button>
 		</Box>
 	);

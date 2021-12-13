@@ -28,7 +28,7 @@ const TriviaBoard = ({ }) => {
                         <TableRow>
                             <TableCell>Team</TableCell>
                             <TableCell align="right" sx={{ minWidth: 300 }}>
-                                Submitted Answers
+                                Submitted Answer
                             </TableCell>
                         </TableRow>
                     </TableHead>

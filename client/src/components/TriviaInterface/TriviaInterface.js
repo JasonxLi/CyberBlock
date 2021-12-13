@@ -78,7 +78,14 @@ const TriviaInterface = ({ isHost, isTeamLeader }) => {
                                 </Select>
                             </FormControl>
                             <br /> <br />
-                            {isTeamLeader && <Button disabled={hasSubmittedTrivia} align='center' variant="contained" onClick={() => handleSubmitAnswer()}>Submit Answer</Button>}
+                            {isTeamLeader ?
+                                <Box>
+                                    <Typography>You are the current team leader, discuss with your team before submitting your answer.</Typography>
+                                    <Button disabled={hasSubmittedTrivia} align='center' variant="contained" onClick={() => handleSubmitAnswer()}>Submit Answer</Button>
+                                </Box>
+                                :
+                                <Typography>You are not the current team leader, discuss with your team to help your team leader pick the right answer.</Typography>
+                            }
 
                             {submittedTriviaAnswers[myTeamId] && <TriviaBoard />}
                         </Box>

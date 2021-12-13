@@ -115,7 +115,7 @@ module.exports = {
 				});
 			});
 			//emit event so front end knows game has been started when they receive this event
-			io.in(lobbyId).emit("host_started_game");
+			io.in(lobbyId).emit("host_started_game", app.locals[lobbyId].hasTriviaRound);
 		});
 
 		socket.on("host_gets_trivia_question", async (lobbyId, ack) => {

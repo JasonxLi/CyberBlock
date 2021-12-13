@@ -70,7 +70,7 @@ const ThemeContextProvider = ({ children }) => {
 			setTeamInfo(info);
 		});
 
-		socket.on("host_started_game", () => {
+		socket.on("host_started_game", (hasTriviaRound) => {
 			if (hasTriviaRound) {
 				setGameStage('TRIVIA');
 			}
@@ -100,7 +100,11 @@ const ThemeContextProvider = ({ children }) => {
 			setUserDefenses(defenses);
 			setBuyingPhase(true);
 		});
-	}, [socket]);
+
+		return () => {
+			socket.removeAllListeners();
+		}
+	}, []);
 
 	useEffect(() => {
 		teamInfo.forEach((team, index) => {
@@ -130,11 +134,6 @@ const ThemeContextProvider = ({ children }) => {
 			})
 		}
 	}, [myTeamId, roundCount]);
-
-	// useEffect(() => {
-	// 	console.log('submittedTriviaAnswers:', submittedTriviaAnswers);
-	// }, [submittedTriviaAnswers]);
-
 
 	//Start-------------Lobby Events------------Start//
 	const host_create_lobby = () => {
@@ -204,7 +203,7 @@ const ThemeContextProvider = ({ children }) => {
 	const student_submit_trivia_answer = () => {
 		socket.emit(
 			"student_submit_trivia_answer",
-			{ lobbyId, teamId:myTeamId, triviaAnswer },
+			{ lobbyId, teamId: myTeamId, triviaAnswer },
 			({ triviaReward }) => {
 				setUserEarnings(userEarnings + triviaReward);
 			}

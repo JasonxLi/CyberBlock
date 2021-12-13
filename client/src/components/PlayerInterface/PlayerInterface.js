@@ -31,9 +31,18 @@ const PlayerInterface = ({ }) => {
 		)
 	}
 
-	if (gameStage === 'TRIVIA'){
+	if (gameStage === 'TRIVIA') {
 		return (
-			<TriviaInterface isHost={false} isTeamLeader={isTeamLeader}/>
+			<TriviaInterface isHost={false} isTeamLeader={isTeamLeader} />
+		)
+	}
+
+	if (gameStage === 'BUY_DEFENSE') {
+		return (
+			<Box>
+				<Typography>Palceholder</Typography>
+				<BuyingInterface />
+			</Box>
 		)
 	}
 

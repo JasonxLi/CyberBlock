@@ -21,12 +21,7 @@ import { Context } from "../../context/ContextProvider";
 
 //this page displys all the defense for players to purchase those defenses
 
-const BuyingInterface = ({
-	userDefenses,
-	setTeamNumber,
-	teamNumber,
-	currentLead,
-}) => {
+const BuyingInterface = ({ }) => {
 	// importing shared states between different components
 	const {
 		selectedDefenses,
@@ -118,9 +113,9 @@ const BuyingInterface = ({
 					<Typography gutterBottom>{alias}</Typography>
 					<Typography gutterBottom>You are in Team {teamNumber}</Typography>
 					{isLeader ? (
-						<Typography gutterBottom>You are the current leader</Typography>
+						<Typography gutterBottom>You are the current team leader, discuss with your team to decide what defenses to buy!</Typography>
 					) : (
-						<Typography></Typography>
+						<Typography>You are not the current team leader, discuss with your team to help your team leader decide what defenses to buy!</Typography>
 					)}
 				</CardContent>
 			</Card>
@@ -175,8 +170,8 @@ const BuyingInterface = ({
 															row.cost > userEarnings && !isChecked[index]
 																? true
 																: false || isLeader
-																? true
-																: false
+																	? true
+																	: false
 														}
 														checked={isChecked[index]}
 													/>
