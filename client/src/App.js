@@ -9,6 +9,7 @@ import PlayerInterface from './components/PlayerInterface/PlayerInterface'
 import { Context } from './context/ContextProvider';
 
 import LobbyInterFace from './components/LobbyInterface/LobbyInterface';
+import ChatInterface from './components/ChatInterface/ChatInterface';
 
 
 function App() {
@@ -32,16 +33,22 @@ function App() {
 
       <br></br>
       <br></br>
-      {!isInLobby
+      {isInLobby
         ?
-        <LobbyInterFace />
+        <Box>
+          {isHost
+            ?
+            <HostInterface />
+            :
+            <PlayerInterface />}
+            <br/><br/><br/><br/>
+          <ChatInterface />
+        </Box>
         :
-        isHost
-          ?
-          <HostInterface />
-          :
-          <PlayerInterface />
+        <LobbyInterFace />
+
       }
+      <br></br>
 
     </Layout>
   );

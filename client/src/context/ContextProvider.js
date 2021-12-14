@@ -61,6 +61,14 @@ const ThemeContextProvider = ({ children }) => {
 
 	const [resetTimer, setResetTimer] = useState(false);
 
+	// Context for Chat Box
+	// All chat messages
+	const [chatMessagesAll, setChatMessagesAll] = useState([]);
+	// Team chat messages
+	const [chatMessagesTeam, setChatMessagesTeam] = useState([]);
+	const [hideTeamChat, setHideTeamChat] = useState(true);
+	const [hideAllChat, setHideAllChat] = useState(true);
+
 	//recalls all the socket events each time the socket changes to retrive the infromation from the server
 	useEffect(() => {
 		socket.on("new_student_joined_lobby", (info) => {
@@ -121,22 +129,23 @@ const ThemeContextProvider = ({ children }) => {
 			setPlayedDefenses(playedDefenses);
 		})
 
+		socket.on("chat_receiveFromAll", ({ alias, message }) => {
+			setChatMessagesAll(chatMessagesAll => [...chatMessagesAll, { alias, message }]);
+		})
+
+		socket.on("chat_receiveFromTeam", ({ alias, message }) => {
+			setChatMessagesTeam(chatMessagesTeam => [...chatMessagesTeam, { alias, message }]);
+		})
+
 		return () => {
 			socket.removeAllListeners();
 		}
 	}, []);
 
 	useEffect(() => {
-		console.log("nbOfTeams", nbOfTeams);
-
 		setScores(Array(parseInt(nbOfTeams)).fill(0));
 		setPlayedDefenses(Array(parseInt(nbOfTeams)).fill([]));
 	}, [nbOfTeams]);
-
-	useEffect(() => {
-		console.log("scores", scores);
-		console.log("playedDefenses", playedDefenses);
-	}, [scores, playedDefenses])
 
 	useEffect(() => {
 		teamInfo.forEach((team, index) => {
@@ -175,6 +184,9 @@ const ThemeContextProvider = ({ children }) => {
 
 	//this is a workaround for the socket.on not reading real-time value bug
 	useEffect(() => {
+		if ((!isHost) && (gameStage === 'TRIVIA' || gameStage === ' BUY_DEFENSE')) {
+			setHideTeamChat(false);
+		}
 		if (gameStage === 'BUY_DEFENSE') {
 			socket.emit("host_start_buy_phase", lobbyId);
 		}
@@ -205,6 +217,7 @@ const ThemeContextProvider = ({ children }) => {
 				setLobbyId(lobbyId);
 			}
 		);
+		setHideAllChat(false);
 	};
 
 	const student_join_lobby = () => {
@@ -232,7 +245,9 @@ const ThemeContextProvider = ({ children }) => {
 					setTeamInfo(teamInfo);
 				}
 			);
+			setHideAllChat(false);
 		}
+
 	};
 
 	const host_start_game = () => {
@@ -287,6 +302,14 @@ const ThemeContextProvider = ({ children }) => {
 		socket.emit("student_play_defenses", { lobbyId: lobbyId, teamId: myTeamId, defenses: defensesToSubmit, attackId: rolledAttack.AttackID });
 	}
 
+	const chat_sendToAll = (message) => {
+		socket.emit("chat_sendToAll", ({ lobbyId, alias, message }));
+	}
+
+	const chat_sendToTeam = (message) => {
+		socket.emit("chat_sendToTeam", ({ lobbyId, alias, teamId: myTeamId, message }))
+	}
+
 	// providing access to these value to all the interfaces
 	return (
 		<Context.Provider
@@ -331,6 +354,11 @@ const ThemeContextProvider = ({ children }) => {
 				hasSubmittedDefenses, setHasSubmittedDefenses,
 				resetTimer, setResetTimer,
 
+				chatMessagesTeam, setChatMessagesTeam,
+				chatMessagesAll, setChatMessagesAll,
+				hideTeamChat, setHideTeamChat,
+				hideAllChat, setHideAllChat,
+
 				//socket events
 				host_create_lobby, student_join_lobby, host_move_student,
 				host_start_game,
@@ -338,6 +366,7 @@ const ThemeContextProvider = ({ children }) => {
 				student_buy_defenses,
 				host_start_next_defense_round, host_end_game,
 				student_play_defenses,
+				chat_sendToAll, chat_sendToTeam
 			}}
 		>
 			{children}

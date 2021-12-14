@@ -93,7 +93,6 @@ module.exports = {
 		socket.on(
 			"host_move_student",
 			({ lobbyId, socketId, oldTeamId, newTeamId }) => {
-				// console.log(lobbyId, socketId, oldTeamId, newTeamId);
 				const oldTeam = app.locals[lobbyId].teamInfo[oldTeamId];
 				const newTeam = app.locals[lobbyId].teamInfo[newTeamId];
 				let alias = null;
@@ -202,7 +201,6 @@ module.exports = {
 
 			for (const defense of defenses) {
 				let pointRewarded = await mysql_queries.getPoints(db_connection, defense.defenseID, attackId);
-				console.log(pointRewarded);
 				if (pointRewarded.length !== 0) {
 					app.locals[lobbyId].scores[teamId] += await parseInt(pointRewarded[0].PointValue);
 				}
