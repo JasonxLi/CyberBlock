@@ -11,12 +11,11 @@ import {
 import { useContext } from "react";
 import { Context } from "../../context/ContextProvider";
 
-//Displays game scores for each team
-const GameScore = ({ children }) => {
-	//importing shared states to dispaly the points per team
-	const { scores } = useContext(Context);
+//displays the current team member info and displays in a row and column format
+const PlayerInfromation = ({}) => {
+	//shared state
+	const { teamInfo } = useContext(Context);
 
-	// displays the scores per team in a row and column format
 	return (
 		<Box>
 			<TableContainer>
@@ -25,27 +24,27 @@ const GameScore = ({ children }) => {
 						<TableRow>
 							<TableCell>Team</TableCell>
 							<TableCell align="right" sx={{ minWidth: 300 }}>
-								Scores
+								Members
 							</TableCell>
 						</TableRow>
 					</TableHead>
-					<TableBody>
-						{scores.map((score, index) => {
-							return (
-								<TableRow>
-									<TableCell component="th" scope="row">
+					{teamInfo.map((item, index) => {
+						return (
+							<TableBody>
+								<TableRow key={index + 1}>
+									<TableCell component="th" scope="child">
 										Team {index + 1}
 									</TableCell>
-									<TableCell style={{ width: 160 }} align="right">
-										{score}
-									</TableCell>
+									{item.map((child) => {
+										return <TableCell align="right">{child.alias}</TableCell>;
+									})}
 								</TableRow>
-							);
-						})}
-					</TableBody>
+							</TableBody>
+						);
+					})}
 				</Table>
 			</TableContainer>
 		</Box>
 	);
 };
-export default GameScore;
+export default PlayerInfromation;

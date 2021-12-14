@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useContext } from "react";
 
 import io from 'socket.io-client'
 const socket = io.connect("https://cyberblock.herokuapp.com/");
@@ -6,116 +6,370 @@ const socket = io.connect("https://cyberblock.herokuapp.com/");
 export const Context = createContext({});
 
 const ThemeContextProvider = ({ children }) => {
-    const [selectedDefenses, setSelectedDefenses] = useState([]);
-    const [endBuyPhase, setEndBuyPhase] = useState(false);
-    const [userEarnings, setUserEarnings] = useState(30);
-    const [lobbyId, setLobbyId] = useState("");
-    const [rolledAttack, setRolledAttack] = useState("");
-    const [alias, setAlias] = useState("");
-    const [isInLobby, setIsInLobby] = useState(false);
 
-    const [isHost, setIsHost] = useState(false);
-    const [inBuyingPhase, setBuyingPhase] = useState(false);
-    const [userDefenses, setUserDefenses] = useState([]);
-    const [pointTable, setPointTable] = useState([]);
-    const [nbOfRounds, setNbOfRounds] = useState(0);
+	const [gameStage, setGameStage] = useState('CONFIG');
 
-    const [teamInfo, setTeamInfo] = useState([]);
-    const [currentLead, setCurrentLead,] = useState([]);
+	const [nbOfTeams, setNbOfTeams] = useState(2);
+	const [nbOfRounds, setNbOfRounds] = useState(5);
+	const [timeForEachRound, setTimeForEachRound] = useState(120);
+	const [hasTriviaRound, setHasTriviaRound] = useState(true);
+	const [difficulty, setDifficulty] = useState(1);
+	//TODO 
+	const [nbOfDefenses, setNbOfDefenses] = useState(2);
 
-    const [roundCount, setRoundCount] = useState(0);
+	// a state that decides whether a player is host or student ans puts them in a correct interface
+	const [isHost, setIsHost] = useState(false);
+	// a state to see if users are in the set lobby or not
+	const [isInLobby, setIsInLobby] = useState(false);
+	//a state that holds the alias of each player that joined
+	const [alias, setAlias] = useState("");
+	//state that hold the lobbyId created by the host
+	const [lobbyId, setLobbyId] = useState("");
+	// a state to store all team information once student joins and host moves the players
+	const [teamInfo, setTeamInfo] = useState([]);
+	const [myTeamId, setMyTeamId] = useState(-1);
+	const [isTeamLeader, setIsTeamLeader] = useState(false);
 
-    useEffect(() => {
-        socket.on("new_student_joined_lobby", (info) => {
-            setTeamInfo(info)
-        })
-        socket.on("host_moved_student", (info) => {
-            setTeamInfo(info)
+	//a state to hold trivia questions
+	const [triviaQuestion, setTriviaQuestion] = useState();
+	const [triviaAnswer, setTriviaAnswer] = useState();
+	const [hasSubmittedTrivia, setHasSubmittedTrivia] = useState(false);
+	const [submittedTriviaAnswers, setSubmittedTriviaAnswers] = useState([]);
 
-        })
+	// a state to store the current round in the game
+	const [roundCount, setRoundCount] = useState(0);
+	// a state that handles user earning in the buying state
+	const [userEarnings, setUserEarnings] = useState(40);
+	// a state to store all the user defense obtained from the database
+	const [userDefenses, setUserDefenses] = useState([]);
+	// state that holds the user selected defense in the buying phase
+	const [selectedDefenses, setSelectedDefenses] = useState([]);
+	const [boughtDefenses, setBoughtDefenses] = useState([]);
 
-        socket.on("receive_roll", (attack) => {
-            setRolledAttack(attack);
-        })
-        socket.on("receive_defense_cards", (defenses) => {
-            setUserDefenses(defenses);
-            setBuyingPhase(true)
 
-        })
-    }, [socket])
+	//state that holds the attack rolled by the host
+	const [rolledAttack, setRolledAttack] = useState("");
+	//a state to hold scores for each team
+	const [scores, setScores] = useState([]);
 
-    const host_move_student = (lobbyId, socketId, oldTeamId, newTeamId) => {
-        socket.emit("host_move_student", { lobbyId, socketId, oldTeamId, newTeamId });
-    }
+	const [defensesToSubmit, setDefensesToSubmit] = useState([]);
+	const [bestDefenses, setBestDefenses] = useState([]);
+	const [playedDefenses, setPlayedDefenses] = useState([]);
+	const [hasSubmittedDefenses, setHasSubmittedDefenses] = useState(false);
 
-    const student_join_lobby = () => {
-        if (lobbyId !== "" && alias !== "") {
-            socket.emit("student_join_lobby", { lobbyId, alias }, result => {
-            })
-            setIsInLobby(true)
-        }
-    }
 
-    const host_create_lobby = (nbOfTeams, nbOfRounds, nbOfDefenses, timeForEachRound, hasTriviaRound, difficulty) => {
-        socket.emit("host_create_lobby", { nbOfTeams, nbOfRounds, nbOfDefenses, timeForEachRound, hasTriviaRound, difficulty }, lobbyId => {
-            setLobbyId(lobbyId);
-            setIsHost(true);
-            setIsInLobby(true);
-        })
-    }
+	const [resetTimer, setResetTimer] = useState(false);
 
-    const roll = (lobbyId) => {
-        socket.emit("roll", lobbyId);
-    }
+	// Context for Chat Box
+	// All chat messages
+	const [chatMessagesAll, setChatMessagesAll] = useState([]);
+	// Team chat messages
+	const [chatMessagesTeam, setChatMessagesTeam] = useState([]);
+	const [hideTeamChat, setHideTeamChat] = useState(true);
+	const [hideAllChat, setHideAllChat] = useState(true);
 
-    const start_buy_phase = () => {
-        socket.emit("start_buy_phase", lobbyId)
-    }
-    socket.on("receive_point_table", (points) => {
-        setPointTable(points);
-    })
+	//recalls all the socket events each time the socket changes to retrive the infromation from the server
+	useEffect(() => {
+		socket.on("new_student_joined_lobby", (info) => {
+			setTeamInfo(info);
+		});
+		socket.on("host_moved_student", (info) => {
+			setTeamInfo(info);
+		});
 
-    return (
-        <Context.Provider
-            value={{
-                selectedDefenses,
-                setSelectedDefenses,
-                endBuyPhase,
-                setEndBuyPhase,
-                userEarnings,
-                setUserEarnings,
-                lobbyId,
-                setLobbyId,
-                roll,
-                start_buy_phase,
-                rolledAttack,
-                setRolledAttack,
-                isInLobby,
-                setIsInLobby,
-                isHost,
-                setIsHost,
-                inBuyingPhase,
-                userDefenses,
-                pointTable,
-                host_create_lobby,
-                student_join_lobby,
-                nbOfRounds,
-                setNbOfRounds,
-                host_create_lobby,
-                setAlias,
-                alias,
-                teamInfo,
-                setTeamInfo,
-                host_move_student,
-                currentLead,
-                setCurrentLead,
-                roundCount,
-                setRoundCount,
-            }}
-        >
-            {children}
-        </Context.Provider>
-    )
+		socket.on("host_started_game", (hasTriviaRound) => {
+			if (hasTriviaRound) {
+				setGameStage('TRIVIA');
+			}
+			else {
+				setGameStage('BUY_DEFENSE');
+			}
+		});
 
-}
+		socket.on("host_ended_trivia_round", () => {
+			setGameStage('BUY_DEFENSE');
+		});
+
+		socket.on("student_receives_trivia_question", (triviaQuestion) => {
+			setTriviaQuestion(triviaQuestion);
+			setSubmittedTriviaAnswers([]);
+			setHasSubmittedTrivia(false);
+		});
+
+		socket.on("student_submitted_trivia_answer", (submittedTriviaAnswers) => {
+			setSubmittedTriviaAnswers(submittedTriviaAnswers);
+		});
+
+		socket.on("student_receive_defenses", (defenses) => {
+			setUserDefenses(defenses);
+		});
+
+		socket.on("student_bought_defenses", (boughtDefenses) => {
+			setBoughtDefenses(boughtDefenses);
+		})
+
+		socket.on("student_receive_attack", ({ attack, playedDefenses }) => {
+			setResetTimer(true);
+			setRoundCount(roundCount => roundCount + 1);
+			setRolledAttack(attack);
+			setGameStage("DEFEND_ATTACK");
+			setHasSubmittedDefenses(false);
+			setBestDefenses([]);
+			setPlayedDefenses(playedDefenses);
+		})
+
+		socket.on("host_ended_game", () => {
+			setGameStage("GAME_END");
+		})
+
+		socket.on("student_played_defenses", ({ scores, bestDefenses, playedDefenses }) => {
+			setScores(scores);
+			setBestDefenses(bestDefenses);
+			setPlayedDefenses(playedDefenses);
+		})
+
+		socket.on("chat_receiveFromAll", ({ alias, message }) => {
+			setChatMessagesAll(chatMessagesAll => [...chatMessagesAll, { alias, message }]);
+		})
+
+		socket.on("chat_receiveFromTeam", ({ alias, message }) => {
+			setChatMessagesTeam(chatMessagesTeam => [...chatMessagesTeam, { alias, message }]);
+		})
+
+		return () => {
+			socket.removeAllListeners();
+		}
+	}, []);
+
+	useEffect(() => {
+		setScores(Array(parseInt(nbOfTeams)).fill(0));
+		setPlayedDefenses(Array(parseInt(nbOfTeams)).fill([]));
+	}, [nbOfTeams]);
+
+	useEffect(() => {
+		teamInfo.forEach((team, index) => {
+			team.forEach((student) => {
+				if (socket.id === student.socketId) {
+					setMyTeamId(index);
+				}
+			});
+		});
+	}, [teamInfo]);
+
+	useEffect(() => {
+		//after changing team or changing round, it sets isTeamLeader to true or vice versa.
+		if (teamInfo[myTeamId]) {
+			const avgTurn = Math.ceil(parseInt(nbOfRounds) / teamInfo[myTeamId].length);
+			for (let i = 0; i < teamInfo[myTeamId].length; i++) {
+				if (socket.id === teamInfo[myTeamId][i].socketId) {
+					let myLeaderStartTurn = i * avgTurn;
+					let myLeaderEndTurn = (i + 1) * avgTurn;
+
+					if (roundCount === 0 && myLeaderStartTurn === 0) {
+						setIsTeamLeader(true);
+						break;
+					}
+					if (myLeaderStartTurn < roundCount && roundCount <= myLeaderEndTurn) {
+						setIsTeamLeader(true);
+						break;
+					}
+					else {
+						setIsTeamLeader(false);
+					}
+				}
+			}
+		}
+	}, [teamInfo, myTeamId, roundCount]);
+
+	//this is a workaround for the socket.on not reading real-time value bug
+	useEffect(() => {
+		if ((!isHost) && (gameStage === 'TRIVIA' || gameStage === ' BUY_DEFENSE')) {
+			setHideTeamChat(false);
+		}
+		if (gameStage === 'BUY_DEFENSE') {
+			socket.emit("host_start_buy_phase", lobbyId);
+		}
+	}, [gameStage]);
+
+	useEffect(() => {
+		boughtDefenses.forEach((defenses, index) => {
+			if (myTeamId == index) {
+				setSelectedDefenses(defenses);
+			}
+		})
+	}, [boughtDefenses]);
+
+	//Start-------------Lobby Events------------Start//
+	const host_create_lobby = () => {
+		socket.emit(
+			"host_create_lobby",
+			{
+				nbOfTeams,
+				nbOfRounds,
+				nbOfDefenses,
+				timeForEachRound,
+				userEarnings,
+				hasTriviaRound,
+				difficulty,
+			},
+			(lobbyId) => {
+				setLobbyId(lobbyId);
+			}
+		);
+		setHideAllChat(false);
+	};
+
+	const student_join_lobby = () => {
+		if (lobbyId !== "" && alias !== "") {
+			socket.emit(
+				"student_join_lobby",
+				{ lobbyId, alias },
+				({
+					nbOfTeams,
+					nbOfRounds,
+					nbOfDefenses,
+					timeForEachRound,
+					userEarnings,
+					hasTriviaRound,
+					difficulty,
+					teamInfo,
+				}) => {
+					setNbOfTeams(nbOfTeams);
+					setNbOfRounds(nbOfRounds);
+					setNbOfDefenses(nbOfDefenses);
+					setTimeForEachRound(timeForEachRound);
+					setUserEarnings(parseInt(userEarnings));
+					setHasTriviaRound(hasTriviaRound);
+					setDifficulty(difficulty);
+					setTeamInfo(teamInfo);
+				}
+			);
+			setHideAllChat(false);
+		}
+
+	};
+
+	const host_start_game = () => {
+		socket.emit("host_start_game", lobbyId);
+	}
+
+	const host_move_student = (lobbyId, socketId, oldTeamId, newTeamId) => {
+		socket.emit("host_move_student", {
+			lobbyId,
+			socketId,
+			oldTeamId,
+			newTeamId,
+		});
+	};
+	//End-------------Lobby Events------------End//
+
+	//Start-------------Trivia Events------------Start//
+	const host_gets_trivia_question = () => {
+		socket.emit("host_gets_trivia_question", lobbyId, (newTriviaQuestion) => {
+			setTriviaQuestion(newTriviaQuestion);
+		});
+	};
+
+	const student_submit_trivia_answer = () => {
+		socket.emit(
+			"student_submit_trivia_answer",
+			{ lobbyId, teamId: myTeamId, triviaAnswer },
+			({ triviaReward }) => {
+				setUserEarnings(userEarnings => userEarnings + triviaReward);
+			}
+		);
+	};
+
+	const host_ends_trivia_round = () => {
+		socket.emit("host_ends_trivia_round", lobbyId);
+	};
+	//End-------------Trivia Events------------End//
+
+	const student_buy_defenses = () => {
+		socket.emit("student_buy_defenses", ({ lobbyId, teamId: myTeamId, defenses: selectedDefenses }));
+	}
+
+	const host_start_next_defense_round = () => {
+		socket.emit("host_start_next_defense_round", lobbyId);
+	}
+
+	const host_end_game = () => {
+		socket.emit("host_end_game", lobbyId);
+	}
+
+	const student_play_defenses = () => {
+		socket.emit("student_play_defenses", { lobbyId: lobbyId, teamId: myTeamId, defenses: defensesToSubmit, attackId: rolledAttack.AttackID });
+	}
+
+	const chat_sendToAll = (message) => {
+		socket.emit("chat_sendToAll", ({ lobbyId, alias, message }));
+	}
+
+	const chat_sendToTeam = (message) => {
+		socket.emit("chat_sendToTeam", ({ lobbyId, alias, teamId: myTeamId, message }))
+	}
+
+	// providing access to these value to all the interfaces
+	return (
+		<Context.Provider
+			value={{
+				gameStage, setGameStage,
+
+				//lobby configuration
+				isHost, setIsHost,
+				isInLobby, setIsInLobby,
+				alias, setAlias,
+				lobbyId, setLobbyId,
+				nbOfTeams, setNbOfTeams,
+				nbOfRounds, setNbOfRounds,
+				timeForEachRound, setTimeForEachRound,
+				userEarnings, setUserEarnings,
+				hasTriviaRound, setHasTriviaRound,
+				difficulty, setDifficulty,
+
+				//lobby waiting page
+				teamInfo, setTeamInfo,
+				roundCount, setRoundCount,
+				myTeamId, setMyTeamId,
+				isTeamLeader, setIsTeamLeader,
+
+				//trivia page
+				triviaQuestion, setTriviaQuestion,
+				triviaAnswer, setTriviaAnswer,
+				hasSubmittedTrivia, setHasSubmittedTrivia,
+				submittedTriviaAnswers, setSubmittedTriviaAnswers,
+
+				//buy defenses
+				userDefenses, setUserDefenses,
+				selectedDefenses, setSelectedDefenses,
+				boughtDefenses, setBoughtDefenses,
+
+				//actual gameplay
+				rolledAttack, setRolledAttack,
+				scores, setScores,
+				defensesToSubmit, setDefensesToSubmit,
+				bestDefenses, setBestDefenses,
+				playedDefenses, setPlayedDefenses,
+				hasSubmittedDefenses, setHasSubmittedDefenses,
+				resetTimer, setResetTimer,
+
+				chatMessagesTeam, setChatMessagesTeam,
+				chatMessagesAll, setChatMessagesAll,
+				hideTeamChat, setHideTeamChat,
+				hideAllChat, setHideAllChat,
+
+				//socket events
+				host_create_lobby, student_join_lobby, host_move_student,
+				host_start_game,
+				host_gets_trivia_question, student_submit_trivia_answer, host_ends_trivia_round,
+				student_buy_defenses,
+				host_start_next_defense_round, host_end_game,
+				student_play_defenses,
+				chat_sendToAll, chat_sendToTeam
+			}}
+		>
+			{children}
+		</Context.Provider>
+	);
+};
 export default ThemeContextProvider;

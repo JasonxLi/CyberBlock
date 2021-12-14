@@ -1,19 +1,20 @@
 import './App.css';
 
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { Box, Typography } from '@material-ui/core'
 import Layout from './components/Layout';
 import { withStyles } from '@material-ui/styles';
 import HostInterface from './components/HostInterface/HostInterface';
 import PlayerInterface from './components/PlayerInterface/PlayerInterface'
 import { Context } from './context/ContextProvider';
-import GameInterface from './components/GameInterface/GameInterface';
+
 import LobbyInterFace from './components/LobbyInterface/LobbyInterface';
+import ChatInterface from './components/ChatInterface/ChatInterface';
 
 
 function App() {
 
-  const { endBuyPhase, rolledAttack, isHost, isInLobby, inBuyingPhase, userDefenses, pointTable } = useContext(Context)
+  const { isHost, isInLobby } = useContext(Context)
 
 
   const TitleText = withStyles({
@@ -32,24 +33,22 @@ function App() {
 
       <br></br>
       <br></br>
-      {!isInLobby
+      {isInLobby
         ?
-        <LobbyInterFace />
+        <Box>
+          {isHost
+            ?
+            <HostInterface />
+            :
+            <PlayerInterface />}
+            <br/><br/><br/><br/>
+          <ChatInterface />
+        </Box>
         :
-        isHost
-          ?
-          <HostInterface />
-          :
-          <Box>{
-            (inBuyingPhase && !endBuyPhase) ?
+        <LobbyInterFace />
 
-              <Typography > <PlayerInterface userDefenses={userDefenses} /> </Typography>
-              :
-              rolledAttack !== "" &&
-              <GameInterface rolledAttack={rolledAttack} attackId={rolledAttack.AttackID} pointTable={pointTable} />
-          }
-          </Box>
       }
+      <br></br>
 
     </Layout>
   );
