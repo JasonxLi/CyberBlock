@@ -22,7 +22,8 @@ module.exports = {
 				app.locals[lobbyId] = {};
 				app.locals[lobbyId].hostId = socket.id;
 				app.locals[lobbyId].previousTriviaQuestionIds = [];
-				app.locals[lobbyId].submittedTriviaAnswers = Array(nbOfTeams).fill(null);
+				app.locals[lobbyId].submittedTriviaAnswers = Array(parseInt(nbOfTeams)).fill(null);
+				app.locals[lobbyId].scores = Array(parseInt(nbOfTeams)).fill(0);
 
 				//store lobby configuration info
 				app.locals[lobbyId].nbOfTeams = nbOfTeams;
@@ -36,9 +37,11 @@ module.exports = {
 				//initialize team arrays
 				app.locals[lobbyId].teamInfo = [];
 				app.locals[lobbyId].boughtDefenses = [];
+				app.locals[lobbyId].playedDefenses = [];
 				for (i = 0; i < nbOfTeams; i++) {
 					app.locals[lobbyId].teamInfo.push([]);
 					app.locals[lobbyId].boughtDefenses.push([]);
+					app.locals[lobbyId].playedDefenses.push([]);
 				}
 
 				//join host to lobby
@@ -150,24 +153,22 @@ module.exports = {
 			ack(triviaQuestion);
 		});
 
-		socket.on(
-			"student_submit_trivia_answer",
-			({ lobbyId, teamId, triviaAnswer }, ack) => {
-				const triviaReward = 5;
+		socket.on("student_submit_trivia_answer", ({ lobbyId, teamId, triviaAnswer }, ack) => {
+			const triviaReward = 5;
 
-				app.locals[lobbyId].submittedTriviaAnswers[teamId] = triviaAnswer;
-				io.in(lobbyId).emit("student_submitted_trivia_answer", app.locals[lobbyId].submittedTriviaAnswers);
+			app.locals[lobbyId].submittedTriviaAnswers[teamId] = triviaAnswer;
+			io.in(lobbyId).emit("student_submitted_trivia_answer", app.locals[lobbyId].submittedTriviaAnswers);
 
-				if (triviaAnswer === app.locals[lobbyId].triviaQuestionAnswer) {
-					ack({
-						triviaReward: triviaReward,
-					});
-				} else {
-					ack({
-						triviaReward: 0,
-					});
-				}
+			if (triviaAnswer === app.locals[lobbyId].triviaQuestionAnswer) {
+				ack({
+					triviaReward: triviaReward,
+				});
+			} else {
+				ack({
+					triviaReward: 0,
+				});
 			}
+		}
 		);
 
 		socket.on("host_ends_trivia_round", lobbyId => {
@@ -187,33 +188,33 @@ module.exports = {
 			io.in(lobbyId).emit("student_bought_defenses", app.locals[lobbyId].boughtDefenses);
 		})
 
-		socket.on("host_start_next_defense_round", async (ack) => {
-			//TODO: figure out the format for this w/ Nelson
-			const attackCategory = await mysql_queries.rollAttackCategory(
-				db_connection
-			);
-			ack(attackCategory);
+		socket.on("host_start_next_defense_round", async (lobbyId) => {
+			//clear old data
+			app.locals[lobbyId].playedDefenses = Array(parseInt(app.locals[lobbyId].nbOfTeams)).fill([]);
+
+			const attack = await mysql_queries.getAttack(db_connection, app.locals[lobbyId].difficulty);
+			io.in(lobbyId).emit("student_receive_attack", ({ attack: attack, playedDefenses: app.locals[lobbyId].playedDefenses }));
 		});
 
-		socket.on("host_pick_attack", async (lobbyId, attackCategory, attackId) => {
-			//TODO: figure out how exactly to implement this
-			app.locals[lobbyId].attackId = attackId;
-			io.in(lobbyId).emit("student_receive_attack_category", attackCategory);
+		socket.on("student_play_defenses", async ({ lobbyId, teamId, defenses, attackId }) => {
+			app.locals[lobbyId].playedDefenses[teamId] = defenses;
+			const bestDefenses = await mysql_queries.getBestDefenses(db_connection, attackId);
 
-			const bestDefenses = await mysql_queries.getBestDefenses(
-				db_connection,
-				attackId
-			);
-
-			setTimeout(() => {
-				//TODO: query database to check locally stored answer
-				io.in(lobbyId).emit("student_receive_results", result, bestDefenses);
-			}, app.locals[lobbyId].timeForEachRound * 1000);
+			for (const defense of defenses) {
+				let pointRewarded = await mysql_queries.getPoints(db_connection, defense.defenseID, attackId);
+				console.log(pointRewarded);
+				if (pointRewarded.length !== 0) {
+					app.locals[lobbyId].scores[teamId] += await parseInt(pointRewarded[0].PointValue);
+				}
+			}
+			console.log("scores", app.locals[lobbyId].scores);
+			io.in(lobbyId).emit("student_played_defenses", ({ scores: app.locals[lobbyId].scores, bestDefenses: bestDefenses, playedDefenses: app.locals[lobbyId].playedDefenses }));
 		});
 
-		socket.on("student_play_defenses", (lobbyId, teamId, defenses) => {
-			//TODO: store defenses for each team
-		});
+		socket.on("host_end_game", lobbyId => {
+			io.in(lobbyId).emit("host_ended_game");
+			app.locals[lobbyId] = {};
+		})
 
 		socket.on("chat_sendToAll", ({ lobbyId, alias, message }) => {
 			io.in(lobbyId).emit("chat_receiveFromAll", {
@@ -228,54 +229,5 @@ module.exports = {
 				message: message,
 			});
 		});
-
-		socket.on(
-			"receive_points_per_round",
-			async ({ lobbyId, defenseID, attackID, teamNumber }, ack) => {
-				const points = await mysql_queries.getPoints(
-					db_connection,
-					defenseID,
-					attackID,
-					teamNumber
-				);
-
-				for (let i = 0; i < points.length; i++) {
-					const singlePoint = points[i].PointValue;
-					console.log(singlePoint);
-					ack({
-						rewardPoint: singlePoint,
-						teamIndex: teamNumber,
-					});
-				}
-			}
-		);
-
-		// --------------------old socket events-------------------- //
-		socket.on("join_lobby", (lobbyId) => {
-			socket.join(lobbyId);
-			console.log(`User with ID ${socket.id} joined lobby ${lobbyId}`);
-		});
-
-		socket.on("create_lobby", () => {
-			const lobbyId = Math.ceil(Math.random() * 10000).toString();
-			socket.emit("create_lobby", lobbyId);
-			socket.join(lobbyId);
-			console.log(`User with ID ${socket.id} joined lobby ${lobbyId}`);
-		});
-
-		socket.on("roll", async (lobbyId) => {
-			const attack = await mysql_queries.getAttack(db_connection, 1);
-			// console.log(attack.Name);
-			io.in(lobbyId).emit("receive_roll", attack);
-		});
-
-		socket.on("start_buy_phase", async (lobbyId) => {
-			const defenses = await mysql_queries.getDefenses(db_connection, 1);
-			io.in(lobbyId).emit("receive_defense_cards", defenses);
-			// const points = await mysql_queries.getPoints(db_connection, 1);
-			// io.in(lobbyId).emit("receive_point_table", points);
-		});
-
-		// --------------------old socket events-------------------- //
-	},
+	}
 };

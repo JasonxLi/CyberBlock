@@ -5,24 +5,28 @@ import {
 	Card,
 	CardContent,
 	Button,
+	ButtonGroup,
 	Grid,
 	Tooltip,
 } from "@material-ui/core";
 import { Context } from "../../context/ContextProvider";
 import { useState, useContext } from "react";
+import GameScore from "../GameScore/GameScore";
 
 // this page displays the actual game play witht the attack rolled by the host ad user selected defense as buttons
-const GameInterface = ({ rolledAttack, attackId, teamNumber }) => {
+const GameInterface = ({ isHost }) => {
 	//importing shared states
 	const {
+		roundCount, nbOfRounds,
+		rolledAttack,
 		selectedDefenses,
-		points,
-		receive_points_per_round,
-		lobbyId,
-		setPoints,
+		defensesToSubmit, setDefensesToSubmit,
+		hasSubmittedDefenses, setHasSubmittedDefenses,
+		isTeamLeader,
+		host_start_next_defense_round, host_end_game,
+		student_play_defenses,
 	} = useContext(Context);
 
-	const [selectedItems, setSelectedItems] = useState([]);
 	const [count, setCount] = useState(0);
 
 	const boxStyling = {
@@ -42,7 +46,7 @@ const GameInterface = ({ rolledAttack, attackId, teamNumber }) => {
 				defenseName: defenseName,
 				defenseID: defenseID,
 			};
-			setSelectedItems([...selectedItems, tempDefense]);
+			setDefensesToSubmit([...defensesToSubmit, tempDefense]);
 		}
 		// this function allows the user to delete first defense from the selected item list and add the new defense to the selected item list
 		else {
@@ -50,28 +54,30 @@ const GameInterface = ({ rolledAttack, attackId, teamNumber }) => {
 				defenseName: defenseName,
 				defenseID: defenseID,
 			};
-			setSelectedItems([...selectedItems.slice(1), tempDefense]);
+			setDefensesToSubmit([...defensesToSubmit.slice(1), tempDefense]);
 		}
 	};
-	// once the user hits the submit button the function checks to see if there is a point associated with the attack and defense ID and if so
-	// awards the user with points which is stored in an index that corelated to the team number
-	const checkPoints = () => {
-		selectedItems.map((defense) => {
-			receive_points_per_round(
-				lobbyId,
-				defense.defenseID,
-				attackId,
-				teamNumber
-			);
-		});
-	};
+
+	const handleEndGame = () => {
+		host_end_game();
+	}
+
+	const handleNextRound = () => {
+		host_start_next_defense_round();
+	}
+
+	const handleSubmitDefenses = () => {
+		setHasSubmittedDefenses(true);
+		student_play_defenses();
+	}
 
 	return (
 		<Box sx={boxStyling}>
-			<Typography color="text.secondary">
-				Points:{points[teamNumber - 1]}
-			</Typography>
+			<Grid container justifyContent="flex-end">
+				<Typography>{`Current round: ${roundCount}/${nbOfRounds}`}</Typography>
+			</Grid>
 
+			<GameScore />
 			<Box sx={{ m: "30px" }}>
 				<Card>
 					<CardContent>
@@ -88,46 +94,64 @@ const GameInterface = ({ rolledAttack, attackId, teamNumber }) => {
 					</CardContent>
 				</Card>
 			</Box>
-			<Grid container spacing={8}>
-				{selectedDefenses.map((item) => {
-					return (
-						<Grid item>
-							<Button
-								variant="contained"
-								size="large"
-								color="blue"
-								onClick={() => handleChange(item.defenseID, item.defenseName)}
-							>
-								<Typography
-									variant="h7"
-									align="center"
-									color="text.secondary"
-									gutterBottom
-								>
-									{item.defenseName}
-								</Typography>
-							</Button>
-						</Grid>
-					);
-				})}
-			</Grid>
-			<Box sx={boxStyling}>
-				<Box sx={{ m: "10px" }}>
-					<Typography>Selected Defense: </Typography>
+
+			{isHost
+				?
+				<Box align='center'>
+					<ButtonGroup variant="text" aria-label="text button group">
+						<Button align='center' variant="contained" onClick={() => { handleEndGame() }}>End Game</Button>
+						{(roundCount < nbOfRounds) &&
+							<Button variant="contained" onClick={() => { handleNextRound() }}>Next Round</Button>
+						}
+					</ButtonGroup>
 				</Box>
-				<Card>
-					<Box sx={{ m: "10px" }}>
-						{selectedItems.map((item) => {
-							return <Typography>{item.defenseName}</Typography>;
+
+				:
+
+				<Box>
+					<Grid container spacing={8}>
+						{selectedDefenses.map((item) => {
+							return (
+								<Grid item>
+									<Button
+										variant="contained"
+										size="large"
+										color="blue"
+										onClick={() => handleChange(item.defenseID, item.defenseName)}
+									>
+										<Typography
+											variant="h7"
+											align="center"
+											color="text.secondary"
+											gutterBottom
+										>
+											{item.defenseName}
+										</Typography>
+									</Button>
+								</Grid>
+							);
 						})}
+					</Grid>
+					<Box sx={boxStyling}>
+						<Box sx={{ m: "10px" }}>
+							<Typography>Selected Defense: </Typography>
+						</Box>
+						<Card>
+							<Box sx={{ m: "10px" }}>
+								{defensesToSubmit.map((item) => {
+									return <Typography>{item.defenseName}</Typography>;
+								})}
+							</Box>
+						</Card>
 					</Box>
-				</Card>
-			</Box>
-			<br></br>
-			<br></br>
-			<Button variant="contained" onClick={checkPoints}>
-				Submit
-			</Button>
+					<br></br>
+					<br></br>
+					<Button disabled={!isTeamLeader || hasSubmittedDefenses} variant="contained" onClick={() => handleSubmitDefenses()}>
+						Submit
+					</Button>
+				</Box>
+			}
+
 		</Box>
 	);
 };

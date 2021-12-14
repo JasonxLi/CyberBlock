@@ -7,17 +7,17 @@ import BuyingInterface from "../BuyingInterface/BuyingInterface";
 import PlayerInformation from "../PlayerInformation/PlayerInformation";
 import TriviaInterface from "../TriviaInterface/TriviaInterface";
 import BoughtDefensesBoard from "../BoughtDefensesBoard";
+import GameScore from "../GameScore";
+import DefenseBoard from "../DefenseBoard/DefenseBoard";
 
 // tha main player interface that handles the the change of pages for the players
 const PlayerInterface = ({ }) => {
 	// shared states
 	const {
 		gameStage,
-		isTeamLeader
+		isTeamLeader,
+		playedDefenses, myTeamId
 	} = useContext(Context);
-
-	//local state to get the team number for teamleader
-	const [teamNumber, setTeamNumber] = useState();
 
 	if (gameStage === 'WAITING') {
 		return (
@@ -54,27 +54,23 @@ const PlayerInterface = ({ }) => {
 		)
 	}
 
-	// return (
-	// 	<Box>
-	// 		{!inBuyingPhase ? (
-	// 			<PlayerInformation />
-	// 		) : inBuyingPhase && !endBuyPhase ? (
-	// 			<BuyingInterface
-	// 				userDefenses={userDefenses}
-	// 				setTeamNumber={setTeamNumber}
-	// 				teamNumber={teamNumber}
-	// 			/>
-	// 		) : (
-	// 			rolledAttack !== "" && (
-	// 				<GameInterface
-	// 					rolledAttack={rolledAttack}
-	// 					attackId={rolledAttack.AttackID}
-	// 					pointTable={pointTable}
-	// 					teamNumber={teamNumber}
-	// 				/>
-	// 			)
-	// 		)}
-	// 	</Box>
-	// );
+	if (gameStage === 'DEFEND_ATTACK') {
+		return (
+			<Box>
+				<GameInterface isHost={false} />
+				{(playedDefenses[myTeamId].length !== 0) && <DefenseBoard />}
+			</Box>
+		)
+	}
+
+	if (gameStage === 'GAME_END') {
+		return (
+			<Box>
+				<Typography align="center" variant="h6">This game session is over.</Typography>
+				<GameScore />
+			</Box>
+		)
+	}
+
 };
 export default PlayerInterface;

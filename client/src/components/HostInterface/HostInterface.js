@@ -7,6 +7,8 @@ import HostConfiguration from "../HostConfiguration/HostConfiguration";
 import GameScore from "../GameScore/GameScore";
 import TriviaInterface from "../TriviaInterface/TriviaInterface";
 import BoughtDefensesBoard from "../BoughtDefensesBoard";
+import GameInterface from "../GameInterface/GameInterface";
+import DefenseBoard from "../DefenseBoard/DefenseBoard";
 
 const HostInterface = ({ }) => {
 	const {
@@ -15,6 +17,7 @@ const HostInterface = ({ }) => {
 		gameStage,
 		host_start_game,
 		boughtDefenses,
+		host_start_next_defense_round
 	} = useContext(Context);
 
 	const [allDoneBuyingDefenses, setAllDoneBuyingDefenses] = useState(false);
@@ -23,27 +26,17 @@ const HostInterface = ({ }) => {
 		m: "20px",
 		p: "10px",
 	};
-	// function to check the total number of attacks played
-	// const rollPhase = () => {
-	// 	//checks to see if the game has come to an end
-	// 	if (roundCount !== nbOfRounds) {
-	// 		roll(lobbyId);
-	// 		getLead();
-	// 		setRoundCount(roundCount + 1);
-	// 	} else {
-	// 		setEndGame(true);
-	// 	}
-	// };
 
+	//useEffect to decide if all teams have finished buying attacks
 	React.useEffect(() => {
 		let aTeamIsNotDone = true;
-		
+
 		boughtDefenses.forEach(team => {
 			if (team.length === 0) {
 				aTeamIsNotDone = false;
 			}
 		});
-		if(boughtDefenses.length === 0){
+		if (boughtDefenses.length === 0) {
 			aTeamIsNotDone = false;
 		}
 		setAllDoneBuyingDefenses(aTeamIsNotDone);
@@ -53,8 +46,8 @@ const HostInterface = ({ }) => {
 		host_start_game();
 	}
 
-	const handleStartActualGame = () => {
-		//TODO
+	const handleStartDefendAttack = () => {
+		host_start_next_defense_round();
 	}
 
 	if (gameStage === 'CONFIG') {
@@ -112,12 +105,30 @@ const HostInterface = ({ }) => {
 					</Box>
 				}
 				<Box textAlign='center'>
-					<Button variant="contained" align="center" disabled={!allDoneBuyingDefenses} onClick={() => handleStartActualGame()}>
+					<Button variant="contained" align="center" disabled={!allDoneBuyingDefenses} onClick={() => handleStartDefendAttack()}>
 						Start Game
 					</Button>
 				</Box>
 
 				<BoughtDefensesBoard />
+			</Box>
+		)
+	}
+
+	if (gameStage === 'DEFEND_ATTACK') {
+		return (
+			<Box>
+				<GameInterface isHost={true} />
+				<DefenseBoard />
+			</Box>
+		)
+	}
+
+	if (gameStage === 'GAME_END') {
+		return (
+			<Box>
+				<Typography align="center" variant="h6">This game session is over.</Typography>
+				<GameScore />
 			</Box>
 		)
 	}

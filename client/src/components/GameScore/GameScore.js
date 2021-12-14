@@ -14,7 +14,7 @@ import { Context } from "../../context/ContextProvider";
 //Displays game scores for each team
 const GameScore = ({ children }) => {
 	//importing shared states to dispaly the points per team
-	const { points } = useContext(Context);
+	const { scores } = useContext(Context);
 
 	// displays the scores per team in a row and column format
 	return (
@@ -30,14 +30,14 @@ const GameScore = ({ children }) => {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{points.map((row, index) => {
+						{scores.map((score, index) => {
 							return (
 								<TableRow>
 									<TableCell component="th" scope="row">
 										Team {index + 1}
 									</TableCell>
 									<TableCell style={{ width: 160 }} align="right">
-										{row}
+										{score}
 									</TableCell>
 								</TableRow>
 							);

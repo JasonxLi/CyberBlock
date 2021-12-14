@@ -48,16 +48,15 @@ const ThemeContextProvider = ({ children }) => {
 	const [boughtDefenses, setBoughtDefenses] = useState([]);
 
 
-	const initialArray = new Array(nbOfTeams).fill(0);
-	const [leaderPlayerIndex, setLeaderPlayerIndex] = useState(initialArray);
-	// a state to store all the current Leader from each team
-	const [currentLead, setCurrentLead] = useState([]);
-
 	//state that holds the attack rolled by the host
 	const [rolledAttack, setRolledAttack] = useState("");
-	//a state to hold points for each team
-	const [points, setPoints] = useState(initialArray);
+	//a state to hold scores for each team
+	const [scores, setScores] = useState([]);
 
+	const [defensesToSubmit, setDefensesToSubmit] = useState([]);
+	const [bestDefenses, setBestDefenses] = useState([]);
+	const [playedDefenses, setPlayedDefenses] = useState([]);
+	const [hasSubmittedDefenses, setHasSubmittedDefenses] = useState(false);
 
 	//recalls all the socket events each time the socket changes to retrive the infromation from the server
 	useEffect(() => {
@@ -99,14 +98,41 @@ const ThemeContextProvider = ({ children }) => {
 			setBoughtDefenses(boughtDefenses);
 		})
 
-		socket.on("receive_roll", (attack) => {
+		socket.on("student_receive_attack", ({ attack, playedDefenses }) => {
+			setRoundCount(roundCount => roundCount + 1);
 			setRolledAttack(attack);
-		});
+			setGameStage("DEFEND_ATTACK");
+			setHasSubmittedDefenses(false);
+			setBestDefenses([]);
+			setPlayedDefenses(playedDefenses);
+		})
+
+		socket.on("host_ended_game", () => {
+			setGameStage("GAME_END");
+		})
+
+		socket.on("student_played_defenses", ({ scores, bestDefenses, playedDefenses }) => {
+			setScores(scores);
+			setBestDefenses(bestDefenses);
+			setPlayedDefenses(playedDefenses);
+		})
 
 		return () => {
 			socket.removeAllListeners();
 		}
 	}, []);
+
+	useEffect(() => {
+		console.log("nbOfTeams", nbOfTeams);
+
+		setScores(Array(parseInt(nbOfTeams)).fill(0));
+		setPlayedDefenses(Array(parseInt(nbOfTeams)).fill([]));
+	}, [nbOfTeams]);
+
+	useEffect(() => {
+		console.log("scores", scores);
+		console.log("playedDefenses", playedDefenses);
+	}, [scores, playedDefenses])
 
 	useEffect(() => {
 		teamInfo.forEach((team, index) => {
@@ -121,21 +147,27 @@ const ThemeContextProvider = ({ children }) => {
 	useEffect(() => {
 		//after changing team or changing round, it sets isTeamLeader to true or vice versa.
 		if (teamInfo[myTeamId]) {
-			const avgTurn = Math.floor(nbOfRounds / teamInfo[myTeamId].length);
-			teamInfo[myTeamId].every((student, index) => {
-				if (socket.id === student.socketId) {
-					let myLeaderEndTurn = (index + 1) * avgTurn;
-					if (roundCount <= myLeaderEndTurn) {
+			const avgTurn = Math.ceil(parseInt(nbOfRounds) / teamInfo[myTeamId].length);
+			for (let i = 0; i < teamInfo[myTeamId].length; i++) {
+				if (socket.id === teamInfo[myTeamId][i].socketId) {
+					let myLeaderStartTurn = i * avgTurn;
+					let myLeaderEndTurn = (i + 1) * avgTurn;
+
+					if (roundCount === 0 && myLeaderStartTurn === 0) {
 						setIsTeamLeader(true);
-						return (false); //equivalent to a break in every()
+						break;
+					}
+					if (myLeaderStartTurn < roundCount && roundCount <= myLeaderEndTurn) {
+						setIsTeamLeader(true);
+						break;
 					}
 					else {
 						setIsTeamLeader(false);
 					}
 				}
-			})
+			}
 		}
-	}, [myTeamId, roundCount]);
+	}, [teamInfo, myTeamId, roundCount]);
 
 	//this is a workaround for the socket.on not reading real-time value bug
 	useEffect(() => {
@@ -145,9 +177,12 @@ const ThemeContextProvider = ({ children }) => {
 	}, [gameStage]);
 
 	useEffect(() => {
-		console.log("User Earnings: ", userEarnings);
-	}, [userEarnings]);
-
+		boughtDefenses.forEach((defenses, index) => {
+			if (myTeamId == index) {
+				setSelectedDefenses(defenses);
+			}
+		})
+	}, [boughtDefenses]);
 
 	//Start-------------Lobby Events------------Start//
 	const host_create_lobby = () => {
@@ -233,36 +268,20 @@ const ThemeContextProvider = ({ children }) => {
 	//End-------------Trivia Events------------End//
 
 	const student_buy_defenses = () => {
-		console.log(selectedDefenses);
 		socket.emit("student_buy_defenses", ({ lobbyId, teamId: myTeamId, defenses: selectedDefenses }));
 	}
 
-	// event sent to server to see the correct answer  and get points from the server
-	const receive_points_per_round = (
-		lobbyId,
-		defenseID,
-		attackID,
-		teamNumber
-	) => {
-		socket.emit(
-			"receive_points_per_round",
-			{
-				lobbyId,
-				defenseID,
-				attackID,
-				teamNumber,
-			},
-			({ rewardPoint, teamIndex }) => {
-				if (rewardPoint !== "" && teamIndex !== "") {
-					const currentpointIndex = [...points];
-					let tempPointIndex = currentpointIndex[teamIndex - 1];
-					tempPointIndex = tempPointIndex + rewardPoint;
-					currentpointIndex[teamIndex - 1] = tempPointIndex;
-					setPoints(currentpointIndex);
-				}
-			}
-		);
-	};
+	const host_start_next_defense_round = () => {
+		socket.emit("host_start_next_defense_round", lobbyId);
+	}
+
+	const host_end_game = () => {
+		socket.emit("host_end_game", lobbyId);
+	}
+
+	const student_play_defenses = () => {
+		socket.emit("student_play_defenses", { lobbyId: lobbyId, teamId: myTeamId, defenses: defensesToSubmit, attackId: rolledAttack.AttackID });
+	}
 
 	// providing access to these value to all the interfaces
 	return (
@@ -299,11 +318,21 @@ const ThemeContextProvider = ({ children }) => {
 				selectedDefenses, setSelectedDefenses,
 				boughtDefenses, setBoughtDefenses,
 
+				//actual gameplay
+				rolledAttack, setRolledAttack,
+				scores, setScores,
+				defensesToSubmit, setDefensesToSubmit,
+				bestDefenses, setBestDefenses,
+				playedDefenses, setPlayedDefenses,
+				hasSubmittedDefenses, setHasSubmittedDefenses,
+
 				//socket events
 				host_create_lobby, student_join_lobby, host_move_student,
 				host_start_game,
 				host_gets_trivia_question, student_submit_trivia_answer, host_ends_trivia_round,
 				student_buy_defenses,
+				host_start_next_defense_round, host_end_game,
+				student_play_defenses,
 			}}
 		>
 			{children}
