@@ -58,6 +58,9 @@ const ThemeContextProvider = ({ children }) => {
 	const [playedDefenses, setPlayedDefenses] = useState([]);
 	const [hasSubmittedDefenses, setHasSubmittedDefenses] = useState(false);
 
+
+	const [resetTimer, setResetTimer] = useState(false);
+
 	//recalls all the socket events each time the socket changes to retrive the infromation from the server
 	useEffect(() => {
 		socket.on("new_student_joined_lobby", (info) => {
@@ -99,6 +102,7 @@ const ThemeContextProvider = ({ children }) => {
 		})
 
 		socket.on("student_receive_attack", ({ attack, playedDefenses }) => {
+			setResetTimer(true);
 			setRoundCount(roundCount => roundCount + 1);
 			setRolledAttack(attack);
 			setGameStage("DEFEND_ATTACK");
@@ -325,6 +329,7 @@ const ThemeContextProvider = ({ children }) => {
 				bestDefenses, setBestDefenses,
 				playedDefenses, setPlayedDefenses,
 				hasSubmittedDefenses, setHasSubmittedDefenses,
+				resetTimer, setResetTimer,
 
 				//socket events
 				host_create_lobby, student_join_lobby, host_move_student,

@@ -12,12 +12,14 @@ import {
 import { Context } from "../../context/ContextProvider";
 import { useState, useContext } from "react";
 import GameScore from "../GameScore/GameScore";
+import Timer from "../Timer/Timer"
 
 // this page displays the actual game play witht the attack rolled by the host ad user selected defense as buttons
 const GameInterface = ({ isHost }) => {
 	//importing shared states
 	const {
-		roundCount, nbOfRounds,
+		roundCount, nbOfRounds, timeForEachRound,
+		resetTimer, setResetTimer,
 		rolledAttack,
 		selectedDefenses,
 		defensesToSubmit, setDefensesToSubmit,
@@ -63,6 +65,7 @@ const GameInterface = ({ isHost }) => {
 	}
 
 	const handleNextRound = () => {
+		setResetTimer(true);
 		host_start_next_defense_round();
 	}
 
@@ -73,6 +76,7 @@ const GameInterface = ({ isHost }) => {
 
 	return (
 		<Box sx={boxStyling}>
+			<Timer initialSeconds={timeForEachRound} resetTimer={resetTimer} setResetTimer={setResetTimer} />
 			<Grid container justifyContent="flex-end">
 				<Typography>{`Current round: ${roundCount}/${nbOfRounds}`}</Typography>
 			</Grid>
