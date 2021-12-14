@@ -146,6 +146,13 @@ const GameInterface = ({ isHost }) => {
 					</Box>
 					<br></br>
 					<br></br>
+					{isTeamLeader ?
+						<Box>
+							<Typography>You are the current team leader, discuss with your team before submitting your defenses.</Typography>
+						</Box>
+						:
+						<Typography>You are not the current team leader, discuss with your team to help your team leader pick appropriate defenses.</Typography>
+					}
 					<Button disabled={!isTeamLeader || hasSubmittedDefenses} variant="contained" onClick={() => handleSubmitDefenses()}>
 						Submit
 					</Button>
