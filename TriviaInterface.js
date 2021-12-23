@@ -2,11 +2,12 @@ import * as React from 'react';
 import { Box, Button, ButtonGroup, Typography, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core'
 import { useState, useContext } from 'react';
 import { Context } from '../../context/ContextProvider'
+import TriviaBoard from '../TriviaBoard/TriviaBoard';
 
 const TriviaInterface = ({ isHost, isTeamLeader }) => {
 
     const { host_gets_trivia_question, host_ends_trivia_round, triviaQuestion, triviaAnswer, setTriviaAnswer,
-        student_submit_trivia_answer, submittedTriviaAnswer, setSubmittedTriviaAnswer, correctTriviaAnswer } = useContext(Context);;
+        student_submit_trivia_answer, hasSubmittedTrivia, setHasSubmittedTrivia, submittedTriviaAnswers, myTeamId } = useContext(Context);;
 
     const boxStyling = {
         m: '20px',
@@ -19,7 +20,7 @@ const TriviaInterface = ({ isHost, isTeamLeader }) => {
 
     const handleSubmitAnswer = () => {
         student_submit_trivia_answer();
-        setSubmittedTriviaAnswer(true);
+        setHasSubmittedTrivia(true);
     }
 
     if (isHost) {
@@ -36,7 +37,7 @@ const TriviaInterface = ({ isHost, isTeamLeader }) => {
                             {triviaQuestion.Option3 && <Typography align='center' variant='h6'>{`Option 3: ${triviaQuestion.Option3}`}</Typography>}
                             {triviaQuestion.Option4 && <Typography align='center' variant='h6'>{`Option 4: ${triviaQuestion.Option4}`}</Typography>}
                             <br />
-                            <Typography align='center' variant='h6'>{`Correct Answer: ${triviaQuestion.Answer}`}</Typography>
+                            {/* <Typography align='center' variant='h6'>{`Correct Answer: ${triviaQuestion.Answer}`}</Typography> */}
                         </Box>
                     }
                 </Box>
@@ -46,6 +47,8 @@ const TriviaInterface = ({ isHost, isTeamLeader }) => {
                         <Button variant="contained" onClick={() => { host_gets_trivia_question() }}>Next Trivia Question</Button>
                     </ButtonGroup>
                 </Box>
+
+                {triviaQuestion && <TriviaBoard />}
             </Box>
         )
     }
@@ -75,13 +78,16 @@ const TriviaInterface = ({ isHost, isTeamLeader }) => {
                                 </Select>
                             </FormControl>
                             <br /> <br />
-                            {isTeamLeader && <Button disabled={submittedTriviaAnswer} align='center' variant="contained" onClick={() => handleSubmitAnswer()}>Submit Answer</Button>}
-
-                            {submittedTriviaAnswer &&
+                            {isTeamLeader ?
                                 <Box>
-                                    <Typography align='center' variant='h6'>{`Your team submitted: ${triviaAnswer}`}</Typography>
-                                    <Typography align='center' variant='h6'>{`The correct answer is: ${correctTriviaAnswer}`}</Typography>
-                                </Box >}
+                                    <Typography>You are the current team leader, discuss with your team before submitting your answer.</Typography>
+                                    <Button disabled={hasSubmittedTrivia} align='center' variant="contained" onClick={() => handleSubmitAnswer()}>Submit Answer</Button>
+                                </Box>
+                                :
+                                <Typography>You are not the current team leader, discuss with your team to help your team leader pick the right answer.</Typography>
+                            }
+
+                            {submittedTriviaAnswers[myTeamId] && <TriviaBoard />}
                         </Box>
                         :
                         <Typography align='center' variant='h6'>{`Waiting for a trivia question...`}</Typography>
