@@ -63,14 +63,13 @@ const BuyingInterface = ({ }) => {
 	const getUserDefense = (value, name, cost, index, id) => {
 		// adds the selected defense to the selected defense list in the specific index
 		//the specific index helps keep track of the checkstate of the defense
+
 		const currentIndex = [...isChecked];
-		let tempIndex = { ...currentIndex[index] };
-		tempIndex = value;
-		currentIndex[index] = tempIndex;
+		currentIndex[index] = value;
 		setIsChecked(currentIndex);
 
 		// if the user unclicks the checkbox and the defense in in the seelcted defense list the defense is removed from the selectd defense list
-		if (!value && selectedDefenses.length > 0 && userEarnings > 0) {
+		if (!value && selectedDefenses.length > 0 && userEarnings >= 0) {
 			selectedDefenses.map((item, index) => {
 				if (item.defenseName === name) {
 					removeDefense(index, item.defenseCost);
