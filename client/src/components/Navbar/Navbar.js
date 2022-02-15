@@ -11,37 +11,40 @@ const useStyles = makeStyles({
       marginLeft: "auto",
       marginRight: -12
     },
-    menuButton: {
-      marginRight: 16,
-      marginLeft: -12
+    typography: {
+        flexGrow: 1,
+        color: '#121212',
+        fontSize: '1.6rem'
+    },
+    appbar: {
+        background: '#dcdcdc'
     }
   })
 
 const Navbar = ({ }) => {
 
     // Grab the elements from ContextProvider.js
-    const { lobbyId } = useContext(Context);
+    const { lobbyId, roundCount } = useContext(Context);
     
     const classes = useStyles()
 
-    const toolbar = {
-        bgcolor: 'text.secondary'
-    };
-
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static">
+            <AppBar className={classes.appbar} position="static">
                 <Container maxWidth="x1">
                     <Toolbar disableGutters sx={{ justifyContent: "space-between"}}>
                         <MedtronicsIcon/>
-                        <Typography>
+                        <Typography className={classes.typography}>
                             CyberBlock
                         </Typography>
-                        <Typography component="div">
-                            Testing
-                        </Typography>
-                        <section className={classes.rightToolbar}>
-                            <Typography>
+                        <Typography className={classes.typography}>
+                                {roundCount 
+                                ? `Round ${roundCount}`
+                                : `Lobby`
+                                }
+                            </Typography>
+                        <section>
+                            <Typography className={classes.typography}>
                                 {lobbyId 
                                 ? `Lobby ID: ${lobbyId}`
                                 : `Lobby ID: Join a lobby!`
