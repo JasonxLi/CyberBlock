@@ -2,12 +2,27 @@ import * as React from "react";
 import { Box, Button, Input } from "@material-ui/core";
 import { useContext } from "react";
 import { Context } from "../../context/ContextProvider";
+import { createTheme, ThemeProvider } from '@material-ui/core/styles';
+
+const theme = createTheme({
+	palette: {
+		primary: {
+			main: '#F5F5F5',
+		},
+		secondary: {
+			main: '#DCDCDC',
+		},
+	},
+  });
+
+
 
 const LobbyInterFace = ({ children }) => {
 	const { setLobbyId, setIsInLobby, setIsHost, setAlias, setGameStage, student_join_lobby } = useContext(Context);
 
 	//generic styling for the box
 	const boxStyling = {
+		backgroundColor: "#DCDCDC",
 		p: 6,
 		border: "1px solid black",
 		borderRadius: "10px",
@@ -31,37 +46,46 @@ const LobbyInterFace = ({ children }) => {
 	}
 
 	return (
-		<Box sx={boxStyling}>
-			<Button
-				variant="contained"
-				onClick={() => {
-					setIsInLobby(true);
-					setIsHost(true);
-					setAlias("Host");
-				}}
-			>
-				Create Lobby
-			</Button>
-			<h4>or</h4>
+		<ThemeProvider theme={theme}>
+			<Box sx={boxStyling}>
+				<Button
+					color="primary"
+					variant="contained"
+					onClick={() => {
+						setIsInLobby(true);
+						setIsHost(true);
+						setAlias("Host");
+					}}
+				>
+					Create Lobby
+				</Button>
+				<h4>or</h4>
 
-			<Input
-				type="text"
-				placeholder="Enter Lobby ID"
-				onChange={(event) => handleSetLobbyId(event.target.value)}
-			/>
-			<br></br>
-			<br></br>
-			<Input
-				type="text"
-				placeholder="Enter Name"
-				onChange={(event) => setAlias(event.target.value)}
-			/>
-			<br></br>
-			<br></br>
-			<Button variant="contained" onClick={() => handleOnClick()}>
-				Join Lobby
-			</Button>
-		</Box>
+				<Input
+					type="number"
+					required
+					placeholder="Enter Lobby ID"
+					onChange={(event) => handleSetLobbyId(event.target.value)}
+				/>
+				<br></br>
+				<br></br>
+				<Input
+					type="text"
+					required
+					placeholder="Enter Name"
+					onChange={(event) => setAlias(event.target.value)}
+				/>
+				<br></br>
+				<br></br>
+				<Button 
+					color="primary"
+					variant="contained" 
+					onClick={() => handleOnClick()}
+				>
+					Join Lobby
+				</Button>
+			</Box>
+		</ThemeProvider>
 	);
 };
 

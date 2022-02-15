@@ -22,8 +22,17 @@ const HostConfiguration = ({ children }) => {
 	} = useContext(Context);
 
 	const formControlBox = {
+		backgroundColor: "#DCDCDC",
 		m: "20px",
 		p: "10px",
+		border: "1px solid black",
+		borderRadius: "10px",
+		width: 500,
+		align: "center",
+		position: "absolute",
+		top: "50%",
+		left: "50%",
+		transform: "translate(-50%, -50%)",
 		maxWidth: 500,
 	};
 	// handles the submission of the configuration by calling the create lobby event
@@ -37,14 +46,16 @@ const HostConfiguration = ({ children }) => {
 		<Box sx={formControlBox}>
 			<Input
 				fullWidth
-				type="text"
+				type="number"
+				required
 				placeholder="Enter Number of teams"
 				onChange={(event) => setNbOfTeams(event.target.value)}
 			/>
 			<br /> <br />
 			<Input
 				fullWidth
-				type="text"
+				type="number"
+				required
 				placeholder="Enter Number of Rounds"
 				onChange={(event) => setNbOfRounds(event.target.value)}
 			/>
@@ -52,14 +63,16 @@ const HostConfiguration = ({ children }) => {
 			<br /> <br />
 			<Input
 				fullWidth
-				type="text"
+				type="number"
+				required
 				placeholder="Enter Time Allowed For Each Round (in seconds)"
 				onChange={(event) => setTimeForEachRound(event.target.value)}
 			/>
 			<br /><br />
 			<Input
 				fullWidth
-				type="text"
+				type="number"
+				required
 				placeholder="Enter Amount of Starting Money"
 				onChange={(event) => setUserEarnings(event.target.value)}
 			/>
