@@ -1,6 +1,7 @@
 import * as React from "react";
-import { Box, Divider } from "@material-ui/core";
+import { Box, Divider, Typography } from "@material-ui/core";
 import { MedtronicsIcon } from "../Icons/Icons";
+import Navbar from "../Navbar/Navbar"
 
 // layout for all the interfaces
 const Layout = ({ children }) => {
@@ -13,13 +14,11 @@ const Layout = ({ children }) => {
 	};
 
 	return (
-		<Box sx={layoutStyling}>
-			<Box sx={base}>
-				<MedtronicsIcon />
-				<Divider />
+		<Box>
+			<Navbar/>
+			<Box sx={layoutStyling}>
+				{children}
 			</Box>
-
-			{children}
 		</Box>
 	);
 };
