@@ -4,9 +4,9 @@ import { Icon } from "@material-ui/core";
 export const MedtronicsIcon = () => {
 	return (
 		<svg
-			width="150px"
+			width="130px"
 			height="50px"
-			viewBox="0 0 35 15 "
+			viewBox="0 0 35 6.5 "
 			xmlns="http://www.w3.org/2000/svg"
 		>
 			<path
