@@ -27,10 +27,6 @@ function App() {
 
   return (
     <Layout >
-      <Box align='center' >
-        <TitleText variant='h4' > CYBERBLOCK</ TitleText>
-      </Box>
-
       <br></br>
       <br></br>
       {isInLobby
