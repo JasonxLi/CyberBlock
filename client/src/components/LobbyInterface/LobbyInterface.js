@@ -2,7 +2,7 @@ import * as React from "react";
 import { Box, Button, Input } from "@material-ui/core";
 import { useContext } from "react";
 import { Context } from "../../context/ContextProvider";
-import { createTheme, ThemeProvider } from '@material-ui/core/styles';
+import { createTheme, ThemeProvider } from '@material-ui/core';
 
 const theme = createTheme({
 	palette: {
@@ -13,15 +13,17 @@ const theme = createTheme({
 			main: '#DCDCDC',
 		},
 	},
+	typography: {
+
+	},
   });
-
-
 
 const LobbyInterFace = ({ children }) => {
 	const { setLobbyId, setIsInLobby, setIsHost, setAlias, setGameStage, student_join_lobby } = useContext(Context);
 
 	//generic styling for the box
 	const boxStyling = {
+		fontFamily: "Titillium Web",
 		backgroundColor: "#DCDCDC",
 		p: 6,
 		border: "1px solid black",
@@ -51,6 +53,7 @@ const LobbyInterFace = ({ children }) => {
 				<Button
 					color="primary"
 					variant="contained"
+					fontFamily="Arial"
 					onClick={() => {
 						setIsInLobby(true);
 						setIsHost(true);
