@@ -52,7 +52,11 @@ const DefenseBoard = ({ }) => {
                                     </TableCell>
                                     <TableCell align="right">
                                         {eachTeamsPlayedDefenses.map(playedDefense => {
-                                            return (<Typography>{playedDefense.defenseName}</Typography>)
+                                            if (bestDefenses.some(e => e.Name === playedDefense.defenseName)) {
+                                                return (<Typography color="common.red">{playedDefense.defenseName} &#10003;</Typography>)
+                                            } else {
+                                                return (<Typography>{playedDefense.defenseName}</Typography>)
+                                            }
                                         })}
                                     </TableCell>;
                                 </TableRow>
