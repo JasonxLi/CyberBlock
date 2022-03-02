@@ -29,7 +29,7 @@ const HostConfiguration = ({ children }) => {
 	const {
 		setGameStage,
 		setNbOfTeams, setNbOfRounds, setTimeForEachRound, setUserEarnings,
-		hasTriviaRound, setHasTriviaRound, difficulty, setDifficulty,
+		nbOfDefenses, setNbOfDefenses, hasTriviaRound, setHasTriviaRound, difficulty, setDifficulty,
 		host_create_lobby
 	} = useContext(Context);
 
@@ -90,7 +90,24 @@ const HostConfiguration = ({ children }) => {
 				placeholder="Enter Amount of Starting Money"
 				onChange={(event) => setUserEarnings(event.target.value)}
 			/>
+
 			<br /><br />
+			<FormControl fullWidth>
+				<InputLabel id="select-nbOfDefenses-label">Number of Defenses Played Each Round</InputLabel>
+				<Select
+					fontFamily= 'arial'
+					labelId="select-nbOfDefenses-label"
+					id="select-nbOfDefenses"
+					value={nbOfDefenses}
+					label="nbOfDefenses"
+					onChange={(event) => setNbOfDefenses(event.target.value)}
+				>
+					<MenuItem value={2}>2</MenuItem>
+					<MenuItem value={3}>3</MenuItem>
+					<MenuItem value={4}>4</MenuItem>
+				</Select>
+			</FormControl>
+			<br />
 			<FormControl fullWidth>
 				<InputLabel id="select-difficulty-label">Difficulty</InputLabel>
 				<Select

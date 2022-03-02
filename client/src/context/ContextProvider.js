@@ -339,6 +339,7 @@ const ThemeContextProvider = ({ children }) => {
 				userEarnings, setUserEarnings,
 				hasTriviaRound, setHasTriviaRound,
 				difficulty, setDifficulty,
+				nbOfDefenses, setNbOfDefenses,
 
 				//lobby waiting page
 				teamInfo, setTeamInfo,

@@ -18,6 +18,7 @@ import Timer from "../Timer/Timer"
 const GameInterface = ({ isHost }) => {
 	//importing shared states
 	const {
+		nbOfDefenses,
 		roundCount, nbOfRounds, timeForEachRound,
 		resetTimer, setResetTimer,
 		rolledAttack,
@@ -40,8 +41,8 @@ const GameInterface = ({ isHost }) => {
 	const handleChange = (defenseID, defenseName) => {
 		//avoids repetition
 
-		//this statement prohibits the user from submitting more than 2 defenses against the attack
-		if (count < 2) {
+		//this statement prohibits the user from submitting more than selected number of defenses against the attack
+		if (count < nbOfDefenses) {
 			setCount(count + 1);
 			//adds the selected defense to selectedItem list
 			const tempDefense = {
