@@ -20,8 +20,6 @@ const LobbyInterFace = ({ children }) => {
 	};
 
 	const handleOnClick = () => {
-		setIsInLobby(true);
-		setGameStage('WAITING');
 		student_join_lobby();
 	}
 

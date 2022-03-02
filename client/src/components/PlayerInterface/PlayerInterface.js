@@ -19,6 +19,17 @@ const PlayerInterface = ({ }) => {
 		playedDefenses, myTeamId
 	} = useContext(Context);
 
+	if (gameStage === 'CONFIG') {
+		return (
+			<Box>
+				<Typography
+					align="center"
+					variant="h6"
+				>{`Loading...`}</Typography>;
+			</Box>
+		)
+	}
+
 	if (gameStage === 'WAITING') {
 		return (
 			<Box>

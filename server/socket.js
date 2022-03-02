@@ -54,40 +54,46 @@ module.exports = {
 
 		socket.on("student_join_lobby", ({ lobbyId, alias }, ack) => {
 			//add student to a team with least members
-			let nbOfMembers = 9999;
-			let teamWithLeastMembers = null;
-			for (i = app.locals[lobbyId].nbOfTeams - 1; i >= 0; i--) {
-				if (app.locals[lobbyId].teamInfo[i].length <= nbOfMembers) {
-					nbOfMembers = app.locals[lobbyId].teamInfo[i].length;
-					teamWithLeastMembers = i;
-				}
+			if (!app.locals[lobbyId]) {
+				ack({ success: false });
 			}
-			app.locals[lobbyId].teamInfo[teamWithLeastMembers].push({
-				socketId: socket.id,
-				alias: alias,
-			});
+			else {
+				let nbOfMembers = 9999;
+				let teamWithLeastMembers = null;
+				for (i = app.locals[lobbyId].nbOfTeams - 1; i >= 0; i--) {
+					if (app.locals[lobbyId].teamInfo[i].length <= nbOfMembers) {
+						nbOfMembers = app.locals[lobbyId].teamInfo[i].length;
+						teamWithLeastMembers = i;
+					}
+				}
+				app.locals[lobbyId].teamInfo[teamWithLeastMembers].push({
+					socketId: socket.id,
+					alias: alias,
+				});
 
-			//add student to lobby
-			socket.join(lobbyId);
-			console.log(`Student with socketId ${socket.id} joined lobby ${lobbyId}`);
+				//add student to lobby
+				socket.join(lobbyId);
+				console.log(`Student with socketId ${socket.id} joined lobby ${lobbyId}`);
 
-			//emit to members already in the room with updated teamInfo
-			io.in(lobbyId).emit(
-				"new_student_joined_lobby",
-				app.locals[lobbyId].teamInfo
-			);
+				//emit to members already in the room with updated teamInfo
+				io.in(lobbyId).emit(
+					"new_student_joined_lobby",
+					app.locals[lobbyId].teamInfo
+				);
 
-			//ack to newly joined student, with configuration and teamInfo
-			ack({
-				nbOfTeams: app.locals[lobbyId].nbOfTeams,
-				nbOfRounds: app.locals[lobbyId].nbOfRounds,
-				nbOfDefenses: app.locals[lobbyId].nbOfDefenses,
-				timeForEachRound: app.locals[lobbyId].timeForEachRound,
-				userEarnings: app.locals[lobbyId].userEarnings,
-				hasTriviaRound: app.locals[lobbyId].hasTriviaRound,
-				difficulty: app.locals[lobbyId].difficulty,
-				teamInfo: app.locals[lobbyId].teamInfo,
-			});
+				//ack to newly joined student, with configuration and teamInfo
+				ack({
+					success: true,
+					nbOfTeams: app.locals[lobbyId].nbOfTeams,
+					nbOfRounds: app.locals[lobbyId].nbOfRounds,
+					nbOfDefenses: app.locals[lobbyId].nbOfDefenses,
+					timeForEachRound: app.locals[lobbyId].timeForEachRound,
+					userEarnings: app.locals[lobbyId].userEarnings,
+					hasTriviaRound: app.locals[lobbyId].hasTriviaRound,
+					difficulty: app.locals[lobbyId].difficulty,
+					teamInfo: app.locals[lobbyId].teamInfo,
+				});
+			}
 		});
 
 		socket.on(

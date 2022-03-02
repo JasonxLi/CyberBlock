@@ -143,8 +143,10 @@ const ThemeContextProvider = ({ children }) => {
 	}, []);
 
 	useEffect(() => {
-		setScores(Array(parseInt(nbOfTeams)).fill(0));
-		setPlayedDefenses(Array(parseInt(nbOfTeams)).fill([]));
+		if (Number.isInteger(nbOfTeams)) {
+			setScores(Array(parseInt(nbOfTeams)).fill(0));
+			setPlayedDefenses(Array(parseInt(nbOfTeams)).fill([]));
+		}
 	}, [nbOfTeams]);
 
 	useEffect(() => {
@@ -226,6 +228,7 @@ const ThemeContextProvider = ({ children }) => {
 				"student_join_lobby",
 				{ lobbyId, alias },
 				({
+					success,
 					nbOfTeams,
 					nbOfRounds,
 					nbOfDefenses,
@@ -235,14 +238,23 @@ const ThemeContextProvider = ({ children }) => {
 					difficulty,
 					teamInfo,
 				}) => {
-					setNbOfTeams(nbOfTeams);
-					setNbOfRounds(nbOfRounds);
-					setNbOfDefenses(nbOfDefenses);
-					setTimeForEachRound(timeForEachRound);
-					setUserEarnings(parseInt(userEarnings));
-					setHasTriviaRound(hasTriviaRound);
-					setDifficulty(difficulty);
-					setTeamInfo(teamInfo);
+					if (success) {
+						setNbOfTeams(nbOfTeams);
+						setNbOfRounds(nbOfRounds);
+						setNbOfDefenses(nbOfDefenses);
+						setTimeForEachRound(timeForEachRound);
+						setUserEarnings(parseInt(userEarnings));
+						setHasTriviaRound(hasTriviaRound);
+						setDifficulty(difficulty);
+						setTeamInfo(teamInfo);
+
+						setIsInLobby(true);
+						setGameStage('WAITING');
+						console.log(gameStage);
+					} else {
+						alert("Lobby does not exist. Please make sure you enter the correct lobby code given by your host.");
+						setIsInLobby(false);
+					}
 				}
 			);
 			setHideAllChat(false);
