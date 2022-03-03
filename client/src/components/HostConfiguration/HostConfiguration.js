@@ -55,6 +55,7 @@ const HostConfiguration = ({ children }) => {
 				required
 				fullWidth
 				label="Number of teams"
+				type="number"
 				autoFocus
 				onChange={(event) => setNbOfTeams(event.target.value)}
 			/>
@@ -63,12 +64,14 @@ const HostConfiguration = ({ children }) => {
 				required
 				fullWidth
 				label="Number of Rounds"
+				type="number"
 				onChange={(event) => setNbOfRounds(event.target.value)}
 			/>
 			<TextField
 				margin="normal"
 				required
 				fullWidth
+				type="number"
 				label="Round Duration (in seconds)"
 				onChange={(event) => setTimeForEachRound(event.target.value)}
 			/>
@@ -77,37 +80,46 @@ const HostConfiguration = ({ children }) => {
 				required
 				fullWidth
 				label="Amount of Starting Money"
+				type="number"
 				onChange={(event) => setUserEarnings(event.target.value)}
 			/>
 			<br></br>
-			<FormControl fullWidth>
-				<InputLabel id="select-difficulty-label">Difficulty</InputLabel>
-				<Select
-					labelId="select-difficulty-label"
-					id="select-difficulty"
-					value={difficulty}
-					label="Difficulty"
-					onChange={(event) => setDifficulty(event.target.value)}
-				>
-					<MenuItem value={1}>Beginner</MenuItem>
-					<MenuItem value={2}>Intermediate</MenuItem>
-					<MenuItem value={3}>Expert</MenuItem>
-				</Select>
-			</FormControl>
+			<Grid container spacing={4}>
+				<Grid item xs>
+					<FormControl fullWidth>
+						<InputLabel id="select-difficulty-label">Difficulty</InputLabel>
+						<Select
+							labelId="select-difficulty-label"
+							id="select-difficulty"
+							value={difficulty}
+							label="Difficulty"
+							onChange={(event) => setDifficulty(event.target.value)}
+						>
+							<MenuItem value={1}>Beginner</MenuItem>
+							<MenuItem value={2}>Intermediate</MenuItem>
+							<MenuItem value={3}>Expert</MenuItem>
+						</Select>
+					</FormControl>
+				</Grid>
+				<Grid item xs>
+					<FormControl fullWidth>
+						<InputLabel id="select-label-hasTriviaRound">Play Trivia Rounds?</InputLabel>
+						<Select
+							labelId="select-label-hasTriviaRound"
+							id="select-hasTrivia"
+							value={hasTriviaRound}
+							label="hasTrivia"
+							onChange={(event) => setHasTriviaRound(event.target.value)}
+						>
+							<MenuItem value={true}>Yes</MenuItem>
+							<MenuItem value={false}>No</MenuItem>
+						</Select>
+					</FormControl>
+				</Grid>
+			</Grid>
+			
 			<br/>
-			<FormControl fullWidth>
-				<InputLabel id="select-label-hasTriviaRound">Play Trivia Rounds?</InputLabel>
-				<Select
-					labelId="select-label-hasTriviaRound"
-					id="select-hasTrivia"
-					value={hasTriviaRound}
-					label="hasTrivia"
-					onChange={(event) => setHasTriviaRound(event.target.value)}
-				>
-					<MenuItem value={true}>Yes</MenuItem>
-					<MenuItem value={false}>No</MenuItem>
-				</Select>
-			</FormControl>
+
 			<br></br>
 			<br></br>
 			<Grid container spacing={4}>
