@@ -1,2 +1,2 @@
-import {MedtronicsIcon} from "./Icons";
-export {MedtronicsIcon};
+import { MedtronicsIcon, CrownIcon, SendIcon } from './Icons';
+export { MedtronicsIcon, CrownIcon, SendIcon };
