@@ -1,11 +1,11 @@
 import './App.css';
 
 import { useContext } from 'react';
-import { Box, Typography } from '@material-ui/core'
+import { Box, Typography } from '@material-ui/core';
 import Layout from './components/Layout';
 import { withStyles } from '@material-ui/styles';
 import HostInterface from './components/HostInterface/HostInterface';
-import PlayerInterface from './components/PlayerInterface/PlayerInterface'
+import PlayerInterface from './components/PlayerInterface/PlayerInterface';
 import { Context } from './context/ContextProvider';
 
 import LobbyInterFace from './components/LobbyInterface/LobbyInterface';
@@ -15,7 +15,6 @@ import ChatInterface from './components/ChatInterface/ChatInterface';
 function App() {
 
   const { isHost, isInLobby } = useContext(Context)
-
 
   const TitleText = withStyles({
     root: {
@@ -27,8 +26,8 @@ function App() {
 
   return (
     <Layout >
-      <br></br>
-      <br></br>
+    <br></br>
+    <br></br>
       {isInLobby
         ?
         <Box>
@@ -36,8 +35,9 @@ function App() {
             ?
             <HostInterface />
             :
-            <PlayerInterface />}
-            <br/><br/><br/><br/>
+            <PlayerInterface />
+          }
+          <br/><br/><br/><br/>
           <ChatInterface />
         </Box>
         :

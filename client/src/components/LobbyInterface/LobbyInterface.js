@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Box, Button, Input } from "@material-ui/core";
+import { Box, Button, Container, Input, TextField, Typography } from "@material-ui/core";
+import { Shadows } from "@material-ui/system";
 import { useContext } from "react";
 import { Context } from "../../context/ContextProvider";
 
@@ -10,13 +11,16 @@ const LobbyInterFace = ({ children }) => {
 	const boxStyling = {
 		p: 6,
 		border: "1px solid black",
-		borderRadius: "10px",
-		width: 250,
+		borderRadius: "20px",
 		align: "center",
+		alignItems: "center",
 		position: "absolute",
+		width: 400,
 		top: "50%",
 		left: "50%",
 		transform: "translate(-50%, -50%)",
+		display: "flex",
+		flexDirection: "column"
 	};
 
 	const handleOnClick = () => {
@@ -31,37 +35,48 @@ const LobbyInterFace = ({ children }) => {
 	}
 
 	return (
-		<Box sx={boxStyling}>
-			<Button
-				variant="contained"
-				onClick={() => {
-					setIsInLobby(true);
-					setIsHost(true);
-					setAlias("Host");
-				}}
-			>
-				Create Lobby
-			</Button>
-			<h4>or</h4>
-
-			<Input
-				type="text"
-				placeholder="Enter Lobby ID"
-				onChange={(event) => handleSetLobbyId(event.target.value)}
-			/>
-			<br></br>
-			<br></br>
-			<Input
-				type="text"
-				placeholder="Enter Name"
-				onChange={(event) => setAlias(event.target.value)}
-			/>
-			<br></br>
-			<br></br>
-			<Button variant="contained" onClick={() => handleOnClick()}>
-				Join Lobby
-			</Button>
-		</Box>
+		<Container maxWidth="xs">
+			<Box sx={boxStyling} boxShadow={3}>
+				<Typography variant="h5">Join a lobby</Typography>
+				<TextField
+					margin="normal"
+					required
+					fullWidth
+					label="Lobby ID"
+					autoFocus
+					onChange={(event) => handleSetLobbyId(event.target.value)}
+				/>
+				<TextField
+					margin="normal"
+					required
+					fullWidth
+					label="Name"
+					onChange={(event) => setAlias(event.target.value)}
+				/>
+				<br></br>
+				<Button
+					variant="contained"
+					fullWidth
+					onClick={() => handleOnClick()}
+				>
+					Join
+				</Button>
+				<br></br>
+				<Typography variant="h6">Or</Typography>
+				<br></br>
+				<Button
+					variant="contained"
+					fullWidth
+					onClick={() => {
+						setIsInLobby(true);
+						setIsHost(true);
+						setAlias("Host");
+					}}
+				>
+					Create A Lobby
+				</Button>
+			</Box>
+		</Container>
 	);
 };
 

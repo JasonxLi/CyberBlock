@@ -7,6 +7,8 @@ import {
 	MenuItem,
 	Button,
 	Input,
+	Typography,
+	TextField,
 } from "@material-ui/core";
 import { useState, useContext } from "react";
 import { Context } from "../../context/ContextProvider";
@@ -22,9 +24,19 @@ const HostConfiguration = ({ children }) => {
 	} = useContext(Context);
 
 	const formControlBox = {
-		m: "20px",
-		p: "10px",
-		maxWidth: 500,
+		p: 6,
+		border: "1px solid black",
+		borderRadius: "20px",
+		align: "center",
+		alignItems: "center",
+		position: "absolute",
+		minWidth: 500,
+		maxWidth: 700,
+		top: "50%",
+		left: "50%",
+		transform: "translate(-50%, -50%)",
+		display: "flex",
+		flexDirection: "column"
 	};
 	// handles the submission of the configuration by calling the create lobby event
 	const handleOnClick = () => {
@@ -34,36 +46,39 @@ const HostConfiguration = ({ children }) => {
 	};
 
 	return (
-		<Box sx={formControlBox}>
-			<Input
+		<Box sx={formControlBox} boxShadow={3}>
+			<Typography variant="h5">Configure New Lobby</Typography>
+			<br></br>
+			<TextField
+				margin="normal"
+				required
 				fullWidth
-				type="text"
-				placeholder="Enter Number of teams"
+				label="Number of teams"
+				autoFocus
 				onChange={(event) => setNbOfTeams(event.target.value)}
 			/>
-			<br /> <br />
-			<Input
+			<TextField
+				margin="normal"
+				required
 				fullWidth
-				type="text"
-				placeholder="Enter Number of Rounds"
+				label="Number of Rounds"
 				onChange={(event) => setNbOfRounds(event.target.value)}
 			/>
-
-			<br /> <br />
-			<Input
+			<TextField
+				margin="normal"
+				required
 				fullWidth
-				type="text"
-				placeholder="Enter Time Allowed For Each Round (in seconds)"
+				label="Round Duration (in seconds)"
 				onChange={(event) => setTimeForEachRound(event.target.value)}
 			/>
-			<br /><br />
-			<Input
+			<TextField
+				margin="normal"
+				required
 				fullWidth
-				type="text"
-				placeholder="Enter Amount of Starting Money"
+				label="Amount of Starting Money"
 				onChange={(event) => setUserEarnings(event.target.value)}
 			/>
-			<br /><br />
+			<br></br>
 			<FormControl fullWidth>
 				<InputLabel id="select-difficulty-label">Difficulty</InputLabel>
 				<Select
@@ -78,7 +93,7 @@ const HostConfiguration = ({ children }) => {
 					<MenuItem value={3}>Expert</MenuItem>
 				</Select>
 			</FormControl>
-			<br />
+			<br/>
 			<FormControl fullWidth>
 				<InputLabel id="select-label-hasTriviaRound">Play Trivia Rounds?</InputLabel>
 				<Select
@@ -92,10 +107,13 @@ const HostConfiguration = ({ children }) => {
 					<MenuItem value={false}>No</MenuItem>
 				</Select>
 			</FormControl>
-
 			<br></br>
 			<br></br>
-			<Button variant="contained" onClick={handleOnClick}>
+			<Button
+				variant="contained"
+				fullWidth
+				onClick={handleOnClick}
+			>
 				Submit
 			</Button>
 		</Box>
