@@ -62,7 +62,7 @@ const LobbyInterFace = ({ children }) => {
 					Join
 				</Button>
 				<br></br>
-				<Typography variant="h6">Or</Typography>
+				<Typography>Or</Typography>
 				<br></br>
 				<Button
 					variant="contained"

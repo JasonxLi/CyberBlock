@@ -9,6 +9,7 @@ import {
 	Input,
 	Typography,
 	TextField,
+	Grid,
 } from "@material-ui/core";
 import { useState, useContext } from "react";
 import { Context } from "../../context/ContextProvider";
@@ -20,7 +21,7 @@ const HostConfiguration = ({ children }) => {
 		setGameStage,
 		setNbOfTeams, setNbOfRounds, setTimeForEachRound, setUserEarnings,
 		hasTriviaRound, setHasTriviaRound, difficulty, setDifficulty,
-		host_create_lobby
+		host_create_lobby, setIsHost, setAlias, setIsInLobby
 	} = useContext(Context);
 
 	const formControlBox = {
@@ -109,13 +110,30 @@ const HostConfiguration = ({ children }) => {
 			</FormControl>
 			<br></br>
 			<br></br>
-			<Button
-				variant="contained"
-				fullWidth
-				onClick={handleOnClick}
-			>
-				Create The Lobby
-			</Button>
+			<Grid container spacing={4}>
+				<Grid item xs>
+					<Button
+						variant="contained"
+						fullWidth
+						onClick={handleOnClick}
+					>
+						Create The Lobby
+					</Button>
+				</Grid>
+				<Grid item xs>
+					<Button
+						variant="contained"
+						fullWidth
+						onClick={() => {
+							setIsInLobby(false);
+							setIsHost(false);
+							setAlias("");
+						}}
+					>
+						Cancel
+					</Button>
+				</Grid>
+			</Grid>
 		</Box>
 	);
 };
