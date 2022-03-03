@@ -47,7 +47,7 @@ const HostConfiguration = ({ children }) => {
 
 	return (
 		<Box sx={formControlBox} boxShadow={3}>
-			<Typography variant="h5">Configure New Lobby</Typography>
+			<Typography variant="h5">Create New Lobby</Typography>
 			<br></br>
 			<TextField
 				margin="normal"
@@ -114,7 +114,7 @@ const HostConfiguration = ({ children }) => {
 				fullWidth
 				onClick={handleOnClick}
 			>
-				Submit
+				Create The Lobby
 			</Button>
 		</Box>
 	);
