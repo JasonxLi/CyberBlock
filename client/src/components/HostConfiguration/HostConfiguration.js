@@ -24,15 +24,19 @@ const HostConfiguration = ({ children }) => {
 		host_create_lobby, setIsHost, setAlias, setIsInLobby
 	} = useContext(Context);
 
-	const formControlBox = {
-		p: 6,
+	const [teamCount, changeTeamCount] = useState(0);
+	const [roundCount, changeRoundCount] = useState(0);
+	const [roundTime, changeRoundTime] = useState(0);
+	const [startingMoney, changeStartingMoney] = useState(0);
+
+	const boxStyling = {
 		border: "1px solid black",
 		borderRadius: "20px",
+		p: 6,
 		align: "center",
 		alignItems: "center",
 		position: "absolute",
-		minWidth: 500,
-		maxWidth: 700,
+		width: 500,
 		top: "50%",
 		left: "50%",
 		transform: "translate(-50%, -50%)",
@@ -40,14 +44,32 @@ const HostConfiguration = ({ children }) => {
 		flexDirection: "column"
 	};
 	// handles the submission of the configuration by calling the create lobby event
-	const handleOnClick = () => {
-		//changes to the next interface
+	const handleOnSubmit = () => {
+		// Sends variable changes
+		setNbOfTeams(teamCount);
+		setNbOfRounds(roundCount);
+		setTimeForEachRound(roundTime);
+		setUserEarnings(startingMoney);
+		// Changes to the next interface
 		setGameStage('WAITING');
 		host_create_lobby();
-	};
+	}
+
+	const handleChangeTeamCount = e => {
+		changeTeamCount(e.target.value);
+	}
+	const handleChangeRoundCount = e => {
+		changeRoundCount(e.target.value);
+	}
+	const handleChangeRoundTime = e => {
+		changeRoundTime(e.target.value);
+	}
+	const handleChangeStartingMoney = e => {
+		changeStartingMoney(e.target.value);
+	}
 
 	return (
-		<Box sx={formControlBox} boxShadow={3}>
+		<Box component="form" onSubmit={handleOnSubmit} sx={boxStyling} boxShadow={3}>
 			<Typography variant="h5">Create New Lobby</Typography>
 			<br></br>
 			<TextField
@@ -57,7 +79,7 @@ const HostConfiguration = ({ children }) => {
 				label="Number of teams"
 				type="number"
 				autoFocus
-				onChange={(event) => setNbOfTeams(event.target.value)}
+				onChange={handleChangeTeamCount}
 			/>
 			<TextField
 				margin="normal"
@@ -65,7 +87,7 @@ const HostConfiguration = ({ children }) => {
 				fullWidth
 				label="Number of Rounds"
 				type="number"
-				onChange={(event) => setNbOfRounds(event.target.value)}
+				onChange={handleChangeRoundCount}
 			/>
 			<TextField
 				margin="normal"
@@ -73,7 +95,7 @@ const HostConfiguration = ({ children }) => {
 				fullWidth
 				type="number"
 				label="Round Duration (in seconds)"
-				onChange={(event) => setTimeForEachRound(event.target.value)}
+				onChange={handleChangeRoundTime}
 			/>
 			<TextField
 				margin="normal"
@@ -81,7 +103,7 @@ const HostConfiguration = ({ children }) => {
 				fullWidth
 				label="Amount of Starting Money"
 				type="number"
-				onChange={(event) => setUserEarnings(event.target.value)}
+				onChange={handleChangeStartingMoney}
 			/>
 			<br></br>
 			<Grid container spacing={4}>
@@ -117,9 +139,6 @@ const HostConfiguration = ({ children }) => {
 					</FormControl>
 				</Grid>
 			</Grid>
-			
-			<br/>
-
 			<br></br>
 			<br></br>
 			<Grid container spacing={4}>
@@ -127,7 +146,7 @@ const HostConfiguration = ({ children }) => {
 					<Button
 						variant="contained"
 						fullWidth
-						onClick={handleOnClick}
+						type="submit"
 					>
 						Create The Lobby
 					</Button>

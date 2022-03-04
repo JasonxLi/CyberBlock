@@ -1,17 +1,20 @@
 import * as React from "react";
 import { Box, Button, Container, Input, TextField, Typography } from "@material-ui/core";
 import { Shadows } from "@material-ui/system";
-import { useContext } from "react";
+import { useState, useContext } from "react";
 import { Context } from "../../context/ContextProvider";
 
 const LobbyInterFace = ({ children }) => {
 	const { setLobbyId, setIsInLobby, setIsHost, setAlias, setGameStage, student_join_lobby } = useContext(Context);
 
+	const [lobbyId, changeLobbyId] = useState("");
+	const [alias, changeAlias] = useState("");
+
 	//generic styling for the box
 	const boxStyling = {
-		p: 6,
 		border: "1px solid black",
 		borderRadius: "20px",
+		p: 6,
 		align: "center",
 		alignItems: "center",
 		position: "absolute",
@@ -23,20 +26,25 @@ const LobbyInterFace = ({ children }) => {
 		flexDirection: "column"
 	};
 
-	const handleOnClick = () => {
+	const handleOnSubmit = () => {
+		setLobbyId(lobbyId.trim());
+		setAlias(alias);
 		setIsInLobby(true);
 		setGameStage('WAITING');
 		student_join_lobby();
 	}
 
-	const handleSetLobbyId = (lobbyId) => {
-		//get rid of white spaces
-		setLobbyId(lobbyId.trim());
+	const handleChangeLobbyId = e => {
+		changeLobbyId(e.target.value);
+	}
+
+	const handleChangeAlias = e => {
+		changeAlias(e.target.value);
 	}
 
 	return (
-		<Container maxWidth="xs">
-			<Box sx={boxStyling} boxShadow={3}>
+		<Box sx={boxStyling} boxShadow={3}>
+			<Box component="form" onSubmit={handleOnSubmit} >
 				<Typography variant="h5">Join a lobby</Typography>
 				<TextField
 					margin="normal"
@@ -44,39 +52,36 @@ const LobbyInterFace = ({ children }) => {
 					fullWidth
 					label="Lobby ID"
 					autoFocus
-					onChange={(event) => handleSetLobbyId(event.target.value)}
+					onChange={handleChangeLobbyId}
 				/>
 				<TextField
 					margin="normal"
 					required
 					fullWidth
 					label="Name"
-					onChange={(event) => setAlias(event.target.value)}
+					onChange={handleChangeAlias}
 				/>
 				<br></br>
-				<Button
-					variant="contained"
-					fullWidth
-					onClick={() => handleOnClick()}
-				>
+				<Button type="submit" variant="contained" fullWidth>
 					Join
 				</Button>
-				<br></br>
-				<Typography>Or</Typography>
-				<br></br>
-				<Button
-					variant="contained"
-					fullWidth
-					onClick={() => {
-						setIsInLobby(true);
-						setIsHost(true);
-						setAlias("Host");
-					}}
-				>
-					Create A Lobby
-				</Button>
 			</Box>
-		</Container>
+			<br></br>
+			<Typography>Or</Typography>
+			<br></br>
+			<Button
+				type="button"
+				variant="contained"
+				fullWidth
+				onClick={() => {
+					setIsInLobby(true);
+					setIsHost(true);
+					setAlias("Host");
+				}}
+			>
+				Create A Lobby
+			</Button>
+		</Box>
 	);
 };
 

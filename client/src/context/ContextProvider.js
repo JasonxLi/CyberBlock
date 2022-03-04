@@ -221,7 +221,9 @@ const ThemeContextProvider = ({ children }) => {
 	};
 
 	const student_join_lobby = () => {
+		console.log("Student_Join_Lobby_Function")
 		if (lobbyId !== "" && alias !== "") {
+			console.log("Lobby and alias present, joi")
 			socket.emit(
 				"student_join_lobby",
 				{ lobbyId, alias },
