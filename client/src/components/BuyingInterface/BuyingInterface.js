@@ -16,6 +16,9 @@ import {
 	Checkbox,
 	Card,
 	CardContent,
+	InputLabel,
+	Select,
+	MenuItem
 } from "@material-ui/core";
 import { Context } from "../../context/ContextProvider";
 
@@ -38,14 +41,10 @@ const BuyingInterface = ({ }) => {
 		minWidth: "85%",
 	};
 
-	React.useEffect(() => {
-		if (boughtDefenses.length !== 0 && boughtDefenses[myTeamId].length !== 0) {
-			setGameStage("DONE_BUYING");
-		} 
-	}, [boughtDefenses])
 
 	// a state to store the checkboxstate and see if its is checked or not
 	const [isChecked, setIsChecked] = useState([]);
+	const [sortBy, setSortBy] = useState("Alphabetical");
 
 	// when the user toggles a checkbox the function removes the defense associated with the checkbox from the collection of user chosen defenses
 	const removeDefense = (index, cost) => {
@@ -85,11 +84,8 @@ const BuyingInterface = ({ }) => {
 				done: value,
 			};
 			setSelectedDefenses([...selectedDefenses, tempDefense]);
-			if (userEarnings - cost >= 8) {
-				setUserEarnings(userEarnings - cost);
-			} else {
-				setUserEarnings(userEarnings - cost);
-			}
+
+			setUserEarnings(userEarnings - cost);
 		}
 	};
 
@@ -97,6 +93,33 @@ const BuyingInterface = ({ }) => {
 		setGameStage('DONE_BUYING');
 		student_buy_defenses();
 	}
+
+	React.useEffect(() => {
+		if (boughtDefenses.length !== 0 && boughtDefenses[myTeamId].length !== 0) {
+			setGameStage("DONE_BUYING");
+		}
+	}, [boughtDefenses])
+
+	React.useEffect(() => {
+		if (sortBy === "Alphabetical") {
+			const sorted = [...userDefenses].sort((a, b) => {
+				return (a.Name < b.Name) ? -1 : (a.Name > b.Name) ? 1 : 0
+			})
+			setUserDefenses(sorted);
+		}
+		if(sortBy === "CostLowToHigh"){
+			const sorted = [...userDefenses].sort((a, b) => {
+				return (a.cost < b.cost) ? -1 : (a.cost > b.cost) ? 1 : 0
+			})
+			setUserDefenses(sorted);
+		}
+		if(sortBy === "CostHighToLow"){
+			const sorted = [...userDefenses].sort((a, b) => {
+				return (a.cost > b.cost) ? -1 : (a.cost < b.cost) ? 1 : 0
+			})
+			setUserDefenses(sorted);
+		}
+	}, [sortBy])
 
 	return (
 		<Box sx={boxStyling}>
@@ -115,6 +138,22 @@ const BuyingInterface = ({ }) => {
 			<Typography variant="h7" color="text.secondary" gutterBottom>
 				Earnings:${userEarnings}
 			</Typography>
+
+			<FormControl size="medium">
+				<InputLabel id="select-sortby-label">Sort By</InputLabel>
+				<Select
+					fontFamily= 'arial'
+					labelId="select-sortby-label"
+					id="select-sortby"
+					value={sortBy}
+					label="Sort By"
+					onChange={(event) => setSortBy(event.target.value)}
+				>
+					<MenuItem value={"Alphabetical"}>Alphabetical</MenuItem>
+					<MenuItem value={"CostLowToHigh"}>Cost (Lowest to Highest)</MenuItem>
+					<MenuItem value={"CostHighToLow"}>Cost (Highest to Lowest)</MenuItem>
+				</Select>
+			</FormControl>
 
 			<br></br>
 			<br></br>
@@ -169,6 +208,7 @@ const BuyingInterface = ({ }) => {
 					</TableBody>
 				</Table>
 			</TableContainer>
+
 			<br></br>
 			<Button variant="contained" disabled={!isTeamLeader} onClick={() => handleSubmit()}>
 				Submit

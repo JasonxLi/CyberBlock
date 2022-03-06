@@ -102,6 +102,10 @@ const ThemeContextProvider = ({ children }) => {
 		});
 
 		socket.on("student_receive_defenses", (defenses) => {
+			//default to alphabetical
+			defenses.sort((a, b) => {
+				return (a.Name < b.Name) ? -1 : (a.Name > b.Name) ? 1 : 0
+			})
 			setUserDefenses(defenses);
 		});
 
