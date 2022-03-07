@@ -1,3 +1,4 @@
+
 import * as React from "react";
 import { useState, useContext } from "react";
 import {
@@ -21,6 +22,7 @@ import {
 	MenuItem
 } from "@material-ui/core";
 import { Context } from "../../context/ContextProvider";
+import { makeStyles } from '@material-ui/core/styles';
 
 //this page displys all the defense for players to purchase those defenses
 
@@ -133,6 +135,23 @@ const BuyingInterface = ({ }) => {
 		}
 	}, [sortBy])
 
+	const useStyles = makeStyles((theme) => ({
+		headerStyling: {
+			fontWeight: 700,
+			fontSize: '16px',
+			backgroundColor: '#FAF9F6',
+		},
+		activeCellStyling: {
+			fontWeight: 600,
+			color: 'white',
+			backgroundColor: '#088F8F',
+			fontSize: '16px',
+		},
+	}));
+
+
+	const classes = useStyles();
+
 	return (
 		<Box sx={boxStyling}>
 			<Card>
@@ -169,22 +188,28 @@ const BuyingInterface = ({ }) => {
 
 			<br></br>
 			<br></br>
-			<TableContainer>
-				<Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
+			<br></br>
+			<br></br>
+			<TableContainer style={{ border: '1px solid #D3D3D3', borderRadius: '5px', height: '75vh', overflow: 'auto' }}>
+				<Table sx={{ minWidth: 500 }} aria-label="custom pagination table" stickyHeader>
 					<TableHead>
 						<TableRow>
-							<TableCell>Defenses</TableCell>
-							<TableCell align="right">Cost</TableCell>
-							<TableCell align="right">Submission</TableCell>
+							<TableCell className={classes.headerStyling}>Defenses</TableCell>
+							<TableCell align="right" className={classes.headerStyling}>
+								Cost
+							</TableCell>
+							<TableCell align="right" className={classes.headerStyling}>
+								Submission
+							</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
 						{userDefenses.map((row, index) => (
-							<TableRow key={row.Name}>
-								<TableCell component="th" scope="row">
+							<TableRow key={row.Name} className={isChecked[index] ? classes.activeCellStyling : 'none'}>
+								<TableCell component="th" scope="row" className={isChecked[index] ? classes.activeCellStyling : 'none'}>
 									{row.Name}
 								</TableCell>
-								<TableCell style={{ width: 160 }} align="right">
+								<TableCell style={{ width: 160 }} align="right" className={isChecked[index] ? classes.activeCellStyling : 'none'}>
 									{row.cost}
 								</TableCell>
 
@@ -196,20 +221,7 @@ const BuyingInterface = ({ }) => {
 													// The disabled prop checks if the cost of the selected defense is less than the total user earning, if so disbales the defense to restrict the user fromm purchasing that defense
 													// onChange handles any time the user toggles the checkbox
 													// the checkfeature retrives the value from the isChecked array
-													<Checkbox
-														key={row.label}
-														onChange={(event) =>
-															getUserDefense(
-																event.target.checked,
-																row.Name,
-																row.cost,
-																index,
-																row.DefenseID
-															)
-														}
-														disabled={row.cost > userEarnings && !isChecked[index]}
-														checked={isChecked[index]}
-													/>
+													<Checkbox key={row.label} onChange={(event) => getUserDefense(event.target.checked, row.Name, row.cost, index, row.DefenseID)} disabled={row.cost > userEarnings && !isChecked[index]} checked={isChecked[index]} />
 												}
 											/>
 										</FormGroup>
