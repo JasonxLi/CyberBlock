@@ -25,6 +25,7 @@ const GameInterface = ({ isHost }) => {
     host_start_next_defense_round,
     host_end_game,
     student_play_defenses,
+    nbOfDefenses,
   } = useContext(Context);
 
   const [count, setCount] = useState(0);
