@@ -34,6 +34,7 @@ const BuyingInterface = ({ }) => {
 		boughtDefenses,
 		setGameStage,
 		student_buy_defenses,
+		chat_sendToTeam
 	} = useContext(Context);
 
 	const boxStyling = {
@@ -94,6 +95,17 @@ const BuyingInterface = ({ }) => {
 		student_buy_defenses();
 	}
 
+	const handleShare = () => {
+		let message = `suggests buying the following defenses: `;
+		selectedDefenses.map((item, index) => {
+			message += item.defenseName;
+			if (index < selectedDefenses.length - 1) {
+				message += ", "
+			}
+		});
+		chat_sendToTeam(message);
+	}
+
 	React.useEffect(() => {
 		if (boughtDefenses.length !== 0 && boughtDefenses[myTeamId].length !== 0) {
 			setGameStage("DONE_BUYING");
@@ -107,13 +119,13 @@ const BuyingInterface = ({ }) => {
 			})
 			setUserDefenses(sorted);
 		}
-		if(sortBy === "CostLowToHigh"){
+		if (sortBy === "CostLowToHigh") {
 			const sorted = [...userDefenses].sort((a, b) => {
 				return (a.cost < b.cost) ? -1 : (a.cost > b.cost) ? 1 : 0
 			})
 			setUserDefenses(sorted);
 		}
-		if(sortBy === "CostHighToLow"){
+		if (sortBy === "CostHighToLow") {
 			const sorted = [...userDefenses].sort((a, b) => {
 				return (a.cost > b.cost) ? -1 : (a.cost < b.cost) ? 1 : 0
 			})
@@ -142,7 +154,7 @@ const BuyingInterface = ({ }) => {
 			<FormControl size="medium">
 				<InputLabel id="select-sortby-label">Sort By</InputLabel>
 				<Select
-					fontFamily= 'arial'
+					fontFamily='arial'
 					labelId="select-sortby-label"
 					id="select-sortby"
 					value={sortBy}
@@ -210,12 +222,22 @@ const BuyingInterface = ({ }) => {
 			</TableContainer>
 
 			<br></br>
-			<Button variant="contained" disabled={!isTeamLeader} onClick={() => handleSubmit()}>
-				Submit
-			</Button>
-			{!isTeamLeader &&
+			{isTeamLeader
+				?
+				<Box sx={{ fontStyle: 'italic' }} >
+					<Button variant="contained" onClick={() => handleSubmit()}>
+						Submit
+					</Button>
+					<Typography>You are the team leader, hear your teammate's input first before making a decision! </Typography>
+				</Box>
+
+				:
 				<Box sx={{ fontStyle: 'italic' }}>
-					<Typography>Only team leader can submit</Typography>
+					<Button variant="contained" onClick={() => handleShare()}>
+						Share Selected Defenses to Team Chat
+					</Button>
+					<Typography>Only team leader can buy defenses, but you can share your input by selecting defenses you think the team should buy
+						and using the above button to share! </Typography>
 				</Box>
 			}
 		</Box>

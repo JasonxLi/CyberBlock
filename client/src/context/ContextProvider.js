@@ -190,7 +190,7 @@ const ThemeContextProvider = ({ children }) => {
 
 	//this is a workaround for the socket.on not reading real-time value bug
 	useEffect(() => {
-		if ((!isHost) && (gameStage === 'TRIVIA' || gameStage === ' BUY_DEFENSE')) {
+		if ((!isHost) && (gameStage === 'TRIVIA' || gameStage === 'BUY_DEFENSE')) {
 			setHideTeamChat(false);
 		}
 		if (gameStage === 'BUY_DEFENSE') {
@@ -254,7 +254,6 @@ const ThemeContextProvider = ({ children }) => {
 
 						setIsInLobby(true);
 						setGameStage('WAITING');
-						console.log(gameStage);
 					} else {
 						alert("Lobby does not exist. Please make sure you enter the correct lobby code given by your host.");
 						setIsInLobby(false);
