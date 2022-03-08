@@ -1,14 +1,12 @@
 import * as React from "react";
+import { render } from "react-dom";
 import { Box, Button, Container, Input, TextField, Typography } from "@material-ui/core";
 import { Shadows } from "@material-ui/system";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Context } from "../../context/ContextProvider";
 
 const LobbyInterFace = ({ children }) => {
 	const { setLobbyId, setIsInLobby, setIsHost, setAlias, setGameStage, student_join_lobby } = useContext(Context);
-
-	const [lobbyId, changeLobbyId] = useState("");
-	const [alias, changeAlias] = useState("");
 
 	//generic styling for the box
 	const boxStyling = {
@@ -27,22 +25,24 @@ const LobbyInterFace = ({ children }) => {
 	};
 
 	const handleOnSubmit = () => {
+		try {
+			setIsInLobby(true);
+			setGameStage('WAITING');
+			student_join_lobby();
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+	const handleChangeLobbyId = (lobbyId) => {
 		setLobbyId(lobbyId.trim());
+	}
+
+	const handleChangeAlias = (alias) => {
 		setAlias(alias);
-		setIsInLobby(true);
-		setGameStage('WAITING');
-		student_join_lobby();
 	}
 
-	const handleChangeLobbyId = e => {
-		changeLobbyId(e.target.value);
-	}
-
-	const handleChangeAlias = e => {
-		changeAlias(e.target.value);
-	}
-
-	return (
+return (
 		<Box sx={boxStyling} boxShadow={3}>
 			<Box component="form" onSubmit={handleOnSubmit} >
 				<Typography variant="h5">Join a lobby</Typography>
@@ -52,14 +52,14 @@ const LobbyInterFace = ({ children }) => {
 					fullWidth
 					label="Lobby ID"
 					autoFocus
-					onChange={handleChangeLobbyId}
+					onChange={(event) => handleChangeLobbyId(event.target.value)}
 				/>
 				<TextField
 					margin="normal"
 					required
 					fullWidth
 					label="Name"
-					onChange={handleChangeAlias}
+					onChange={(event) => handleChangeAlias(event.target.value)}
 				/>
 				<br></br>
 				<Button type="submit" variant="contained" fullWidth>

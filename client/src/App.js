@@ -20,7 +20,6 @@ function App() {
     root: {
       fontWeight: 600,
       color: '#088F8F',
-
     }
   })(Typography);
 
