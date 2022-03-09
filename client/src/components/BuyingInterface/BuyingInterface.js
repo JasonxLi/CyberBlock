@@ -19,7 +19,8 @@ import {
 	CardContent,
 	InputLabel,
 	Select,
-	MenuItem
+	MenuItem,
+	Tooltip
 } from "@material-ui/core";
 import { Context } from "../../context/ContextProvider";
 import { makeStyles } from '@material-ui/core/styles';
@@ -62,11 +63,11 @@ const BuyingInterface = ({ }) => {
 		setUserEarnings(userEarnings + cost);
 	};
 
-	const getUserDefense = (value, name, cost, index, id) => {
+	const getUserDefense = (value, name, cost, index, id, description) => {
 		// adds the selected defense to the selected defense list in the specific index
 		//the specific index helps keep track of the checkstate of the defense
 
-		const currentIndex = {...isChecked};
+		const currentIndex = { ...isChecked };
 		currentIndex[id] = value;
 		setIsChecked(currentIndex);
 
@@ -84,6 +85,7 @@ const BuyingInterface = ({ }) => {
 				defenseName: name,
 				defenseCost: cost,
 				defenseID: id,
+				defenseDescritpion: description,
 				done: value,
 			};
 			setSelectedDefenses([...selectedDefenses, tempDefense]);
@@ -205,29 +207,32 @@ const BuyingInterface = ({ }) => {
 					</TableHead>
 					<TableBody>
 						{userDefenses.map((row, index) => (
-							<TableRow key={row.Name} className={isChecked[row.DefenseID] ? classes.activeCellStyling : 'none'}>
-								<TableCell component="th" scope="row" className={isChecked[row.DefenseID] ? classes.activeCellStyling : 'none'}>
-									{row.Name}
-								</TableCell>
-								<TableCell style={{ width: 160 }} align="right" className={isChecked[row.DefenseID] ? classes.activeCellStyling : 'none'}>
-									{row.cost}
-								</TableCell>
+							<Tooltip title={row.Description} arrow placement='right-end'>
+								<TableRow key={row.Name} className={isChecked[row.DefenseID] ? classes.activeCellStyling : 'none'}>
 
-								<TableCell style={{ width: 160 }} align="right">
-									<FormControl component="fieldset" variant="standard">
-										<FormGroup>
-											<FormControlLabel
-												control={
-													// The disabled prop checks if the cost of the selected defense is less than the total user earning, if so disbales the defense to restrict the user fromm purchasing that defense
-													// onChange handles any time the user toggles the checkbox
-													// the checkfeature retrives the value from the isChecked array
-													<Checkbox key={row.label} onChange={(event) => getUserDefense(event.target.checked, row.Name, row.cost, index, row.DefenseID)} disabled={row.cost > userEarnings && !isChecked[index]} checked={isChecked[index]} />
-												}
-											/>
-										</FormGroup>
-									</FormControl>
-								</TableCell>
-							</TableRow>
+									<TableCell component="th" scope="row" className={isChecked[row.DefenseID] ? classes.activeCellStyling : 'none'}>
+										{row.Name}
+									</TableCell>
+									<TableCell style={{ width: 160 }} align="right" className={isChecked[row.DefenseID] ? classes.activeCellStyling : 'none'}>
+										{row.cost}
+									</TableCell>
+
+									<TableCell style={{ width: 160 }} align="right">
+										<FormControl component="fieldset" variant="standard">
+											<FormGroup>
+												<FormControlLabel
+													control={
+														// The disabled prop checks if the cost of the selected defense is less than the total user earning, if so disbales the defense to restrict the user fromm purchasing that defense
+														// onChange handles any time the user toggles the checkbox
+														// the checkfeature retrives the value from the isChecked array
+														<Checkbox key={row.label} onChange={(event) => getUserDefense(event.target.checked, row.Name, row.cost, index, row.DefenseID, row.Description)} disabled={row.cost > userEarnings && !isChecked[index]} checked={isChecked[index]} />
+													}
+												/>
+											</FormGroup>
+										</FormControl>
+									</TableCell>
+								</TableRow>
+							</Tooltip>
 						))}
 					</TableBody>
 				</Table>

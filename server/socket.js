@@ -211,7 +211,6 @@ module.exports = {
 					app.locals[lobbyId].scores[teamId] += await parseInt(pointRewarded[0].PointValue);
 				}
 			}
-			console.log("scores", app.locals[lobbyId].scores);
 			io.in(lobbyId).emit("student_played_defenses", ({ scores: app.locals[lobbyId].scores, bestDefenses: bestDefenses, playedDefenses: app.locals[lobbyId].playedDefenses }));
 		});
 

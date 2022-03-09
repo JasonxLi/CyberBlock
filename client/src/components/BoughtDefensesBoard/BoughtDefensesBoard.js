@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { useState, useContext } from 'react';
 import { Context } from '../../context/ContextProvider';
-import { Box, TableContainer, Table, TableBody, TableRow, TableCell, TableHead, Typography } from '@material-ui/core';
+import { Box, TableContainer, Table, TableBody, TableRow, TableCell, TableHead, Typography, Tooltip } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-const BoughtDefensesBoard = ({}) => {
+const BoughtDefensesBoard = ({ }) => {
   const { boughtDefenses } = useContext(Context);
 
   const useStyles = makeStyles((theme) => ({
@@ -40,7 +40,7 @@ const BoughtDefensesBoard = ({}) => {
                   </TableCell>
                   <TableCell align="right">
                     {defenses.map((defense) => {
-                      return <Typography>{defense.defenseName}</Typography>;
+                      return <Tooltip title={defense.defenseDescritpion} arrow placement='right-end'><Typography>{defense.defenseName}</Typography></Tooltip>;
                     })}
                   </TableCell>
                 </TableRow>

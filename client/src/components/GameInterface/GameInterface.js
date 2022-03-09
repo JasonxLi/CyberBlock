@@ -31,7 +31,7 @@ const GameInterface = ({ isHost }) => {
   const [count, setCount] = useState(0);
 
   //handles the user submitted defenses
-  const handleChange = (defenseID, defenseName) => {
+  const handleChange = (defenseID, defenseName, defenseDescription) => {
     //avoids repetition
 
     //this statement prohibits the user from submitting more than selected number of defenses against the attack
@@ -41,6 +41,7 @@ const GameInterface = ({ isHost }) => {
       const tempDefense = {
         defenseName: defenseName,
         defenseID: defenseID,
+        defenseDescription: defenseDescription
       };
       setDefensesToSubmit([...defensesToSubmit, tempDefense]);
     }
@@ -49,6 +50,7 @@ const GameInterface = ({ isHost }) => {
       const tempDefense = {
         defenseName: defenseName,
         defenseID: defenseID,
+        defenseDescription: defenseDescription
       };
       setDefensesToSubmit([...defensesToSubmit.slice(1), tempDefense]);
     }
@@ -79,11 +81,12 @@ const GameInterface = ({ isHost }) => {
       <Box>
         <Card style={{ marginTop: '15px', marginBottom: '20px' }}>
           <CardContent>
-            <Tooltip title={rolledAttack.Description}>
               <Typography align="center" variant="h6" color="text.secondary" gutterBottom>
-                {`Attack rolled: ${rolledAttack.Name} `}
+                {`Attack Name: ${rolledAttack.Name} `}
               </Typography>
-            </Tooltip>
+              <Typography align="center" variant="h6" color="text.secondary" gutterBottom>
+                {`Attack Description: ${rolledAttack.Description} `}
+              </Typography>
           </CardContent>
         </Card>
       </Box>
@@ -118,7 +121,7 @@ const GameInterface = ({ isHost }) => {
             {selectedDefenses.map((item) => {
               return (
                 <Grid item>
-                  <Button variant="contained" size="large" color="blue" onClick={() => handleChange(item.defenseID, item.defenseName)}>
+                  <Button variant="contained" size="large" color="blue" onClick={() => handleChange(item.defenseID, item.defenseName, item.defenseDescritpion)}>
                     <Typography variant="h7" align="center" color="text.secondary" gutterBottom>
                       {item.defenseName}
                     </Typography>
