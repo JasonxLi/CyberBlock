@@ -46,7 +46,7 @@ const BuyingInterface = ({ }) => {
 
 
 	// a state to store the checkboxstate and see if its is checked or not
-	const [isChecked, setIsChecked] = useState([]);
+	const [isChecked, setIsChecked] = useState({});
 	const [sortBy, setSortBy] = useState("Alphabetical");
 
 	// when the user toggles a checkbox the function removes the defense associated with the checkbox from the collection of user chosen defenses
@@ -66,8 +66,8 @@ const BuyingInterface = ({ }) => {
 		// adds the selected defense to the selected defense list in the specific index
 		//the specific index helps keep track of the checkstate of the defense
 
-		const currentIndex = [...isChecked];
-		currentIndex[index] = value;
+		const currentIndex = {...isChecked};
+		currentIndex[id] = value;
 		setIsChecked(currentIndex);
 
 		// if the user unclicks the checkbox and the defense in in the seelcted defense list the defense is removed from the selectd defense list
@@ -205,11 +205,11 @@ const BuyingInterface = ({ }) => {
 					</TableHead>
 					<TableBody>
 						{userDefenses.map((row, index) => (
-							<TableRow key={row.Name} className={isChecked[index] ? classes.activeCellStyling : 'none'}>
-								<TableCell component="th" scope="row" className={isChecked[index] ? classes.activeCellStyling : 'none'}>
+							<TableRow key={row.Name} className={isChecked[row.DefenseID] ? classes.activeCellStyling : 'none'}>
+								<TableCell component="th" scope="row" className={isChecked[row.DefenseID] ? classes.activeCellStyling : 'none'}>
 									{row.Name}
 								</TableCell>
-								<TableCell style={{ width: 160 }} align="right" className={isChecked[index] ? classes.activeCellStyling : 'none'}>
+								<TableCell style={{ width: 160 }} align="right" className={isChecked[row.DefenseID] ? classes.activeCellStyling : 'none'}>
 									{row.cost}
 								</TableCell>
 
