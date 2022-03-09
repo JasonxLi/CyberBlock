@@ -33,7 +33,10 @@ const GameInterface = ({ isHost }) => {
   //handles the user submitted defenses
   const handleChange = (defenseID, defenseName, defenseDescription) => {
     //avoids repetition
-
+    if(defensesToSubmit.some(defense => defense.defenseID === defenseID)){
+      return;
+    }
+    
     //this statement prohibits the user from submitting more than selected number of defenses against the attack
     if (count < nbOfDefenses) {
       setCount(count + 1);
