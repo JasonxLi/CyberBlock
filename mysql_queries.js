@@ -28,7 +28,7 @@ module.exports = {
 	getDefenses: function (connection, difficulty) {
 		return new Promise(function (resolve, reject) {
 			connection.query(
-				`SELECT defense.DefenseID, defense.Name, defense.cost FROM defense WHERE defense.Difficulty <= ${difficulty}`,
+				`SELECT defense.DefenseID, defense.Name, defense.cost, defense.Description FROM defense WHERE defense.Difficulty <= ${difficulty}`,
 				function (err, defenses) {
 					if (err) {
 						return reject(err);
@@ -54,7 +54,7 @@ module.exports = {
 	getBestDefenses: function (connection, specificAttackID) {
 		return new Promise(function (resolve, reject) {
 			connection.query(
-				`SELECT defense.DefenseID, defense.Name FROM defense JOIN points ON defense.DefenseID = points.Defense_ID WHERE points.Attack_ID = ${specificAttackID}`,
+				`SELECT defense.DefenseID, defense.Name, defense.Description FROM defense JOIN points ON defense.DefenseID = points.Defense_ID WHERE points.Attack_ID = ${specificAttackID}`,
 				function (err, bestDefenses) {
 					if (err) {
 						return reject(err);
