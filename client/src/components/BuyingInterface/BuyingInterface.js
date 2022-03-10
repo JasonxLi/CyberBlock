@@ -205,8 +205,8 @@ const BuyingInterface = ({}) => {
                             <Checkbox
                               key={row.label}
                               onChange={(event) => getUserDefense(event.target.checked, row.Name, row.cost, index, row.DefenseID, row.Description)}
-                              disabled={row.cost > userEarnings && !isChecked[index]}
-                              checked={isChecked[index]}
+                              disabled={row.cost > userEarnings && !isChecked[row.DefenseID]}
+                              checked={isChecked[row.DefenseID]}
                             />
                           }
                         />
