@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Box, TableContainer, Table, TableBody, TableRow, TableCell, TableHead } from '@material-ui/core';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Context } from '../../context/ContextProvider';
 import { makeStyles } from '@material-ui/core/styles';
 import { CrownIcon } from '../Icons';
@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
 const GameScore = ({ children }) => {
   //importing shared states to dispaly the points per team
   const { scores, roundCount, gameStage } = useContext(Context);
+  const [teamScore, setTeamScore] = useState([]);
 
   const scoreBoxStyling = {
     borderRadius: '9px',
@@ -41,10 +42,26 @@ const GameScore = ({ children }) => {
     boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
     position: gameStage === 'DEFEND_ATTACK' ? 'absolute' : 'none',
     left: gameStage === 'DEFEND_ATTACK' ? '69%' : 'none',
-    top: gameStage === 'DEFEND_ATTACK' ? '45%' : 'none',
+    top: gameStage === 'DEFEND_ATTACK' ? '50%' : 'none',
+    width: gameStage === 'DEFEND_ATTACK' ? '400px' : 'none',
   };
 
   const classes = useStyles();
+
+  useEffect(() => {
+    const scoreArray = [];
+    scores.map((item, index) => {
+      const tempScore = {
+        teamID: index + 1,
+        score: item,
+      };
+      scoreArray.push(tempScore);
+    });
+    const sorted = [...scoreArray].sort((a, b) => {
+      return a.score > b.score ? -1 : a.score < b.score ? 1 : 0;
+    });
+    setTeamScore(sorted);
+  }, [scores]);
 
   // displays the scores per team in a row and column format
   return (
@@ -61,17 +78,17 @@ const GameScore = ({ children }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {scores.map((score, index) => {
+            {teamScore.map((data, index) => {
               return (
                 <TableRow>
-                  <TableCell component="th" scope="row" className={index === 0 && score !== 0 ? classes.winnerStyling : classes.body}>
-                    Team {index + 1}
+                  <TableCell component="th" scope="row" className={index === 0 && data.score !== 0 ? classes.winnerStyling : classes.body}>
+                    Team {data.teamID}
                   </TableCell>
-                  <TableCell align="right" className={index === 0 && score !== 0 ? classes.winnerStyling : classes.body}>
-                    {score}
+                  <TableCell align="right" className={index === 0 && data.score !== 0 ? classes.winnerStyling : classes.body}>
+                    {data.score}
                   </TableCell>
-                  <TableCell align="right" className={index === 0 && score !== 0 ? classes.winnerStyling : classes.body}>
-                    {index === 0 && score !== 0 && roundCount !== 0 ? <CrownIcon /> : ''}
+                  <TableCell align="right" className={index === 0 && data.score !== 0 ? classes.winnerStyling : classes.body}>
+                    {index === 0 && data.score !== 0 && roundCount !== 0 ? <CrownIcon /> : ''}
                   </TableCell>
                 </TableRow>
               );
