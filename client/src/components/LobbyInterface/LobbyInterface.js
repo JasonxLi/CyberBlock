@@ -43,6 +43,7 @@ const LobbyInterFace = ({ children }) => {
 
 	const handleOnSubmit = () => {
 		student_join_lobby();
+		setIsInLobby(true);
 	}
 
 	const handleChangeLobbyId = (lobbyId) => {
@@ -67,7 +68,7 @@ return (
 					required
 					fullWidth
 					label="Name"
-					onChange={(event) => handleChangeAlias(event.target.value)}
+					onChange={(event) => setAlias(event.target.value)}
 				/>
 				<br></br>
 				<Button type="submit" variant="contained" fullWidth>

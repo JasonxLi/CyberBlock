@@ -65,27 +65,9 @@ const HostConfiguration = ({ children }) => {
 	};
 	// handles the submission of the configuration by calling the create lobby event
 	const handleOnSubmit = () => {
-		// Sends variable changes
-		setNbOfTeams(teamCount);
-		setNbOfRounds(roundCount);
-		setTimeForEachRound(roundTime);
-		setUserEarnings(startingMoney);
 		// Changes to the next interface
 		setGameStage('WAITING');
 		host_create_lobby();
-	}
-
-	const handleChangeTeamCount = e => {
-		changeTeamCount(e.target.value);
-	}
-	const handleChangeRoundCount = e => {
-		changeRoundCount(e.target.value);
-	}
-	const handleChangeRoundTime = e => {
-		changeRoundTime(e.target.value);
-	}
-	const handleChangeStartingMoney = e => {
-		changeStartingMoney(e.target.value);
 	}
 
 	return (
