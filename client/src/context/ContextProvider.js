@@ -234,7 +234,9 @@ const ThemeContextProvider = ({ children }) => {
 	};
 
 	const student_join_lobby = () => {
+		console.log("Student joining lobby with lobbyId:", lobbyId, "and alias:", alias);
 		if (lobbyId !== "" && alias !== "") {
+			console.log("Lobby and alias present, joining lobby")
 			socket.emit(
 				"student_join_lobby",
 				{ lobbyId, alias },
@@ -268,6 +270,8 @@ const ThemeContextProvider = ({ children }) => {
 				}
 			);
 			setHideAllChat(false);
+		} else {
+			console.log("Lobby and alias not present, aborting")
 		}
 
 	};
