@@ -20,7 +20,8 @@ import {
 	InputLabel,
 	Select,
 	MenuItem,
-	Tooltip
+	Tooltip,
+	FormHelperText
 } from "@material-ui/core";
 import { Context } from "../../context/ContextProvider";
 import { makeStyles } from '@material-ui/core/styles';
@@ -172,8 +173,9 @@ const BuyingInterface = ({ }) => {
 				Earnings:${userEarnings}
 			</Typography>
 
+			<br></br>
+			<br></br>
 			<FormControl size="medium">
-				<InputLabel id="select-sortby-label">Sort By</InputLabel>
 				<Select
 					fontFamily='arial'
 					labelId="select-sortby-label"
@@ -186,9 +188,9 @@ const BuyingInterface = ({ }) => {
 					<MenuItem value={"CostLowToHigh"}>Cost (Lowest to Highest)</MenuItem>
 					<MenuItem value={"CostHighToLow"}>Cost (Highest to Lowest)</MenuItem>
 				</Select>
+				<FormHelperText>Sort By</FormHelperText>
 			</FormControl>
 
-			<br></br>
 			<br></br>
 			<br></br>
 			<br></br>
