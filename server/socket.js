@@ -232,5 +232,11 @@ module.exports = {
 				message: message,
 			});
 		});
+
+		socket.on("student_team_leader_change", ({lobbyId, alias, myTeamId}) => {
+			io.in(lobbyId + `_team` + myTeamId).emit("student_team_leader_changed", {
+				alias: alias
+			});
+		})
 	}
 };

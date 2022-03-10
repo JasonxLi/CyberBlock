@@ -30,6 +30,7 @@ const ThemeContextProvider = ({ children }) => {
 	const [teamInfo, setTeamInfo] = useState([]);
 	const [myTeamId, setMyTeamId] = useState(-1);
 	const [isTeamLeader, setIsTeamLeader] = useState(false);
+	const [teamLeader, setTeamLeader] = useState();
 
 	//a state to hold trivia questions
 	const [triviaQuestion, setTriviaQuestion] = useState();
@@ -141,6 +142,10 @@ const ThemeContextProvider = ({ children }) => {
 			setChatMessagesTeam(chatMessagesTeam => [...chatMessagesTeam, { alias, message }]);
 		})
 
+		socket.on("student_team_leader_changed", ({alias}) => {
+			setTeamLeader(alias);
+		})
+
 		return () => {
 			socket.removeAllListeners();
 		}
@@ -165,7 +170,7 @@ const ThemeContextProvider = ({ children }) => {
 
 	useEffect(() => {
 		//after changing team or changing round, it sets isTeamLeader to true or vice versa.
-		if (teamInfo[myTeamId]) {
+		if (teamInfo[myTeamId] && (gameStage !== "WAITING" && gameStage !== 'CONFIG')) {
 			const avgTurn = Math.ceil(parseInt(nbOfRounds) / teamInfo[myTeamId].length);
 			for (let i = 0; i < teamInfo[myTeamId].length; i++) {
 				if (socket.id === teamInfo[myTeamId][i].socketId) {
@@ -174,10 +179,12 @@ const ThemeContextProvider = ({ children }) => {
 
 					if (roundCount === 0 && myLeaderStartTurn === 0) {
 						setIsTeamLeader(true);
+						socket.emit("student_team_leader_change", ({lobbyId, alias, myTeamId}));
 						break;
 					}
 					if (myLeaderStartTurn < roundCount && roundCount <= myLeaderEndTurn) {
 						setIsTeamLeader(true);
+						socket.emit("student_team_leader_change", ({lobbyId, alias, myTeamId}));
 						break;
 					}
 					else {
@@ -186,7 +193,7 @@ const ThemeContextProvider = ({ children }) => {
 				}
 			}
 		}
-	}, [teamInfo, myTeamId, roundCount]);
+	}, [teamInfo, myTeamId, roundCount, gameStage]);
 
 	//this is a workaround for the socket.on not reading real-time value bug
 	useEffect(() => {
@@ -349,6 +356,7 @@ const ThemeContextProvider = ({ children }) => {
 				roundCount, setRoundCount,
 				myTeamId, setMyTeamId,
 				isTeamLeader, setIsTeamLeader,
+				teamLeader, setTeamLeader,
 
 				//trivia page
 				triviaQuestion, setTriviaQuestion,

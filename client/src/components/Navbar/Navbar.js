@@ -8,8 +8,8 @@ import { Context } from '../../context/ContextProvider'
 const useStyles = makeStyles({
     // This group of buttons will be aligned to the right
     rightToolbar: {
-      marginLeft: "auto",
-      marginRight: -12
+        marginLeft: "auto",
+        marginRight: -12
     },
     typography: {
         flexGrow: 1,
@@ -19,35 +19,39 @@ const useStyles = makeStyles({
     appbar: {
         background: '#dcdcdc'
     }
-  })
+})
 
 const Navbar = ({ }) => {
 
     // Grab the elements from ContextProvider.js
-    const { lobbyId, roundCount } = useContext(Context);
-    
+    const { lobbyId, roundCount, hideTeamChat, teamLeader } = useContext(Context);
+
     const classes = useStyles()
 
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar className={classes.appbar} position="static">
                 <Container maxWidth="x1">
-                    <Toolbar disableGutters sx={{ justifyContent: "space-between"}}>
-                        <MedtronicsIcon/>
+                    <Toolbar disableGutters sx={{ justifyContent: "space-between" }}>
+                        <MedtronicsIcon />
                         <Typography className={classes.typography}>
                             CyberBlock
                         </Typography>
                         <Typography className={classes.typography}>
-                                {roundCount 
+                            {roundCount
                                 ? `Round ${roundCount}`
                                 : `Lobby`
-                                }
-                            </Typography>
+                            }
+                        </Typography>
                         <section>
                             <Typography className={classes.typography}>
-                                {lobbyId 
-                                ? `Lobby ID: ${lobbyId}`
-                                : `Lobby ID: Join a lobby!`
+                                {!hideTeamChat && `Current Team Leader: ${teamLeader}`
+                                }
+                            </Typography>
+                            <Typography className={classes.typography}>
+                                {lobbyId
+                                    ? `Lobby ID: ${lobbyId}`
+                                    : `Lobby ID: Join a lobby!`
                                 }
                             </Typography>
                         </section>
