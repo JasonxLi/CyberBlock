@@ -152,7 +152,7 @@ const ThemeContextProvider = ({ children }) => {
 	}, []);
 
 	useEffect(() => {
-		if (Number.isInteger(nbOfTeams)) {
+		if (nbOfTeams !== '') {
 			setScores(Array(parseInt(nbOfTeams)).fill(0));
 			setPlayedDefenses(Array(parseInt(nbOfTeams)).fill([]));
 		}
