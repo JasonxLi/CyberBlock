@@ -241,7 +241,7 @@ const ThemeContextProvider = ({ children }) => {
 				"student_join_lobby",
 				{ lobbyId, alias },
 				({
-					success,
+					status,
 					nbOfTeams,
 					nbOfRounds,
 					nbOfDefenses,
@@ -251,7 +251,7 @@ const ThemeContextProvider = ({ children }) => {
 					difficulty,
 					teamInfo,
 				}) => {
-					if (success) {
+					if (status === "SUCCESS") {
 						setNbOfTeams(nbOfTeams);
 						setNbOfRounds(nbOfRounds);
 						setNbOfDefenses(nbOfDefenses);
@@ -263,8 +263,12 @@ const ThemeContextProvider = ({ children }) => {
 
 						setIsInLobby(true);
 						setGameStage('WAITING');
-					} else {
+					} else if(status === "NOT_EXIST"){
 						alert("Lobby does not exist. Please make sure you enter the correct lobby code given by your host.");
+						setIsInLobby(false);
+					}
+					else if(status === "ALREADY_STARTED"){
+						alert("Unable to join this lobby because it has already started its game session.");
 						setIsInLobby(false);
 					}
 				}

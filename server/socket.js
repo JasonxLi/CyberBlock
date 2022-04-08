@@ -24,6 +24,7 @@ module.exports = {
 				app.locals[lobbyId].previousTriviaQuestionIds = [];
 				app.locals[lobbyId].submittedTriviaAnswers = Array(parseInt(nbOfTeams)).fill(null);
 				app.locals[lobbyId].scores = Array(parseInt(nbOfTeams)).fill(0);
+				app.locals[lobbyId].isJoinable = true;
 
 				//store lobby configuration info
 				app.locals[lobbyId].nbOfTeams = nbOfTeams;
@@ -55,7 +56,10 @@ module.exports = {
 		socket.on("student_join_lobby", ({ lobbyId, alias }, ack) => {
 			//add student to a team with least members
 			if (!app.locals[lobbyId]) {
-				ack({ success: false });
+				ack({ status: "NOT_EXIST" });
+			}
+			else if(!app.locals[lobbyId].isJoinable){
+				ack({status:"ALREADY_STARTED"});
 			}
 			else {
 				let nbOfMembers = 9999;
@@ -83,7 +87,7 @@ module.exports = {
 
 				//ack to newly joined student, with configuration and teamInfo
 				ack({
-					success: true,
+					status: "SUCCESS",
 					nbOfTeams: app.locals[lobbyId].nbOfTeams,
 					nbOfRounds: app.locals[lobbyId].nbOfRounds,
 					nbOfDefenses: app.locals[lobbyId].nbOfDefenses,
@@ -121,6 +125,7 @@ module.exports = {
 		);
 
 		socket.on("host_start_game", (lobbyId) => {
+			app.locals[lobbyId].isJoinable = false;
 			//add each team member to their team socket room for chat
 			app.locals[lobbyId].teamInfo.forEach((item, index) => {
 				item.forEach((item) => {
