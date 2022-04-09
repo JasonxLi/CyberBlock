@@ -58,8 +58,8 @@ module.exports = {
 			if (!app.locals[lobbyId]) {
 				ack({ status: "NOT_EXIST" });
 			}
-			else if(!app.locals[lobbyId].isJoinable){
-				ack({status:"ALREADY_STARTED"});
+			else if (!app.locals[lobbyId].isJoinable) {
+				ack({ status: "ALREADY_STARTED" });
 			}
 			else {
 				let nbOfMembers = 9999;
@@ -134,6 +134,8 @@ module.exports = {
 			});
 			//emit event so front end knows game has been started when they receive this event
 			io.in(lobbyId).emit("host_started_game", app.locals[lobbyId].hasTriviaRound);
+			console.log("Host started the game.");
+			console.log("Team information:", app.locals[lobbyId].teamInfo);
 		});
 
 		socket.on("host_gets_trivia_question", async (lobbyId, ack) => {
@@ -191,11 +193,30 @@ module.exports = {
 				app.locals[lobbyId].difficulty
 			);
 			io.in(lobbyId).emit("student_receive_defenses", defenses);
+
+			console.log("Host started the buying phase.");
+			console.log("Team information:", app.locals[lobbyId].teamInfo);
 		});
 
 		socket.on("student_buy_defenses", ({ lobbyId, teamId, defenses }) => {
 			app.locals[lobbyId].boughtDefenses[teamId] = defenses;
 			io.in(lobbyId).emit("student_bought_defenses", app.locals[lobbyId].boughtDefenses);
+
+			console.log(`Received following defenses from team ${teamId + 1}:`);
+			arrayForLogging = []
+			defenses.forEach((defense, index) => {
+				arrayForLogging[index] = defense.defenseName;
+			})
+			console.log(arrayForLogging);
+
+			console.log("All of the defenses bought: ");
+			app.locals[lobbyId].boughtDefenses.forEach((eachTeamsDefense, index) => {
+				tempArray = [];
+				eachTeamsDefense.forEach((defense, index) => {
+					tempArray[index] = defense.defenseName;
+				})
+				console.log(`Team ${index + 1}: `, tempArray);
+			})
 		})
 
 		socket.on("host_start_next_defense_round", async (lobbyId) => {
@@ -204,6 +225,16 @@ module.exports = {
 
 			const attack = await mysql_queries.getAttack(db_connection, app.locals[lobbyId].difficulty);
 			io.in(lobbyId).emit("student_receive_attack", ({ attack: attack, playedDefenses: app.locals[lobbyId].playedDefenses }));
+
+			console.log("Host has started next defense round.");
+			console.log("All of the defenses bought: ");
+			app.locals[lobbyId].boughtDefenses.forEach((eachTeamsDefense, index) => {
+				tempArray = [];
+				eachTeamsDefense.forEach((defense, index) => {
+					tempArray[index] = defense.defenseName;
+				})
+				console.log(`Team ${index + 1}: `, tempArray);
+			})
 		});
 
 		socket.on("student_play_defenses", async ({ lobbyId, teamId, defenses, attackId }) => {
@@ -238,7 +269,7 @@ module.exports = {
 			});
 		});
 
-		socket.on("student_team_leader_change", ({lobbyId, alias, myTeamId}) => {
+		socket.on("student_team_leader_change", ({ lobbyId, alias, myTeamId }) => {
 			io.in(lobbyId + `_team` + myTeamId).emit("student_team_leader_changed", {
 				alias: alias
 			});

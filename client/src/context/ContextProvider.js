@@ -142,7 +142,7 @@ const ThemeContextProvider = ({ children }) => {
 			setChatMessagesTeam(chatMessagesTeam => [...chatMessagesTeam, { alias, message }]);
 		})
 
-		socket.on("student_team_leader_changed", ({alias}) => {
+		socket.on("student_team_leader_changed", ({ alias }) => {
 			setTeamLeader(alias);
 		})
 
@@ -179,12 +179,12 @@ const ThemeContextProvider = ({ children }) => {
 
 					if (roundCount === 0 && myLeaderStartTurn === 0) {
 						setIsTeamLeader(true);
-						socket.emit("student_team_leader_change", ({lobbyId, alias, myTeamId}));
+						socket.emit("student_team_leader_change", ({ lobbyId, alias, myTeamId }));
 						break;
 					}
 					if (myLeaderStartTurn < roundCount && roundCount <= myLeaderEndTurn) {
 						setIsTeamLeader(true);
-						socket.emit("student_team_leader_change", ({lobbyId, alias, myTeamId}));
+						socket.emit("student_team_leader_change", ({ lobbyId, alias, myTeamId }));
 						break;
 					}
 					else {
@@ -200,7 +200,7 @@ const ThemeContextProvider = ({ children }) => {
 		if ((!isHost) && (gameStage === 'TRIVIA' || gameStage === 'BUY_DEFENSE')) {
 			setHideTeamChat(false);
 		}
-		if (gameStage === 'BUY_DEFENSE') {
+		if (isHost && gameStage === 'BUY_DEFENSE') {
 			socket.emit("host_start_buy_phase", lobbyId);
 		}
 	}, [gameStage]);
@@ -263,11 +263,11 @@ const ThemeContextProvider = ({ children }) => {
 
 						setIsInLobby(true);
 						setGameStage('WAITING');
-					} else if(status === "NOT_EXIST"){
+					} else if (status === "NOT_EXIST") {
 						alert("Lobby does not exist. Please make sure you enter the correct lobby code given by your host.");
 						setIsInLobby(false);
 					}
-					else if(status === "ALREADY_STARTED"){
+					else if (status === "ALREADY_STARTED") {
 						alert("Unable to join this lobby because it has already started its game session.");
 						setIsInLobby(false);
 					}
