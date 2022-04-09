@@ -317,6 +317,7 @@ const ThemeContextProvider = ({ children }) => {
 	//End-------------Trivia Events------------End//
 
 	const student_buy_defenses = () => {
+		console.log("Before sending defenses in, selected defenses are: ", selectedDefenses);
 		socket.emit("student_buy_defenses", ({ lobbyId, teamId: myTeamId, defenses: selectedDefenses }));
 	}
 
