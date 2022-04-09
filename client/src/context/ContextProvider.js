@@ -207,7 +207,7 @@ const ThemeContextProvider = ({ children }) => {
 
 	useEffect(() => {
 		boughtDefenses.forEach((defenses, index) => {
-			if (myTeamId == index) {
+			if ((myTeamId === index) && (defenses.length > 0)) {
 				setSelectedDefenses(defenses);
 			}
 		})
