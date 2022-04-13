@@ -105,7 +105,7 @@ const HostInterface = ({ }) => {
 					</Box>
 				}
 				<Box textAlign='center'>
-					<Button variant="contained" align="center" disabled={!allDoneBuyingDefenses} onClick={() => handleStartDefendAttack()}>
+					<Button variant="contained" align="center" onClick={() => handleStartDefendAttack()}>
 						Start Game
 					</Button>
 				</Box>
