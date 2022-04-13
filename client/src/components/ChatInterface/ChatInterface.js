@@ -37,12 +37,12 @@ const ChatInterface = ({}) => {
   // Handle the text field changes
   const handleChangeAll = (e) => {
     // set the value of value
-    setTextAll(e.target.value);
+      setTextAll(e.target.value); // Edit here
   };
 
   const handleChangeTeam = (e) => {
     // set the value of value
-    setTextTeam(e.target.value);
+    setTextTeam(e.target.value); // edit here
   };
 
   const useStyles = makeStyles((theme) => ({

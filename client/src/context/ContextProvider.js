@@ -329,11 +329,17 @@ const ThemeContextProvider = ({ children }) => {
 	}
 
 	const chat_sendToAll = (message) => {
-		socket.emit("chat_sendToAll", ({ lobbyId, alias, message }));
+		// Do not allow all chat messages to be send if it is empty
+		if(message.length > 0) {
+			socket.emit("chat_sendToAll", ({ lobbyId, alias, message }));
+		}
 	}
 
 	const chat_sendToTeam = (message) => {
-		socket.emit("chat_sendToTeam", ({ lobbyId, alias, teamId: myTeamId, message }))
+		// Do not allow team chat messages to be send if it is empty
+		if(message.length > 0) {
+			socket.emit("chat_sendToTeam", ({ lobbyId, alias, teamId: myTeamId, message }))
+		}
 	}
 
 	// providing access to these value to all the interfaces
