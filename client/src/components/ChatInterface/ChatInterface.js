@@ -1,4 +1,17 @@
-import { Box, TextField, Grid, IconButton, Typography, List, ListItemText, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
+import {
+  Box,
+  TextField,
+  Grid,
+  IconButton,
+  Typography,
+  List,
+  ListItemText,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  ListItem,
+} from '@material-ui/core';
 
 import React from 'react';
 import { useState, useContext } from 'react';
@@ -8,7 +21,15 @@ import { SendIcon } from '../Icons';
 
 const ChatInterface = ({}) => {
   // Grab the elements from ContextProvider.js
-  const { chatMessagesAll, chatMessagesTeam, chat_sendToAll, chat_sendToTeam, hideAllChat, hideTeamChat, isHost } = useContext(Context);
+  const {
+    chatMessagesAll,
+    chatMessagesTeam,
+    chat_sendToAll,
+    chat_sendToTeam,
+    hideAllChat,
+    hideTeamChat,
+    isHost,
+  } = useContext(Context);
   const [selectedChatType, setSelectedChatType] = useState('allPlayer');
 
   // Variable for text box
@@ -20,21 +41,21 @@ const ChatInterface = ({}) => {
 
   // When the user clicks enter in all chat, send the message
   // Click the allChatButton
-  const handleKeyUpAll = (e) => {
+  const handleKeyUpAll = e => {
     if (e.keyCode === 13) {
       e.preventDefault();
-      document.getElementById("allChatButton").click();
+      document.getElementById('allChatButton').click();
     }
-  }
+  };
 
   // When the user clicks enter in team chat, send the message
   // Click the teamChatButton
-  const handleKeyUpTeam = (e) => {
+  const handleKeyUpTeam = e => {
     if (e.keyCode === 13) {
       e.preventDefault();
-      document.getElementById("teamChatButton").click();
+      document.getElementById('teamChatButton').click();
     }
-  }
+  };
 
   // Send to all chat function
   const sendToAll = () => {
@@ -53,17 +74,17 @@ const ChatInterface = ({}) => {
     messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
   };
   // Handle the text field changes
-  const handleChangeAll = (e) => {
+  const handleChangeAll = e => {
     // set the value of value
-      setTextAll(e.target.value); // Edit here
+    setTextAll(e.target.value); // Edit here
   };
 
-  const handleChangeTeam = (e) => {
+  const handleChangeTeam = e => {
     // set the value of value
     setTextTeam(e.target.value); // edit here
   };
 
-  const useStyles = makeStyles((theme) => ({
+  const useStyles = makeStyles(theme => ({
     textFieldStyling: {
       marginBottom: '15px',
       marginLeft: '15px',
@@ -112,16 +133,23 @@ const ChatInterface = ({}) => {
           }}
         >
           <Grid item xs={12} align="center" className={classes.headerStyling}>
-            { (!isHost && !hideTeamChat) ? (
+            {!isHost && !hideTeamChat ? (
               <Box display="flex" marginX="30px">
                 <FormControl>
                   <InputLabel id="selectChatType">*</InputLabel>
-                  <Select fontFamily="arial" labelId="selectChatType" id="selectChatType" onChange={(event) => setSelectedChatType(event.target.value)}>
+                  <Select
+                    fontFamily="arial"
+                    labelId="selectChatType"
+                    id="selectChatType"
+                    onChange={event => setSelectedChatType(event.target.value)}
+                  >
                     <MenuItem value={'allPlayer'}> All players</MenuItem>
                     <MenuItem value={'team'}>Team</MenuItem>
                   </Select>
                 </FormControl>
-                <Typography className={classes.typographyStyling}>Chat with {selectedChatType === 'allPlayer' ? ' All Players' : 'Team'}</Typography>
+                <Typography className={classes.typographyStyling}>
+                  Chat with {selectedChatType === 'allPlayer' ? ' All Players' : 'Team'}
+                </Typography>
               </Box>
             ) : (
               <Typography className={classes.typographyStyling}>Chat Box All</Typography>
@@ -129,44 +157,57 @@ const ChatInterface = ({}) => {
           </Grid>
           {selectedChatType === 'allPlayer' ? (
             <Box>
-              <Grid item xs={12}>
+              <Grid>
                 <List
                   id="ChatBoxMessagesAll"
                   style={{
                     maxHeight: '200px',
                     width: '100%',
-                    overflow: 'auto',
+                    overflow: 'scroll',
                     alignItems: 'start',
                     minHeight: '25vh',
                   }}
                 >
                   {chatMessagesAll &&
-                    { chatMessagesAll }.chatMessagesAll.map((chatMessage) => {
+                    { chatMessagesAll }.chatMessagesAll.map(chatMessage => {
                       return (
-                        <ListItemText
-                          style={{ display: 'flex ', marginLeft: '15px' }}
-                          primary={<Typography className={classes.chatMessageUserNameStyling}>{chatMessage.alias}:</Typography>}
-                          secondary={<Typography>{chatMessage.message}</Typography>}
-                        />
+                        <ul>
+                          <ListItem
+                            style={{
+                              width: '100%',
+                            }}
+                          >
+                            <ListItemText
+                              primary={
+                                <Typography className={classes.chatMessageUserNameStyling}>
+                                  {chatMessage.alias}:
+                                </Typography>
+                              }
+                              secondary={<Typography>{chatMessage.message}</Typography>}
+                            />
+                          </ListItem>
+                        </ul>
                       );
                     })}
                   <div ref={messagesEndRef} />
                 </List>
               </Grid>
-              <Box display="flex" id="allChatBox" >
-                <TextField 
-                value={textAll}
-                onKeyUp={handleKeyUpAll}
-                onChange={handleChangeAll}
-                variant="standard" 
-                label="Send message all" 
-                className={classes.textFieldStyling} />
+              <Box display="flex" id="allChatBox">
+                <TextField
+                  value={textAll}
+                  onKeyUp={handleKeyUpAll}
+                  onChange={handleChangeAll}
+                  variant="standard"
+                  label="Send message all"
+                  className={classes.textFieldStyling}
+                />
 
                 <IconButton
-                id="allChatButton"
-                onClick={sendToAll} 
-                size="small"
-                className={classes.buttonStyling}>
+                  id="allChatButton"
+                  onClick={sendToAll}
+                  size="small"
+                  className={classes.buttonStyling}
+                >
                   <SendIcon />
                 </IconButton>
               </Box>
@@ -179,38 +220,52 @@ const ChatInterface = ({}) => {
                   style={{
                     maxHeight: '200px',
                     width: '100%',
-                    overflow: 'auto',
+                    overflow: 'scroll',
                     alignItems: 'start',
                     minHeight: '25vh',
                   }}
                 >
                   {chatMessagesTeam &&
-                    { chatMessagesTeam }.chatMessagesTeam.map((chatMessage) => {
+                    { chatMessagesTeam }.chatMessagesTeam.map(chatMessage => {
                       return (
-                        <ListItemText
-                          style={{ display: 'flex ', marginLeft: '15px' }}
-                          primary={<Typography className={classes.chatMessageUserNameStyling}>{chatMessage.alias}:</Typography>}
-                          secondary={<Typography>{chatMessage.message}</Typography>}
-                        />
+                        <ul>
+                          <ListItem
+                            style={{
+                              display: 'flex ',
+                              marginLeft: '15px',
+                            }}
+                          >
+                            <ListItemText
+                              primary={
+                                <Typography className={classes.chatMessageUserNameStyling}>
+                                  {chatMessage.alias}:
+                                </Typography>
+                              }
+                              secondary={<Typography>{chatMessage.message}</Typography>}
+                            />
+                          </ListItem>
+                        </ul>
                       );
                     })}
                   <div ref={messagesEndRef} />
                 </List>
               </Grid>
               <Box display="flex">
-                <TextField 
-                value={textTeam} 
-                onKeyUp={handleKeyUpTeam}
-                onChange={handleChangeTeam} 
-                variant="standard" 
-                label="Send message team" 
-                className={classes.textFieldStyling} />
+                <TextField
+                  value={textTeam}
+                  onKeyUp={handleKeyUpTeam}
+                  onChange={handleChangeTeam}
+                  variant="standard"
+                  label="Send message team"
+                  className={classes.textFieldStyling}
+                />
 
-                <IconButton 
-                id="teamChatButton"
-                onClick={sendToTeam} 
-                size="small" 
-                className={classes.buttonStyling}>
+                <IconButton
+                  id="teamChatButton"
+                  onClick={sendToTeam}
+                  size="small"
+                  className={classes.buttonStyling}
+                >
                   <SendIcon />
                 </IconButton>
               </Box>

@@ -29,7 +29,21 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const BuyingInterface = ({}) => {
   // importing shared states between different components
-  const { alias, myTeamId, isTeamLeader, userEarnings, setUserEarnings, userDefenses, setUserDefenses, selectedDefenses, setSelectedDefenses, boughtDefenses, setGameStage, student_buy_defenses, chat_sendToTeam } = useContext(Context);
+  const {
+    alias,
+    myTeamId,
+    isTeamLeader,
+    userEarnings,
+    setUserEarnings,
+    userDefenses,
+    setUserDefenses,
+    selectedDefenses,
+    setSelectedDefenses,
+    boughtDefenses,
+    setGameStage,
+    student_buy_defenses,
+    chat_sendToTeam,
+  } = useContext(Context);
 
   const boxStyling = {
     p: 6,
@@ -43,7 +57,10 @@ const BuyingInterface = ({}) => {
   // when the user toggles a checkbox the function removes the defense associated with the checkbox from the collection of user chosen defenses
   const removeDefense = (index, cost) => {
     //creates a shallow copy of defense list to removes the selected index from the list
-    const tempDefenseList = [...selectedDefenses.slice(0, index), ...selectedDefenses.slice(index + 1, selectedDefenses.length)];
+    const tempDefenseList = [
+      ...selectedDefenses.slice(0, index),
+      ...selectedDefenses.slice(index + 1, selectedDefenses.length),
+    ];
     //settting the temp list as the new selected defense list
     setSelectedDefenses(tempDefenseList);
     // adding the cost of the deleted item back to the total money of the user
@@ -124,7 +141,7 @@ const BuyingInterface = ({}) => {
     }
   }, [sortBy]);
 
-  const useStyles = makeStyles((theme) => ({
+  const useStyles = makeStyles(theme => ({
     headerStyling: {
       fontWeight: 700,
       fontSize: '16px',
@@ -142,12 +159,24 @@ const BuyingInterface = ({}) => {
 
   return (
     <Box sx={boxStyling}>
+      {isTeamLeader ? (
+        <Typography gutterBottom className={classes.activeCellStyling}>
+          Team Lead{' '}
+        </Typography>
+      ) : (
+        <Typography lassName={classes.activeCellStyling}>Team Mate</Typography>
+      )}
+
       <Card>
         <CardContent>
           {isTeamLeader ? (
-            <Typography gutterBottom>{`You are the current team leader of team ${myTeamId + 1}, discuss with your team to decide what defenses to buy!`}</Typography>
+            <Typography gutterBottom>{`You are the current team leader of team ${
+              myTeamId + 1
+            }, discuss with your team to decide what defenses to buy!`}</Typography>
           ) : (
-            <Typography>{`You are not the current team leader of team ${myTeamId + 1}, discuss with your team to help your team leader decide what defenses to buy!`}</Typography>
+            <Typography>{`You are not the current team leader of team ${
+              myTeamId + 1
+            }, discuss with your team to help your team leader decide what defenses to buy!`}</Typography>
           )}
         </CardContent>
       </Card>
@@ -155,7 +184,14 @@ const BuyingInterface = ({}) => {
       <br></br>
       <br></br>
       <FormControl size="medium">
-        <Select fontFamily="arial" labelId="select-sortby-label" id="select-sortby" value={sortBy} label="Sort By" onChange={(event) => setSortBy(event.target.value)}>
+        <Select
+          fontFamily="arial"
+          labelId="select-sortby-label"
+          id="select-sortby"
+          value={sortBy}
+          label="Sort By"
+          onChange={event => setSortBy(event.target.value)}
+        >
           <MenuItem value={'Alphabetical'}>Alphabetical</MenuItem>
           <MenuItem value={'CostLowToHigh'}>Cost (Lowest to Highest)</MenuItem>
           <MenuItem value={'CostHighToLow'}>Cost (Highest to Lowest)</MenuItem>
@@ -170,7 +206,14 @@ const BuyingInterface = ({}) => {
       <br></br>
       <br></br>
       <br></br>
-      <TableContainer style={{ border: '1px solid #D3D3D3', borderRadius: '5px', height: '75vh', overflow: 'auto' }}>
+      <TableContainer
+        style={{
+          border: '1px solid #D3D3D3',
+          borderRadius: '5px',
+          height: '75vh',
+          overflow: 'auto',
+        }}
+      >
         <Table sx={{ minWidth: 500 }} aria-label="custom pagination table" stickyHeader>
           <TableHead>
             <TableRow>
@@ -186,11 +229,22 @@ const BuyingInterface = ({}) => {
           <TableBody>
             {userDefenses.map((row, index) => (
               <Tooltip title={row.Description} arrow placement="right-end">
-                <TableRow key={row.Name} className={isChecked[row.DefenseID] ? classes.activeCellStyling : 'none'}>
-                  <TableCell component="th" scope="row" className={isChecked[row.DefenseID] ? classes.activeCellStyling : 'none'}>
+                <TableRow
+                  key={row.Name}
+                  className={isChecked[row.DefenseID] ? classes.activeCellStyling : 'none'}
+                >
+                  <TableCell
+                    component="th"
+                    scope="row"
+                    className={isChecked[row.DefenseID] ? classes.activeCellStyling : 'none'}
+                  >
                     {row.Name}
                   </TableCell>
-                  <TableCell style={{ width: 160 }} align="right" className={isChecked[row.DefenseID] ? classes.activeCellStyling : 'none'}>
+                  <TableCell
+                    style={{ width: 160 }}
+                    align="right"
+                    className={isChecked[row.DefenseID] ? classes.activeCellStyling : 'none'}
+                  >
                     {row.cost}
                   </TableCell>
 
@@ -204,7 +258,16 @@ const BuyingInterface = ({}) => {
                             // the checkfeature retrives the value from the isChecked array
                             <Checkbox
                               key={row.label}
-                              onChange={(event) => getUserDefense(event.target.checked, row.Name, row.cost, index, row.DefenseID, row.Description)}
+                              onChange={event =>
+                                getUserDefense(
+                                  event.target.checked,
+                                  row.Name,
+                                  row.cost,
+                                  index,
+                                  row.DefenseID,
+                                  row.Description
+                                )
+                              }
                               disabled={row.cost > userEarnings && !isChecked[row.DefenseID]}
                               checked={isChecked[row.DefenseID]}
                             />
@@ -226,14 +289,19 @@ const BuyingInterface = ({}) => {
           <Button variant="contained" onClick={() => handleSubmit()}>
             Submit
           </Button>
-          <Typography>You are the team leader, hear your teammate's input first before making a decision! </Typography>
+          <Typography>
+            You are the team leader, hear your teammate's input first before making a decision!{' '}
+          </Typography>
         </Box>
       ) : (
         <Box sx={{ fontStyle: 'italic' }}>
           <Button variant="contained" onClick={() => handleShare()}>
             Share Selected Defenses to Team Chat
           </Button>
-          <Typography>Only team leader can buy defenses, but you can share your input by selecting defenses you think the team should buy and using the above button to share! </Typography>
+          <Typography>
+            Only team leader can buy defenses, but you can share your input by selecting defenses
+            you think the team should buy and using the above button to share!{' '}
+          </Typography>
         </Box>
       )}
     </Box>
