@@ -256,7 +256,7 @@ module.exports = {
 
 		socket.on("host_end_game", lobbyId => {
 			io.in(lobbyId).emit("host_ended_game");
-			app.locals[lobbyId] = null;
+			delete app.locals[lobbyId];
 		})
 
 		socket.on("chat_sendToAll", ({ lobbyId, alias, message }) => {
