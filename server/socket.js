@@ -79,6 +79,8 @@ module.exports = {
 				socket.join(lobbyId);
 				console.log(`Student with socketId ${socket.id} joined lobby ${lobbyId}`);
 
+				app.locals.socketToLobby.set(socket.id, lobbyId);
+
 				//emit to members already in the room with updated teamInfo
 				io.in(lobbyId).emit(
 					"new_student_joined_lobby",
@@ -273,6 +275,27 @@ module.exports = {
 			io.in(lobbyId + `_team` + myTeamId).emit("student_team_leader_changed", {
 				alias: alias
 			});
+		})
+
+		socket.on("disconnect", () => {
+			//update teaminfo if student disconnects
+			if (app.locals.socketToLobby.get(socket.id)) {
+				const lobby = app.locals.socketToLobby.get(socket.id);
+				app.locals[lobby].teamInfo.forEach((team, index) => {
+					team.forEach((student, index) => {
+						if (student.socketId === socket.id) {
+							team.splice(index, 1);
+						}
+					});
+				});
+				app.locals.socketToLobby.delete(socket.id);
+
+				io.in(lobby).emit("student_disconnected", app.locals[lobby].teamInfo
+				)
+			}
+
+			app.locals.sockets.delete(socket.id);
+			console.log(`An user disconnected, id is ${socket.id}`);
 		})
 	}
 };

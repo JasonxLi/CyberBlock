@@ -146,6 +146,10 @@ const ThemeContextProvider = ({ children }) => {
 			setTeamLeader(alias);
 		})
 
+		socket.on("student_disconnected", (teamInfo) => {
+			setTeamInfo(teamInfo);
+		})
+
 		return () => {
 			socket.removeAllListeners();
 		}

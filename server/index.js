@@ -29,6 +29,7 @@ const io = new Server(server, {
 
 //store all connected sockets in a map
 app.locals.sockets = new Map();
+app.locals.socketToLobby = new Map();
 
 io.on("connection", (socket) => {
     //add socket to map
@@ -36,11 +37,6 @@ io.on("connection", (socket) => {
     console.log(`An user has connected, id is ${socket.id}`);
 
     cb_socket.handleEvents(socket, app, io, connection);
-
-    socket.on("disconnect", () => {
-        app.locals.sockets.delete(socket.id);
-        console.log(`An user disconnected, id is ${socket.id}`);
-    })
 })
 
 /*
