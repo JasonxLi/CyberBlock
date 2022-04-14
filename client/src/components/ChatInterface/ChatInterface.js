@@ -112,7 +112,7 @@ const ChatInterface = ({}) => {
           }}
         >
           <Grid item xs={12} align="center" className={classes.headerStyling}>
-            {!isHost ? (
+            { (!isHost && !hideTeamChat) ? (
               <Box display="flex" marginX="30px">
                 <FormControl>
                   <InputLabel id="selectChatType">*</InputLabel>
