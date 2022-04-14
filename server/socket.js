@@ -45,6 +45,8 @@ module.exports = {
 					app.locals[lobbyId].playedDefenses.push([]);
 				}
 
+				app.locals.socketToLobby.set(socket.id, lobbyId);
+
 				//join host to lobby
 				socket.join(lobbyId);
 				console.log(`Host with socketID ${socket.id} joined lobby ${lobbyId}`);
