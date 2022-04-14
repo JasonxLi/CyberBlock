@@ -18,6 +18,24 @@ const ChatInterface = ({}) => {
   // Variable for scrolling to bottom
   const messagesEndRef = React.createRef();
 
+  // When the user clicks enter in all chat, send the message
+  // Click the allChatButton
+  const handleKeyUpAll = (e) => {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      document.getElementById("allChatButton").click();
+    }
+  }
+
+  // When the user clicks enter in team chat, send the message
+  // Click the teamChatButton
+  const handleKeyUpTeam = (e) => {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      document.getElementById("teamChatButton").click();
+    }
+  }
+
   // Send to all chat function
   const sendToAll = () => {
     chat_sendToAll(textAll);
@@ -135,10 +153,20 @@ const ChatInterface = ({}) => {
                   <div ref={messagesEndRef} />
                 </List>
               </Grid>
-              <Box display="flex">
-                <TextField value={textAll} onChange={handleChangeAll} variant="standard" label="Send message all" className={classes.textFieldStyling} />
+              <Box display="flex" id="allChatBox" >
+                <TextField 
+                value={textAll}
+                onKeyUp={handleKeyUpAll}
+                onChange={handleChangeAll}
+                variant="standard" 
+                label="Send message all" 
+                className={classes.textFieldStyling} />
 
-                <IconButton onClick={sendToAll} size="small" className={classes.buttonStyling}>
+                <IconButton
+                id="allChatButton"
+                onClick={sendToAll} 
+                size="small"
+                className={classes.buttonStyling}>
                   <SendIcon />
                 </IconButton>
               </Box>
@@ -170,9 +198,19 @@ const ChatInterface = ({}) => {
                 </List>
               </Grid>
               <Box display="flex">
-                <TextField value={textTeam} onChange={handleChangeTeam} variant="standard" label="Send message team" className={classes.textFieldStyling} />
+                <TextField 
+                value={textTeam} 
+                onKeyUp={handleKeyUpTeam}
+                onChange={handleChangeTeam} 
+                variant="standard" 
+                label="Send message team" 
+                className={classes.textFieldStyling} />
 
-                <IconButton onClick={sendToTeam} size="small" className={classes.buttonStyling}>
+                <IconButton 
+                id="teamChatButton"
+                onClick={sendToTeam} 
+                size="small" 
+                className={classes.buttonStyling}>
                   <SendIcon />
                 </IconButton>
               </Box>
