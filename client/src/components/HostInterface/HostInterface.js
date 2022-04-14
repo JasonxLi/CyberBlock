@@ -17,7 +17,8 @@ const HostInterface = ({ }) => {
 		gameStage,
 		host_start_game,
 		boughtDefenses,
-		host_start_next_defense_round
+		host_start_next_defense_round,
+		host_gets_trivia_question
 	} = useContext(Context);
 
 	const [allDoneBuyingDefenses, setAllDoneBuyingDefenses] = useState(false);
@@ -42,7 +43,12 @@ const HostInterface = ({ }) => {
 		setAllDoneBuyingDefenses(aTeamIsNotDone);
 	}, [boughtDefenses]);
 
-	const handleStartGame = () => {
+	const handleStartTrivia = () => {
+		host_gets_trivia_question();
+		host_start_game();
+	}
+
+	const handleStartBuying = () => {
 		host_start_game();
 	}
 
@@ -70,11 +76,11 @@ const HostInterface = ({ }) => {
 					<br></br>
 					{hasTriviaRound
 						?
-						<Button variant="contained" onClick={handleStartGame}>
+						<Button variant="contained" onClick={handleStartTrivia}>
 							Start Game (Trivia Round)
 						</Button>
 						:
-						<Button variant="contained" onClick={handleStartGame}>
+						<Button variant="contained" onClick={handleStartBuying}>
 							Start Game (Buy Defense Phase)
 						</Button>
 					}
