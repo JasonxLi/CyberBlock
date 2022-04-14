@@ -91,6 +91,11 @@ const GameInterface = ({ isHost }) => {
       padding: '10px',
       margin: '10px',
     },
+    typographyStyling: {
+      fontSize: '20px',
+      padding: '10px',
+      margin: '10px',
+    }
   }));
   const classes = useStyles();
 
@@ -101,7 +106,7 @@ const GameInterface = ({ isHost }) => {
           Team Lead{' '}
         </Typography>
       ) : (
-        <Typography lassName={classes.activeCellStyling}>Team Mate</Typography>
+        <Typography className={classes.activeCellStyling}>Team Mate</Typography>
       )}
       <Timer
         initialSeconds={timeForEachRound}
@@ -152,6 +157,7 @@ const GameInterface = ({ isHost }) => {
         </Box>
       ) : (
         <Box>
+          <Typography className={classes.typographyStyling}>Select up to {nbOfDefenses} defenses to play:</Typography>
           <Grid container spacing={2}>
             {selectedDefenses.map(item => {
               return (
