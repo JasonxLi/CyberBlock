@@ -36,7 +36,7 @@ const DefenseBoard = ({ }) => {
               </TableCell>
               <TableCell align="right">
                 {bestDefenses.map((bestDefense) => {
-                  return (<Tooltip title={bestDefense.Description} arrow placement='right-end'><Typography>{bestDefense.Name}</Typography></Tooltip>);
+                  return (<Tooltip title={bestDefense.Description} arrow placement='right-end'><Typography>{`${bestDefense.Name} = ${bestDefense.PointValue} Points`}</Typography></Tooltip>);
                 })}
               </TableCell>
             </TableRow>
