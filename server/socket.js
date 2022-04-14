@@ -45,6 +45,8 @@ module.exports = {
 					app.locals[lobbyId].playedDefenses.push([]);
 				}
 
+				app.locals.socketToLobby.set(socket.id, lobbyId);
+
 				//join host to lobby
 				socket.join(lobbyId);
 				console.log(`Host with socketID ${socket.id} joined lobby ${lobbyId}`);
@@ -254,7 +256,7 @@ module.exports = {
 
 		socket.on("host_end_game", lobbyId => {
 			io.in(lobbyId).emit("host_ended_game");
-			app.locals[lobbyId] = null;
+			delete app.locals[lobbyId];
 		})
 
 		socket.on("chat_sendToAll", ({ lobbyId, alias, message }) => {
@@ -278,24 +280,40 @@ module.exports = {
 		})
 
 		socket.on("disconnect", () => {
-			//update teaminfo if student disconnects
+			app.locals.sockets.delete(socket.id);
+			console.log(`An user disconnected, id is ${socket.id}`);
+
 			if (app.locals.socketToLobby.get(socket.id)) {
 				const lobby = app.locals.socketToLobby.get(socket.id);
+
+				let isLobbyEmpty = true;
+
 				app.locals[lobby].teamInfo.forEach((team, index) => {
+					//set clear lobby flag
+					if (team.length > 0) {
+						isLobbyEmpty = false;
+					}
+
+					//update teaminfo if student disconnects
 					team.forEach((student, index) => {
 						if (student.socketId === socket.id) {
 							team.splice(index, 1);
 						}
 					});
 				});
+
+				//update teaminfo if student disconnects
+				io.in(lobby).emit("student_disconnected", app.locals[lobby].teamInfo)
+
+				//clear lobbyinfo if everyone has left the lobby
+				const hostHasLeft = !app.locals.sockets.get(app.locals[lobby].hostId);
+				if (isLobbyEmpty && hostHasLeft) {
+					delete app.locals[lobby];
+				}
+
 				app.locals.socketToLobby.delete(socket.id);
-
-				io.in(lobby).emit("student_disconnected", app.locals[lobby].teamInfo
-				)
+				console.log(app.locals);
 			}
-
-			app.locals.sockets.delete(socket.id);
-			console.log(`An user disconnected, id is ${socket.id}`);
 		})
 	}
 };
