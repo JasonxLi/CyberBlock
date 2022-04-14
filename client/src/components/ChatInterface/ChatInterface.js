@@ -13,7 +13,7 @@ import {
   ListItem,
 } from '@material-ui/core';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState, useContext, Fragment } from 'react';
 import { Context } from '../../context/ContextProvider';
 import { makeStyles } from '@material-ui/core/styles';
@@ -37,7 +37,8 @@ const ChatInterface = ({}) => {
   const [textAll, setTextAll] = useState('');
 
   // Variable for scrolling to bottom
-  const messagesEndRef = React.createRef();
+  const messagesEndRefAll = React.createRef();
+  const messagesEndRefTeam = React.createRef();
 
   // When the user clicks enter in all chat, send the message
   // Click the allChatButton
@@ -61,18 +62,32 @@ const ChatInterface = ({}) => {
   const sendToAll = () => {
     chat_sendToAll(textAll);
     setTextAll('');
-    scrollToBottom();
   };
 
   const sendToTeam = () => {
     chat_sendToTeam(textTeam);
     setTextTeam('');
-    scrollToBottom();
   };
 
-  const scrollToBottom = () => {
-    messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+  // Scrolling for All Chat
+  const scrollToBottomAll = () => {
+    messagesEndRefAll.current?.scrollIntoView({ behavior: 'smooth' })
   };
+
+  useEffect(() => {
+    scrollToBottomAll()
+  }, [chatMessagesAll]);
+
+  // Scrolling for Team Chat
+  const scrollToBottomTeam = () => {
+    messagesEndRefTeam.current?.scrollIntoView({ behavior: 'smooth' })
+  };
+
+  useEffect(() => {
+    scrollToBottomTeam()
+  }, [chatMessagesTeam]);
+
+
   // Handle the text field changes
   const handleChangeAll = e => {
     // set the value of value
@@ -189,7 +204,7 @@ const ChatInterface = ({}) => {
                         </ul>
                       );
                     })}
-                  <div ref={messagesEndRef} />
+                  <div ref={messagesEndRefAll} />
                 </List>
               </Grid>
               <Box display="flex" id="allChatBox">
@@ -247,7 +262,7 @@ const ChatInterface = ({}) => {
                         </ul>
                       );
                     })}
-                  <div ref={messagesEndRef} />
+                  <div ref={messagesEndRefTeam} />
                 </List>
               </Grid>
               <Box display="flex">
