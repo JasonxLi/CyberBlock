@@ -1,12 +1,6 @@
 import * as React from "react";
 import {
 	Box,
-	TableContainer,
-	Table,
-	TableBody,
-	TableRow,
-	TableCell,
-	TableHead,
 	FormControl,
 	InputLabel,
 	Select,
@@ -29,7 +23,6 @@ const ShuffleTeam = ({ children }) => {
 	};
 	
 	// Styling
-
 	const useStyles = makeStyles((theme) => ({
 		gridStyling: {
 			boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
@@ -61,10 +54,6 @@ const ShuffleTeam = ({ children }) => {
 
 	const classes = useStyles();
 
-	const gridstyling = {
-		p: "30px",
-		m: "10px"
-	};
 	return (
 		<Box>
 			{teamInfo.map((item, index) => {

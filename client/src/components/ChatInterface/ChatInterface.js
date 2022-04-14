@@ -14,7 +14,7 @@ import {
 } from '@material-ui/core';
 
 import React from 'react';
-import { useState, useContext } from 'react';
+import { useState, useContext, Fragment } from 'react';
 import { Context } from '../../context/ContextProvider';
 import { makeStyles } from '@material-ui/core/styles';
 import { SendIcon } from '../Icons';
@@ -156,8 +156,8 @@ const ChatInterface = ({}) => {
             )}
           </Grid>
           {selectedChatType === 'allPlayer' ? (
-            <Box>
-              <Grid>
+            <Fragment>
+              <Grid item xs={12}>
                 <List
                   id="ChatBoxMessagesAll"
                   style={{
@@ -211,9 +211,9 @@ const ChatInterface = ({}) => {
                   <SendIcon />
                 </IconButton>
               </Box>
-            </Box>
+            </Fragment>
           ) : (
-            <Box>
+            <Fragment>
               <Grid item xs={12}>
                 <List
                   id="ChatBoxMessagesTeam"
@@ -269,7 +269,7 @@ const ChatInterface = ({}) => {
                   <SendIcon />
                 </IconButton>
               </Box>
-            </Box>
+            </Fragment>
           )}
         </Grid>
       )}
