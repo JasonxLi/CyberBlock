@@ -24,6 +24,7 @@ module.exports = {
 				app.locals[lobbyId].previousTriviaQuestionIds = [];
 				app.locals[lobbyId].submittedTriviaAnswers = Array(parseInt(nbOfTeams)).fill(null);
 				app.locals[lobbyId].scores = Array(parseInt(nbOfTeams)).fill(0);
+				app.locals[lobbyId].isJoinable = true;
 
 				//store lobby configuration info
 				app.locals[lobbyId].nbOfTeams = nbOfTeams;
@@ -55,7 +56,10 @@ module.exports = {
 		socket.on("student_join_lobby", ({ lobbyId, alias }, ack) => {
 			//add student to a team with least members
 			if (!app.locals[lobbyId]) {
-				ack({ success: false });
+				ack({ status: "NOT_EXIST" });
+			}
+			else if (!app.locals[lobbyId].isJoinable) {
+				ack({ status: "ALREADY_STARTED" });
 			}
 			else {
 				let nbOfMembers = 9999;
@@ -75,6 +79,8 @@ module.exports = {
 				socket.join(lobbyId);
 				console.log(`Student with socketId ${socket.id} joined lobby ${lobbyId}`);
 
+				app.locals.socketToLobby.set(socket.id, lobbyId);
+
 				//emit to members already in the room with updated teamInfo
 				io.in(lobbyId).emit(
 					"new_student_joined_lobby",
@@ -83,7 +89,7 @@ module.exports = {
 
 				//ack to newly joined student, with configuration and teamInfo
 				ack({
-					success: true,
+					status: "SUCCESS",
 					nbOfTeams: app.locals[lobbyId].nbOfTeams,
 					nbOfRounds: app.locals[lobbyId].nbOfRounds,
 					nbOfDefenses: app.locals[lobbyId].nbOfDefenses,
@@ -121,6 +127,7 @@ module.exports = {
 		);
 
 		socket.on("host_start_game", (lobbyId) => {
+			app.locals[lobbyId].isJoinable = false;
 			//add each team member to their team socket room for chat
 			app.locals[lobbyId].teamInfo.forEach((item, index) => {
 				item.forEach((item) => {
@@ -129,6 +136,8 @@ module.exports = {
 			});
 			//emit event so front end knows game has been started when they receive this event
 			io.in(lobbyId).emit("host_started_game", app.locals[lobbyId].hasTriviaRound);
+			console.log("Host started the game.");
+			console.log("Team information:", app.locals[lobbyId].teamInfo);
 		});
 
 		socket.on("host_gets_trivia_question", async (lobbyId, ack) => {
@@ -186,11 +195,30 @@ module.exports = {
 				app.locals[lobbyId].difficulty
 			);
 			io.in(lobbyId).emit("student_receive_defenses", defenses);
+
+			console.log("Host started the buying phase.");
+			console.log("Team information:", app.locals[lobbyId].teamInfo);
 		});
 
 		socket.on("student_buy_defenses", ({ lobbyId, teamId, defenses }) => {
 			app.locals[lobbyId].boughtDefenses[teamId] = defenses;
 			io.in(lobbyId).emit("student_bought_defenses", app.locals[lobbyId].boughtDefenses);
+
+			console.log(`Received following defenses from team ${teamId + 1}:`);
+			arrayForLogging = []
+			defenses.forEach((defense, index) => {
+				arrayForLogging[index] = defense.defenseName;
+			})
+			console.log(arrayForLogging);
+
+			console.log("All of the defenses bought: ");
+			app.locals[lobbyId].boughtDefenses.forEach((eachTeamsDefense, index) => {
+				tempArray = [];
+				eachTeamsDefense.forEach((defense, index) => {
+					tempArray[index] = defense.defenseName;
+				})
+				console.log(`Team ${index + 1}: `, tempArray);
+			})
 		})
 
 		socket.on("host_start_next_defense_round", async (lobbyId) => {
@@ -199,6 +227,16 @@ module.exports = {
 
 			const attack = await mysql_queries.getAttack(db_connection, app.locals[lobbyId].difficulty);
 			io.in(lobbyId).emit("student_receive_attack", ({ attack: attack, playedDefenses: app.locals[lobbyId].playedDefenses }));
+
+			console.log("Host has started next defense round.");
+			console.log("All of the defenses bought: ");
+			app.locals[lobbyId].boughtDefenses.forEach((eachTeamsDefense, index) => {
+				tempArray = [];
+				eachTeamsDefense.forEach((defense, index) => {
+					tempArray[index] = defense.defenseName;
+				})
+				console.log(`Team ${index + 1}: `, tempArray);
+			})
 		});
 
 		socket.on("student_play_defenses", async ({ lobbyId, teamId, defenses, attackId }) => {
@@ -216,7 +254,7 @@ module.exports = {
 
 		socket.on("host_end_game", lobbyId => {
 			io.in(lobbyId).emit("host_ended_game");
-			app.locals[lobbyId] = {};
+			app.locals[lobbyId] = null;
 		})
 
 		socket.on("chat_sendToAll", ({ lobbyId, alias, message }) => {
@@ -233,10 +271,31 @@ module.exports = {
 			});
 		});
 
-		socket.on("student_team_leader_change", ({lobbyId, alias, myTeamId}) => {
+		socket.on("student_team_leader_change", ({ lobbyId, alias, myTeamId }) => {
 			io.in(lobbyId + `_team` + myTeamId).emit("student_team_leader_changed", {
 				alias: alias
 			});
+		})
+
+		socket.on("disconnect", () => {
+			//update teaminfo if student disconnects
+			if (app.locals.socketToLobby.get(socket.id)) {
+				const lobby = app.locals.socketToLobby.get(socket.id);
+				app.locals[lobby].teamInfo.forEach((team, index) => {
+					team.forEach((student, index) => {
+						if (student.socketId === socket.id) {
+							team.splice(index, 1);
+						}
+					});
+				});
+				app.locals.socketToLobby.delete(socket.id);
+
+				io.in(lobby).emit("student_disconnected", app.locals[lobby].teamInfo
+				)
+			}
+
+			app.locals.sockets.delete(socket.id);
+			console.log(`An user disconnected, id is ${socket.id}`);
 		})
 	}
 };

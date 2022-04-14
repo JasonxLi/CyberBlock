@@ -142,8 +142,12 @@ const ThemeContextProvider = ({ children }) => {
 			setChatMessagesTeam(chatMessagesTeam => [...chatMessagesTeam, { alias, message }]);
 		})
 
-		socket.on("student_team_leader_changed", ({alias}) => {
+		socket.on("student_team_leader_changed", ({ alias }) => {
 			setTeamLeader(alias);
+		})
+
+		socket.on("student_disconnected", (teamInfo) => {
+			setTeamInfo(teamInfo);
 		})
 
 		return () => {
@@ -179,12 +183,12 @@ const ThemeContextProvider = ({ children }) => {
 
 					if (roundCount === 0 && myLeaderStartTurn === 0) {
 						setIsTeamLeader(true);
-						socket.emit("student_team_leader_change", ({lobbyId, alias, myTeamId}));
+						socket.emit("student_team_leader_change", ({ lobbyId, alias, myTeamId }));
 						break;
 					}
 					if (myLeaderStartTurn < roundCount && roundCount <= myLeaderEndTurn) {
 						setIsTeamLeader(true);
-						socket.emit("student_team_leader_change", ({lobbyId, alias, myTeamId}));
+						socket.emit("student_team_leader_change", ({ lobbyId, alias, myTeamId }));
 						break;
 					}
 					else {
@@ -200,14 +204,14 @@ const ThemeContextProvider = ({ children }) => {
 		if ((!isHost) && (gameStage === 'TRIVIA' || gameStage === 'BUY_DEFENSE')) {
 			setHideTeamChat(false);
 		}
-		if (gameStage === 'BUY_DEFENSE') {
+		if (isHost && gameStage === 'BUY_DEFENSE') {
 			socket.emit("host_start_buy_phase", lobbyId);
 		}
 	}, [gameStage]);
 
 	useEffect(() => {
 		boughtDefenses.forEach((defenses, index) => {
-			if (myTeamId == index) {
+			if ((myTeamId === index) && (defenses.length > 0)) {
 				setSelectedDefenses(defenses);
 			}
 		})
@@ -241,7 +245,7 @@ const ThemeContextProvider = ({ children }) => {
 				"student_join_lobby",
 				{ lobbyId, alias },
 				({
-					success,
+					status,
 					nbOfTeams,
 					nbOfRounds,
 					nbOfDefenses,
@@ -251,7 +255,7 @@ const ThemeContextProvider = ({ children }) => {
 					difficulty,
 					teamInfo,
 				}) => {
-					if (success) {
+					if (status === "SUCCESS") {
 						setNbOfTeams(nbOfTeams);
 						setNbOfRounds(nbOfRounds);
 						setNbOfDefenses(nbOfDefenses);
@@ -263,8 +267,12 @@ const ThemeContextProvider = ({ children }) => {
 
 						setIsInLobby(true);
 						setGameStage('WAITING');
-					} else {
+					} else if (status === "NOT_EXIST") {
 						alert("Lobby does not exist. Please make sure you enter the correct lobby code given by your host.");
+						setIsInLobby(false);
+					}
+					else if (status === "ALREADY_STARTED") {
+						alert("Unable to join this lobby because it has already started its game session.");
 						setIsInLobby(false);
 					}
 				}
@@ -313,6 +321,7 @@ const ThemeContextProvider = ({ children }) => {
 	//End-------------Trivia Events------------End//
 
 	const student_buy_defenses = () => {
+		console.log("Before sending defenses in, selected defenses are: ", selectedDefenses);
 		socket.emit("student_buy_defenses", ({ lobbyId, teamId: myTeamId, defenses: selectedDefenses }));
 	}
 
@@ -329,11 +338,17 @@ const ThemeContextProvider = ({ children }) => {
 	}
 
 	const chat_sendToAll = (message) => {
-		socket.emit("chat_sendToAll", ({ lobbyId, alias, message }));
+		// Do not allow all chat messages to be send if it is empty
+		if(message.length > 0) {
+			socket.emit("chat_sendToAll", ({ lobbyId, alias, message }));
+		}
 	}
 
 	const chat_sendToTeam = (message) => {
-		socket.emit("chat_sendToTeam", ({ lobbyId, alias, teamId: myTeamId, message }))
+		// Do not allow team chat messages to be send if it is empty
+		if(message.length > 0) {
+			socket.emit("chat_sendToTeam", ({ lobbyId, alias, teamId: myTeamId, message }))
+		}
 	}
 
 	// providing access to these value to all the interfaces
