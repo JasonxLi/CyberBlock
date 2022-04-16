@@ -35,6 +35,7 @@ const GameInterface = ({ isHost }) => {
     host_end_game,
     student_play_defenses,
     nbOfDefenses,
+    chat_sendToTeam
   } = useContext(Context);
 
   //handles the user submitted defenses
@@ -81,6 +82,17 @@ const GameInterface = ({ isHost }) => {
 
   const handleClearDefenses = () => {
     setDefensesToSubmit([]);
+  }
+
+  const handleSuggestDefenses = () => {
+    let message = `suggests playing the following defenses: `;
+    defensesToSubmit.map((item, index) => {
+      message += item.defenseName;
+      if (index < defensesToSubmit.length - 1) {
+        message += ', ';
+      }
+    });
+    chat_sendToTeam(message);
   }
 
   const useStyles = makeStyles(theme => ({
@@ -220,6 +232,13 @@ const GameInterface = ({ isHost }) => {
             style={{ marginTop: '15px', marginBottom: '15px', marginLeft: '15px' }}
           >
             Clear Selected
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => handleSuggestDefenses()}
+            style={{ marginTop: '15px', marginBottom: '15px', marginLeft: '15px' }}
+          >
+            Share Selected Defenses to Team Chat
           </Button>
         </Box>
       )}
