@@ -195,6 +195,7 @@ const ThemeContextProvider = ({ children }) => {
 					}
 					if (myLeaderStartTurn < roundCount && roundCount <= myLeaderEndTurn) {
 						setIsTeamLeader(true);
+						alert("You are the team leader of this round! Discuss with your team before playing defenses.");
 						socket.emit("student_team_leader_change", ({ lobbyId, alias, myTeamId }));
 						break;
 					}
