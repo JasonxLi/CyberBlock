@@ -151,6 +151,12 @@ const ThemeContextProvider = ({ children }) => {
 			setTeamInfo(teamInfo);
 		})
 
+		socket.on("host_disconnected", () => {
+			if(gameStage !== "GAME_END"){
+				alert("Unfortunately, the host of this lobby has disconnected, which means this game session can no longer continue. Please refresh the page to start a new game session.")
+			}
+		})
+
 		return () => {
 			socket.removeAllListeners();
 		}

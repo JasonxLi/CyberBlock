@@ -287,6 +287,12 @@ module.exports = {
 				const lobby = app.locals.socketToLobby.get(socket.id);
 
 				if (app.locals[lobby]) {
+
+					//send alert to lobby if host has disconnected
+					if(socket.id === app.locals[lobby].hostId){
+						io.in(lobby).emit("host_disconnected");
+					}
+
 					let isLobbyEmpty = true;
 					app.locals[lobby].teamInfo.forEach((team) => {
 						//set clear lobby flag
