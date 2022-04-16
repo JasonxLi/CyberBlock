@@ -115,6 +115,7 @@ const ThemeContextProvider = ({ children }) => {
 		})
 
 		socket.on("student_receive_attack", ({ attack, playedDefenses }) => {
+			setDefensesToSubmit([]);
 			setResetTimer(true);
 			setRoundCount(roundCount => roundCount + 1);
 			setRolledAttack(attack);

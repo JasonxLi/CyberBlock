@@ -37,8 +37,6 @@ const GameInterface = ({ isHost }) => {
     nbOfDefenses,
   } = useContext(Context);
 
-  const [count, setCount] = useState(0);
-
   //handles the user submitted defenses
   const handleChange = (defenseID, defenseName, defenseDescription) => {
     //avoids repetition
@@ -47,8 +45,7 @@ const GameInterface = ({ isHost }) => {
     }
 
     //this statement prohibits the user from submitting more than selected number of defenses against the attack
-    if (count < nbOfDefenses) {
-      setCount(count + 1);
+    if (defensesToSubmit.length < nbOfDefenses) {
       //adds the selected defense to selectedItem list
       const tempDefense = {
         defenseName: defenseName,
@@ -81,6 +78,10 @@ const GameInterface = ({ isHost }) => {
     setHasSubmittedDefenses(true);
     student_play_defenses();
   };
+
+  const handleClearDefenses = () => {
+    setDefensesToSubmit([]);
+  }
 
   const useStyles = makeStyles(theme => ({
     activeCellStyling: {
@@ -212,6 +213,13 @@ const GameInterface = ({ isHost }) => {
             style={{ marginTop: '15px', marginBottom: '15px' }}
           >
             Submit
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => handleClearDefenses()}
+            style={{ marginTop: '15px', marginBottom: '15px', marginLeft: '15px' }}
+          >
+            Clear Selected
           </Button>
         </Box>
       )}
