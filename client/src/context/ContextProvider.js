@@ -102,6 +102,10 @@ const ThemeContextProvider = ({ children }) => {
 			setSubmittedTriviaAnswers(submittedTriviaAnswers);
 		});
 
+		socket.on("student_update_money", (triviaReward) => {
+			setUserEarnings(userEarnings => userEarnings + triviaReward);
+		})
+
 		socket.on("student_receive_defenses", (defenses) => {
 			//default to alphabetical
 			defenses.sort((a, b) => {
@@ -152,7 +156,7 @@ const ThemeContextProvider = ({ children }) => {
 		})
 
 		socket.on("host_disconnected", () => {
-			if(gameStage !== "GAME_END"){
+			if (gameStage !== "GAME_END") {
 				alert("Unfortunately, the host of this lobby has disconnected, which means this game session can no longer continue. Please refresh the page to start a new game session.")
 			}
 		})
@@ -316,10 +320,7 @@ const ThemeContextProvider = ({ children }) => {
 	const student_submit_trivia_answer = () => {
 		socket.emit(
 			"student_submit_trivia_answer",
-			{ lobbyId, teamId: myTeamId, triviaAnswer },
-			({ triviaReward }) => {
-				setUserEarnings(userEarnings => userEarnings + triviaReward);
-			}
+			{ lobbyId, teamId: myTeamId, triviaAnswer }
 		);
 	};
 
@@ -347,14 +348,14 @@ const ThemeContextProvider = ({ children }) => {
 
 	const chat_sendToAll = (message) => {
 		// Do not allow all chat messages to be send if it is empty
-		if(message.length > 0) {
+		if (message.length > 0) {
 			socket.emit("chat_sendToAll", ({ lobbyId, alias, message }));
 		}
 	}
 
 	const chat_sendToTeam = (message) => {
 		// Do not allow team chat messages to be send if it is empty
-		if(message.length > 0) {
+		if (message.length > 0) {
 			socket.emit("chat_sendToTeam", ({ lobbyId, alias, teamId: myTeamId, message }))
 		}
 	}
