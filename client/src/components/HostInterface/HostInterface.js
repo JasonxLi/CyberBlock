@@ -44,7 +44,6 @@ const HostInterface = ({ }) => {
 	}, [boughtDefenses]);
 
 	const handleStartTrivia = () => {
-		host_gets_trivia_question();
 		host_start_game();
 	}
 

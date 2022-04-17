@@ -15,7 +15,6 @@ const ThemeContextProvider = ({ children }) => {
 	const [timeForEachRound, setTimeForEachRound] = useState(120);
 	const [hasTriviaRound, setHasTriviaRound] = useState(true);
 	const [difficulty, setDifficulty] = useState(1);
-	//TODO 
 	const [nbOfDefenses, setNbOfDefenses] = useState(2);
 
 	// a state that decides whether a player is host or student ans puts them in a correct interface
@@ -37,6 +36,7 @@ const ThemeContextProvider = ({ children }) => {
 	const [triviaAnswer, setTriviaAnswer] = useState();
 	const [hasSubmittedTrivia, setHasSubmittedTrivia] = useState(false);
 	const [submittedTriviaAnswers, setSubmittedTriviaAnswers] = useState([]);
+	const [disableGetTriviaQuestion, setDisableGetTriviaQuestion] = useState(false);
 
 	// a state to store the current round in the game
 	const [roundCount, setRoundCount] = useState(0);
@@ -219,6 +219,9 @@ const ThemeContextProvider = ({ children }) => {
 		if (isHost && gameStage === 'BUY_DEFENSE') {
 			socket.emit("host_start_buy_phase", lobbyId);
 		}
+		if (isHost && gameStage === 'TRIVIA'){
+			host_gets_trivia_question();
+		}
 	}, [gameStage]);
 
 	useEffect(() => {
@@ -312,8 +315,9 @@ const ThemeContextProvider = ({ children }) => {
 
 	//Start-------------Trivia Events------------Start//
 	const host_gets_trivia_question = () => {
-		socket.emit("host_gets_trivia_question", lobbyId, (newTriviaQuestion) => {
+		socket.emit("host_gets_trivia_question", lobbyId, (newTriviaQuestion, noMoreTriviaQuestions) => {
 			setTriviaQuestion(newTriviaQuestion);
+			setDisableGetTriviaQuestion(noMoreTriviaQuestions);
 		});
 	};
 
@@ -391,6 +395,7 @@ const ThemeContextProvider = ({ children }) => {
 				triviaAnswer, setTriviaAnswer,
 				hasSubmittedTrivia, setHasSubmittedTrivia,
 				submittedTriviaAnswers, setSubmittedTriviaAnswers,
+				disableGetTriviaQuestion, setDisableGetTriviaQuestion,
 
 				//buy defenses
 				userDefenses, setUserDefenses,

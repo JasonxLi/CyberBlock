@@ -1,4 +1,17 @@
 module.exports = {
+	getTriviaQuestions: function (connection) {
+		return new Promise(function (resolve, reject) {
+			connection.query(
+				`SELECT wildcard.Question, wildcard.Option1, wildcard.Option2, wildcard.Option3, wildcard.Option4, wildcard.Answer, wildcard.WildcardID FROM wildcard`,
+				function (err, triviaQuestions) {
+					if (err) {
+						return reject(err);
+					}
+					resolve(triviaQuestions);
+				}
+			);
+		});
+	},
 	getNumberOfTriviaQuestions: function (connection) {
 		return new Promise(function (resolve, reject) {
 			connection.query(

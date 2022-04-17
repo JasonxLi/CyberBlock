@@ -7,7 +7,7 @@ import TriviaBoard from '../TriviaBoard/TriviaBoard';
 const TriviaInterface = ({ isHost, isTeamLeader }) => {
 
     const { host_gets_trivia_question, host_ends_trivia_round, triviaQuestion, triviaAnswer, setTriviaAnswer,
-        student_submit_trivia_answer, hasSubmittedTrivia, setHasSubmittedTrivia, submittedTriviaAnswers, myTeamId } = useContext(Context);;
+        student_submit_trivia_answer, hasSubmittedTrivia, setHasSubmittedTrivia, submittedTriviaAnswers, myTeamId, disableGetTriviaQuestion } = useContext(Context);;
 
     const boxStyling = {
         m: '20px',
@@ -44,7 +44,7 @@ const TriviaInterface = ({ isHost, isTeamLeader }) => {
                 <Box align='center'>
                     <ButtonGroup variant="text" aria-label="text button group">
                         <Button align='center' variant="contained" onClick={() => { host_ends_trivia_round() }}>End Trivia Round</Button>
-                        <Button variant="contained" onClick={() => { host_gets_trivia_question() }}>Next Trivia Question</Button>
+                        <Button variant="contained" onClick={() => { host_gets_trivia_question() }} disabled={disableGetTriviaQuestion}>Next Trivia Question</Button>
                     </ButtonGroup>
                 </Box>
 
