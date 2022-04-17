@@ -163,6 +163,10 @@ const BuyingInterface = ({}) => {
       color: 'white',
       backgroundColor: '#088F8F',
       fontSize: '16px',
+      padding: '10px',
+      margin: '10px',
+      width: '20%',
+      borderRadius: '5px',
     },
   }));
 
@@ -172,10 +176,13 @@ const BuyingInterface = ({}) => {
     <Box sx={boxStyling}>
       {isTeamLeader ? (
         <Typography gutterBottom className={classes.activeCellStyling}>
-          Team Lead{' '}
+          {`Team Lead of Team ${myTeamId + 1}`}
         </Typography>
       ) : (
-        <Typography lassName={classes.activeCellStyling}>Team Mate</Typography>
+        <Typography className={classes.activeCellStyling}>
+          {' '}
+          {`Team Mate of Team ${myTeamId + 1}`}
+        </Typography>
       )}
 
       <Card>
@@ -239,11 +246,7 @@ const BuyingInterface = ({}) => {
           </TableHead>
           <TableBody>
             {userDefenses.map((row, index) => (
-              <StyledTooltip 
-                title={row.Description} 
-                arrow 
-                placement="right-end"
-                >
+              <StyledTooltip title={row.Description} arrow placement="right-end">
                 <TableRow
                   key={row.Name}
                   className={isChecked[row.DefenseID] ? classes.activeCellStyling : 'none'}

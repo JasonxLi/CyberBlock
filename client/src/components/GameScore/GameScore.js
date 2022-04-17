@@ -1,11 +1,19 @@
 import * as React from 'react';
-import { Box, TableContainer, Table, TableBody, TableRow, TableCell, TableHead } from '@material-ui/core';
+import {
+  Box,
+  TableContainer,
+  Table,
+  TableBody,
+  TableRow,
+  TableCell,
+  TableHead,
+} from '@material-ui/core';
 import { useContext, useEffect, useState } from 'react';
 import { Context } from '../../context/ContextProvider';
 import { makeStyles } from '@material-ui/core/styles';
 import { CrownIcon } from '../Icons';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   head: {
     width: 500,
     color: 'black',
@@ -33,6 +41,7 @@ const GameScore = ({ children }) => {
   //importing shared states to dispaly the points per team
   const { scores, roundCount, gameStage } = useContext(Context);
   const [teamScore, setTeamScore] = useState([]);
+  const [highScore, setHighScore] = useState(0);
 
   const scoreBoxStyling = {
     borderRadius: '9px',
@@ -61,6 +70,7 @@ const GameScore = ({ children }) => {
       return a.score > b.score ? -1 : a.score < b.score ? 1 : 0;
     });
     setTeamScore(sorted);
+    setHighScore(sorted[0].score);
   }, [scores]);
 
   // displays the scores per team in a row and column format
@@ -81,14 +91,40 @@ const GameScore = ({ children }) => {
             {teamScore.map((data, index) => {
               return (
                 <TableRow>
-                  <TableCell component="th" scope="row" className={index === 0 && data.score !== 0 ? classes.winnerStyling : classes.body}>
+                  <TableCell
+                    component="th"
+                    scope="row"
+                    className={
+                      data.score !== 0 && data.score === highScore
+                        ? classes.winnerStyling
+                        : classes.body
+                    }
+                  >
                     Team {data.teamID}
                   </TableCell>
-                  <TableCell align="right" className={index === 0 && data.score !== 0 ? classes.winnerStyling : classes.body}>
+                  <TableCell
+                    align="right"
+                    className={
+                      data.score !== 0 && data.score === highScore
+                        ? classes.winnerStyling
+                        : classes.body
+                    }
+                  >
                     {data.score}
                   </TableCell>
-                  <TableCell align="right" className={index === 0 && data.score !== 0 ? classes.winnerStyling : classes.body}>
-                    {index === 0 && data.score !== 0 && roundCount !== 0 ? <CrownIcon /> : ''}
+                  <TableCell
+                    align="right"
+                    className={
+                      data.score !== 0 && data.score === highScore
+                        ? classes.winnerStyling
+                        : classes.body
+                    }
+                  >
+                    {data.score !== 0 && data.score === highScore && roundCount !== 0 ? (
+                      <CrownIcon />
+                    ) : (
+                      ''
+                    )}
                   </TableCell>
                 </TableRow>
               );

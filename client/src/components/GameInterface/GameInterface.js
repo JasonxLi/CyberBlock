@@ -35,7 +35,8 @@ const GameInterface = ({ isHost }) => {
     host_end_game,
     student_play_defenses,
     nbOfDefenses,
-    chat_sendToTeam
+    chat_sendToTeam,
+    myTeamId,
   } = useContext(Context);
 
   //handles the user submitted defenses
@@ -82,7 +83,7 @@ const GameInterface = ({ isHost }) => {
 
   const handleClearDefenses = () => {
     setDefensesToSubmit([]);
-  }
+  };
 
   const handleSuggestDefenses = () => {
     let message = `suggests playing the following defenses: `;
@@ -93,7 +94,7 @@ const GameInterface = ({ isHost }) => {
       }
     });
     chat_sendToTeam(message);
-  }
+  };
 
   const useStyles = makeStyles(theme => ({
     activeCellStyling: {
@@ -103,24 +104,32 @@ const GameInterface = ({ isHost }) => {
       fontSize: '16px',
       padding: '10px',
       margin: '10px',
+      width: '20%',
+      borderRadius: '5px',
     },
     typographyStyling: {
       fontSize: '20px',
       padding: '10px',
       margin: '10px',
-    }
+    },
   }));
   const classes = useStyles();
 
   return (
     <Box>
-      {isTeamLeader ? (
+      {isHost ? (
+        <div />
+      ) : isTeamLeader ? (
         <Typography gutterBottom className={classes.activeCellStyling}>
-          Team Lead{' '}
+          {`Team Lead of Team ${myTeamId + 1}`}
         </Typography>
       ) : (
-        <Typography className={classes.activeCellStyling}>Team Mate</Typography>
+        <Typography className={classes.activeCellStyling}>
+          {' '}
+          {`Team Mate of Team ${myTeamId + 1}`}
+        </Typography>
       )}
+
       <Timer
         initialSeconds={timeForEachRound}
         resetTimer={resetTimer}
@@ -170,7 +179,9 @@ const GameInterface = ({ isHost }) => {
         </Box>
       ) : (
         <Box>
-          <Typography className={classes.typographyStyling}>Select up to {nbOfDefenses} defenses to play:</Typography>
+          <Typography className={classes.typographyStyling}>
+            Select up to {nbOfDefenses} defenses to play:
+          </Typography>
           <Grid container spacing={2}>
             {selectedDefenses.map(item => {
               return (

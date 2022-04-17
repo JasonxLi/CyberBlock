@@ -71,22 +71,29 @@ const ChatInterface = ({}) => {
 
   // Scrolling for All Chat
   const scrollToBottomAll = () => {
-    messagesEndRefAll.current?.scrollIntoView({ behavior: 'smooth' })
+    messagesEndRefAll.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'end',
+      inline: 'nearest',
+    });
   };
 
   useEffect(() => {
-    scrollToBottomAll()
+    scrollToBottomAll();
   }, [chatMessagesAll]);
 
   // Scrolling for Team Chat
   const scrollToBottomTeam = () => {
-    messagesEndRefTeam.current?.scrollIntoView({ behavior: 'smooth' })
+    messagesEndRefTeam.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'end',
+      inline: 'nearest',
+    });
   };
 
   useEffect(() => {
-    scrollToBottomTeam()
+    scrollToBottomTeam();
   }, [chatMessagesTeam]);
-
 
   // Handle the text field changes
   const handleChangeAll = e => {
