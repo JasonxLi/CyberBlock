@@ -176,16 +176,9 @@ module.exports = {
 			io.in(lobbyId).emit("student_submitted_trivia_answer", app.locals[lobbyId].submittedTriviaAnswers);
 
 			if (triviaAnswer === app.locals[lobbyId].triviaQuestionAnswer) {
-				ack({
-					triviaReward: triviaReward,
-				});
-			} else {
-				ack({
-					triviaReward: 0,
-				});
+				io.in(lobbyId + `_team` + teamId).emit("student_update_money", triviaReward);
 			}
-		}
-		);
+		});
 
 		socket.on("host_ends_trivia_round", lobbyId => {
 			io.in(lobbyId).emit("host_ended_trivia_round");
@@ -287,6 +280,12 @@ module.exports = {
 				const lobby = app.locals.socketToLobby.get(socket.id);
 
 				if (app.locals[lobby]) {
+
+					//send alert to lobby if host has disconnected
+					if (socket.id === app.locals[lobby].hostId) {
+						io.in(lobby).emit("host_disconnected");
+					}
+
 					let isLobbyEmpty = true;
 					app.locals[lobby].teamInfo.forEach((team) => {
 						//set clear lobby flag

@@ -35,9 +35,8 @@ const GameInterface = ({ isHost }) => {
     host_end_game,
     student_play_defenses,
     nbOfDefenses,
+    chat_sendToTeam
   } = useContext(Context);
-
-  const [count, setCount] = useState(0);
 
   //handles the user submitted defenses
   const handleChange = (defenseID, defenseName, defenseDescription) => {
@@ -47,8 +46,7 @@ const GameInterface = ({ isHost }) => {
     }
 
     //this statement prohibits the user from submitting more than selected number of defenses against the attack
-    if (count < nbOfDefenses) {
-      setCount(count + 1);
+    if (defensesToSubmit.length < nbOfDefenses) {
       //adds the selected defense to selectedItem list
       const tempDefense = {
         defenseName: defenseName,
@@ -81,6 +79,21 @@ const GameInterface = ({ isHost }) => {
     setHasSubmittedDefenses(true);
     student_play_defenses();
   };
+
+  const handleClearDefenses = () => {
+    setDefensesToSubmit([]);
+  }
+
+  const handleSuggestDefenses = () => {
+    let message = `suggests playing the following defenses: `;
+    defensesToSubmit.map((item, index) => {
+      message += item.defenseName;
+      if (index < defensesToSubmit.length - 1) {
+        message += ', ';
+      }
+    });
+    chat_sendToTeam(message);
+  }
 
   const useStyles = makeStyles(theme => ({
     activeCellStyling: {
@@ -212,6 +225,20 @@ const GameInterface = ({ isHost }) => {
             style={{ marginTop: '15px', marginBottom: '15px' }}
           >
             Submit
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => handleClearDefenses()}
+            style={{ marginTop: '15px', marginBottom: '15px', marginLeft: '15px' }}
+          >
+            Clear Selected
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => handleSuggestDefenses()}
+            style={{ marginTop: '15px', marginBottom: '15px', marginLeft: '15px' }}
+          >
+            Share Selected Defenses to Team Chat
           </Button>
         </Box>
       )}
