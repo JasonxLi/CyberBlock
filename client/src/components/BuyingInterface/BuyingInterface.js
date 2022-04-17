@@ -23,7 +23,7 @@ import {
   FormHelperText,
 } from '@material-ui/core';
 import { Context } from '../../context/ContextProvider';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, styled } from '@material-ui/core/styles';
 
 //this page displys all the defense for players to purchase those defenses
 
@@ -49,6 +49,17 @@ const BuyingInterface = ({}) => {
     p: 6,
     minWidth: '85%',
   };
+
+  const ToBeStyledTooltip = ({ className, ...props }) => (
+    <Tooltip {...props} classes={{ tooltip: className }} />
+  );
+  // Change the style of the tooltip
+  const StyledTooltip = styled(ToBeStyledTooltip)(({ theme }) => ({
+    fontSize: '16px',
+    backgroundColor: '#F5F5F5',
+    color: 'rgba(0, 0, 0, 15)',
+    border: '2px solid #dadde9',
+  }));
 
   // a state to store the checkboxstate and see if its is checked or not
   const [isChecked, setIsChecked] = useState({});
@@ -228,7 +239,11 @@ const BuyingInterface = ({}) => {
           </TableHead>
           <TableBody>
             {userDefenses.map((row, index) => (
-              <Tooltip title={row.Description} arrow placement="right-end">
+              <StyledTooltip 
+                title={row.Description} 
+                arrow 
+                placement="right-end"
+                >
                 <TableRow
                   key={row.Name}
                   className={isChecked[row.DefenseID] ? classes.activeCellStyling : 'none'}
@@ -277,7 +292,7 @@ const BuyingInterface = ({}) => {
                     </FormControl>
                   </TableCell>
                 </TableRow>
-              </Tooltip>
+              </StyledTooltip>
             ))}
           </TableBody>
         </Table>
