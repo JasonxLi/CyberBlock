@@ -13,6 +13,18 @@ import { Context } from "../../context/ContextProvider";
 import { useState, useContext } from "react";
 import GameScore from "../GameScore/GameScore";
 import Timer from "../Timer/Timer"
+import { styled } from '@material-ui/core/styles';
+
+const ToBeStyledTooltip = ({ className, ...props }) => (
+    <Tooltip {...props} classes={{ tooltip: className }} />
+  );
+  // Change the style of the tooltip
+  const StyledTooltip = styled(ToBeStyledTooltip)(({ theme }) => ({
+    fontSize: '15px',
+    backgroundColor: '#F5F5F5',
+    color: 'rgba(0, 0, 0, 15)',
+    border: '2px solid #dadde9',
+  }));
 
 // this page displays the actual game play witht the attack rolled by the host ad user selected defense as buttons
 const GameInterface = ({ isHost }) => {
@@ -85,7 +97,7 @@ const GameInterface = ({ isHost }) => {
 			<Box sx={{ m: "30px" }}>
 				<Card>
 					<CardContent>
-						<Tooltip title={rolledAttack.Description}>
+						<StyledTooltip title={rolledAttack.Description}>
 							<Typography
 								align="center"
 								variant="h6"
@@ -94,7 +106,7 @@ const GameInterface = ({ isHost }) => {
 							>
 								{`Attack rolled: ${rolledAttack.Name} `}
 							</Typography>
-						</Tooltip>
+						</StyledTooltip>
 					</CardContent>
 				</Card>
 			</Box>

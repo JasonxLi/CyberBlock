@@ -2,7 +2,18 @@ import * as React from 'react';
 import { useState, useContext } from 'react';
 import { Context } from '../../context/ContextProvider';
 import { Box, TableContainer, Table, TableBody, TableRow, TableCell, TableHead, Typography, Tooltip } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, styled } from '@material-ui/core/styles';
+
+const ToBeStyledTooltip = ({ className, ...props }) => (
+  <Tooltip {...props} classes={{ tooltip: className }} />
+);
+// Change the style of the tooltip
+const StyledTooltip = styled(ToBeStyledTooltip)(({ theme }) => ({
+  fontSize: '15px',
+  backgroundColor: '#F5F5F5',
+  color: 'rgba(0, 0, 0, 15)',
+  border: '2px solid #dadde9',
+}));
 
 const BoughtDefensesBoard = ({ }) => {
   const { boughtDefenses } = useContext(Context);
@@ -40,7 +51,7 @@ const BoughtDefensesBoard = ({ }) => {
                   </TableCell>
                   <TableCell align="right">
                     {defenses.map((defense) => {
-                      return <Tooltip title={defense.defenseDescritpion} arrow placement='right-end'><Typography>{defense.defenseName}</Typography></Tooltip>;
+                      return <StyledTooltip title={defense.defenseDescritpion} arrow placement='right-end'><Typography>{defense.defenseName}</Typography></StyledTooltip>;
                     })}
                   </TableCell>
                 </TableRow>
