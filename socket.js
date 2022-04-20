@@ -128,7 +128,7 @@ module.exports = {
 			}
 		);
 
-		socket.on("host_start_game", (lobbyId) => {
+		socket.on("host_start_game", async (lobbyId) => {
 			app.locals[lobbyId].isJoinable = false;
 			//add each team member to their team socket room for chat
 			app.locals[lobbyId].teamInfo.forEach((item, index) => {
@@ -136,37 +136,42 @@ module.exports = {
 					app.locals.sockets.get(item.socketId).join(lobbyId + "_team" + index);
 				});
 			});
+
+			//if there is trivia round, store trivia in server
+			if(app.locals[lobbyId].hasTriviaRound){
+				app.locals[lobbyId].triviaQuestions = await mysql_queries.getTriviaQuestions(db_connection);
+			}
+
 			//emit event so front end knows game has been started when they receive this event
 			io.in(lobbyId).emit("host_started_game", app.locals[lobbyId].hasTriviaRound);
 			console.log("Host started the game.");
 			console.log("Team information:", app.locals[lobbyId].teamInfo);
 		});
 
-		socket.on("host_gets_trivia_question", async (lobbyId, ack) => {
-			//to ensure we don't get duplicates and we don't query the database 10 times for a trivia question
-			const numberOfTriviaQuestions =
-				await mysql_queries.getNumberOfTriviaQuestions(db_connection);
-
-			let newTriviaId;
+		socket.on("host_gets_trivia_question", (lobbyId, ack) => {
+			//to ensure we don't get duplicates
+			let triviaQuestion, triviaId;
 			do {
-				newTriviaId =
-					Math.floor(Math.random() * numberOfTriviaQuestions.Count) + 1;
-				newTriviaId = "300" + newTriviaId;
+				triviaQuestion = app.locals[lobbyId].triviaQuestions[Math.floor(Math.random() * app.locals[lobbyId].triviaQuestions.length)];
+				triviaId = triviaQuestion.WildcardID;
 			} while (
-				app.locals[lobbyId].previousTriviaQuestionIds.includes(newTriviaId)
+				app.locals[lobbyId].previousTriviaQuestionIds.includes(triviaId)
 			);
 
-			const triviaQuestion = await mysql_queries.getTriviaQuestion(
-				db_connection,
-				newTriviaId
-			);
-			app.locals[lobbyId].previousTriviaQuestionIds.push(newTriviaId);
+			app.locals[lobbyId].previousTriviaQuestionIds.push(triviaId);
+
+			let noMoreTriviaQuestions = false;
+			
+			//check if we have run out of trivia questions
+			if (app.locals[lobbyId].previousTriviaQuestionIds.length === app.locals[lobbyId].triviaQuestions.length) {
+				noMoreTriviaQuestions = true;
+			}
 
 			app.locals[lobbyId].triviaQuestionAnswer = triviaQuestion.Answer;
 			app.locals[lobbyId].submittedTriviaAnswers = [];
 
 			io.in(lobbyId).emit("student_receives_trivia_question", triviaQuestion);
-			ack(triviaQuestion);
+			ack(triviaQuestion, noMoreTriviaQuestions);
 		});
 
 		socket.on("student_submit_trivia_answer", ({ lobbyId, teamId, triviaAnswer }, ack) => {
@@ -176,16 +181,9 @@ module.exports = {
 			io.in(lobbyId).emit("student_submitted_trivia_answer", app.locals[lobbyId].submittedTriviaAnswers);
 
 			if (triviaAnswer === app.locals[lobbyId].triviaQuestionAnswer) {
-				ack({
-					triviaReward: triviaReward,
-				});
-			} else {
-				ack({
-					triviaReward: 0,
-				});
+				io.in(lobbyId + `_team` + teamId).emit("student_update_money", triviaReward);
 			}
-		}
-		);
+		});
 
 		socket.on("host_ends_trivia_round", lobbyId => {
 			io.in(lobbyId).emit("host_ended_trivia_round");
@@ -287,6 +285,12 @@ module.exports = {
 				const lobby = app.locals.socketToLobby.get(socket.id);
 
 				if (app.locals[lobby]) {
+
+					//send alert to lobby if host has disconnected
+					if (socket.id === app.locals[lobby].hostId) {
+						io.in(lobby).emit("host_disconnected");
+					}
+
 					let isLobbyEmpty = true;
 					app.locals[lobby].teamInfo.forEach((team) => {
 						//set clear lobby flag
