@@ -5,6 +5,7 @@ import { Shadows } from "@material-ui/system";
 import { useState, useContext, useEffect } from "react";
 import { Context } from "../../context/ContextProvider";
 import { createTheme, ThemeProvider } from '@material-ui/core';
+import InstructionDialog from '../InstructionDialog/InstructionDialog'
 
 const theme = createTheme({
 	palette: {
@@ -90,6 +91,10 @@ return (
 			>
 				Create A Lobby
 			</Button>
+			<br></br>
+			<Typography>Or</Typography>
+			<br></br>
+			<InstructionDialog />
 		</Box>
 	);
 };
