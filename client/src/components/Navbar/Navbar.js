@@ -24,7 +24,7 @@ const useStyles = makeStyles({
 const Navbar = ({ }) => {
 
     // Grab the elements from ContextProvider.js
-    const { lobbyId, roundCount, hideTeamChat, teamLeader } = useContext(Context);
+    const { lobbyId, roundCount, hideTeamChat } = useContext(Context);
 
     const classes = useStyles()
 
@@ -44,10 +44,6 @@ const Navbar = ({ }) => {
                             }
                         </Typography>
                         <section>
-                            <Typography className={classes.typography}>
-                                {!hideTeamChat && `Current Team Leader: ${teamLeader}`
-                                }
-                            </Typography>
                             <Typography className={classes.typography}>
                                 {lobbyId
                                     ? `Lobby ID: ${lobbyId}`

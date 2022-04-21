@@ -35,7 +35,7 @@ function App() {
     width: '35vw',
     position: 'sticky',
     top: '15px',
-    margin: '5px',
+    margin: '15px',
   };
 
   return (
