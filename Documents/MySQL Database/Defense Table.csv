@@ -1,0 +1,35 @@
+DefenseID,DefenseNumber,Cost,Difficulty,Name,Description
+1001,1,8,1,"Zero-Trust:Continuous Verification","The three main areas of concern regarding trust include [user identity, device posture and identity, and overall behavior]. Embrace automation. Never trust, always verify. (Assume Zero Trust)"
+1002,2,3,1,"Zero Trust:Segmentation","Micro-segmentation is a network security technique that enables security architects to logically divide the data center into distinct security segments down to the individual workload level, and then define security controls and deliver services for each unique segment."
+1003,3,3,1,"Anti-Fuzzing Design Techniques","Anti-Fuzzing is a set of concepts and techniques that are designed to slowdown and frustrate threat actors looking to fuzz test software products by deliberately misbehaving, misdirecting, misinforming and otherwise hindering their efforts"
+1004,4,10,1,Encryption,"In cryptography, encryption is the process of encoding information. This process converts the original representation of the information, known as plaintext, into an alternative form known as ciphertext. There are several data encryption approaches available to choose from [symmetric, asymmetric, and hashing]. These, in turn, are broken down into different types."
+1005,5,2,1,"Authorization:Password Policies","The definition of acceptable passwords and associated rules that enforce password settings. Rules could involve password complexity and time-to-live."
+1006,6,5,1,"System Monitoring","Security monitoring, sometimes referred to "security event monitoring (SEM)"
+1007,7,1,1,Authentication:Password,"Password authentication is a process that involves a user inputting a unique ID and key that are then checked against stored credentials"
+1008,8,8,1,Authentication:Token-Hardware,"A physical (HW) key (token) that enables a user to authenticate and prove their identity"
+1009,9,6,1,Authentication:Token-Software,"A software key (file) that enables a user to authenticate and prove their identity"
+1010,10,8,1,Authentication:Biometrics,"A biological key (fingerprint, retinal scan) that enables a user to authenticate and prove their identity"
+1011,11,10,1,"Authentication:GPS-Based Access","A geo-spatial (lat-long) key that enables a user to authenticate and prove their identity"
+1012,12,7,1,"Authentication:Two-Factor ","Two-Factor authentication is a specific type of Multi-factor Authentication (MFA). It is an authentication method that requires the user to provide two or more verification factors to gain access to a resource "
+1013,13,1,1,"Training:User ","A structured program involving continuous security training focusing security offense, defense and general awareness."
+1014,14,3,1,"Integrity Checking","Integrity controls include [read-only, validating software, file system monitoring, backup, redundancy]"
+1015,15,5,1,"Tamper Detection","Part of Tamperproofing, detection mechanisms often include techniques associated with Trusted Computing but can be as simple as secure logging/monitoring."
+1016,16,2,1,"Certified Suppliers","Example Certifications: NIST 800-171 Government FAR ISO/IEC 27001 Information Security Management"
+1017,17,1,1,"Notification/Error Message ","Inform the user of a possible cyber issue. See: Training:User"
+1018,18,2,1,"Read-Only Software","Set 'immutable bit' in Linux (weak). Store software in RO memory/storage"
+1019,19,5,1,"Factory Reset After Reboot","Include ability to perform 'hard-reset' of device, usually requiring physically interacting with system. Once reset - a device would contain software/settings identical to when it left the manufacturer. See: Read-Only Software"
+1020,20,7,1,"Remote Software Install ","Secure infrastructure and processes supporting remote delivery, installation, and verification of software."
+1021,21,2,1,"Push Notifications","Associated with real-time monitoring of system activity/logs. Timely notification of potentially concerning system anomalies. See: Logging-Monitoring"
+1022,22,1,1,Logging,"Capture and securely record system activity for monitoring and possible analysis to detect malicious activity
+See: Integrity"
+1023,23,7,1,Redundancy,"Provide alternative resources, dynamic routing, and ability to recognize when a system is compromised. See: System Monitoring"
+1024,24,7,1,"Authentication:Digital Certificates","A digital certificate is a file or electronic password that proves the authenticity of a device, server, or user through the use of cryptography and the public key infrastructure (PKI). "
+1025,25,5,1,"Authorization ","This requires solving two problems before allowing access to a resource. 1. Identification (the entity is genuine) 2. Access Management (the entity is entitled to the privilege)"
+1026,26,0,1,No-op,No-op
+1027,27,3,1,"Anti-Disassembly Techniques","A form of obfuscation"
+1028,28,3,1,"Control Flow Obfuscation","A form of obfuscation"
+1029,29,3,1,"Surveillance:Phone Home","Capability to communicate status and possible location if device is threatened"
+1030,30,8,1,"Physical Control:Tamperproofing ","A combination of Tamper Detection and Tamper Prevention techniques. Traditional tramperproofing focused on physical controls."
+1031,31,8,1,"Physical Control:Self Destroy","An extreme response taken when something of high-value is perceived to be in jeopardy. The destruction of the device is less of a loss than exposure of whatever the 'secrets' are on the device."
+1032,32,3,1,"Physical Controls:Locks","A mechanism to prevent access"
+1033,33,1,1,"Automatic Network Connection","Implement ability for device to autonomously establish a secure communication link with another entity, verify the authenticity of the remote entity, and securely exchange information."

@@ -1,0 +1,10 @@
+WildcardID,Question,Option1,Option2,Option3,Option4,Answer
+3001,"What does sBOM stand for?","Sales Base Open Market","Standard Bill of Materials","Software Bill of Materials","Software Breach of Malware","Software Bill of Materials"
+3002,"What is the expected life of a medical device?","30-40 Years","15-20 Years","5-10 Years",NULL,"15-20 Years"
+3003,"Safety is keeping bad products from harming good people; Security is keeping bad people from harming good products.",True,False,NULL,NULL,True
+3004,"Which of the following is not a threat modeling technique?",STRIDE,"Standard Bill of Materials","Software Breach of Malware",NULL,"Standard Bill of Materials"
+3005,"What does CVSS stand for?","Common Vulnerability Scoring System","Change of Value Security System","Corrective Value Scoring System","Computer Security System","Common Vulnerability Scoring System"
+3006,"What is not a security concern for the FDA?",PHI/PII,Firmware,"Network Vulnerability",NULL,PHI/PII
+3007,"Cyber criminals only target large companies.",True,False,NULL,NULL,False
+3008,"A black hat hacker is someone who is ethically hacking.",True,False,NULL,NULL,False
+3009,"What does PHI stand for?","Protected Hospital Information","Personal Hospital Information","Patented Health Infrastructure","Protected Health Information","Protected Health Information"
