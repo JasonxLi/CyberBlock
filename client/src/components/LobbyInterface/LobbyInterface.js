@@ -92,7 +92,7 @@ return (
 				Create A Lobby
 			</Button>
 			<br></br>
-			<Typography>Or</Typography>
+			<br></br>
 			<br></br>
 			<InstructionDialog />
 		</Box>
